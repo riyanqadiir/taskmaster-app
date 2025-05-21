@@ -1,0 +1,33 @@
+{
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.0",
+    "nodemon": "^3.1.10"
+  },
+  "name": "taskmaster-app",
+  "version": "1.0.0",
+  "description": "Task Master is a web-based productivity application that allows users to securely register, log in, and manage their daily tasks with features like create, read, update, delete, and view task history. Built with the MERN stack and secured with JWT and Google reCAPTCHA.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/riyanqadiir/taskmaster-app.git"
+  },
+  "keywords": [
+    "\"todo\""
+  ],
+  "author": "ask-tracker\",",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/riyanqadiir/taskmaster-app/issues"
+  },
+  "homepage": "https://github.com/riyanqadiir/taskmaster-app#readme"
+}
