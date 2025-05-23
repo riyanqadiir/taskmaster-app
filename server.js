@@ -5,7 +5,9 @@ const cors = require("cors")
 const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/userRoute.js")
 const taskRoute = require("./routes/taskRoute.js")
+const userProfile = require("./routes/userProfileRoute")
 
+const Port = process.env.PORT
 require("dotenv").config()
 mongoose()
 
@@ -18,9 +20,9 @@ app.use(cors({
 }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/user", userRoute)
+app.use("/user", userRoute,userProfile)
 app.use("/task", taskRoute)
 
-app.listen(3000, () => {
-    console.log("server is listening on port 3000")
+app.listen(Port, () => {
+    console.log(`server is listening on port ${Port}`)
 })
