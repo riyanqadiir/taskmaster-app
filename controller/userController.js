@@ -14,10 +14,10 @@ const otpGenerator = require('otp-generator')
 const signup = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction()
-    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
+    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }).toString();
     try {
-
         const { firstName, lastName, username, email, password } = req.body;
+        console.log(typeof password) //gives string
         const existingEmail = await userModel.findOne({ email }).session(session);
         if (existingEmail) {
             await session.abortTransaction();
@@ -65,10 +65,9 @@ const signup = async (req, res) => {
     }
 }
 
-
 const OtpVerification = async (req, res) => {
-    const { email, otp } = req.body;
-
+    const { email } = req.body;
+    const otp = req.body.otp.toString()
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
@@ -93,8 +92,8 @@ const OtpVerification = async (req, res) => {
         if (verifyUser.otpExpiresAt < Date.now()) {
             return res.status(400).json({ message: "OTP expired" });
         }
-
-        if (verifyUser.otp !== Number(otp)) {
+        const otpIsValid =await verifyUser.compareOtp(otp)
+        if (!otpIsValid) {
             verifyUser.otpRequestCount = (verifyUser.otpRequestCount || 0) + 1;
 
             if (verifyUser.otpRequestCount >= 3) {
@@ -102,7 +101,6 @@ const OtpVerification = async (req, res) => {
                 await verifyUser.save();
                 return res.status(403).json({ message: "Too many failed attempts. You are blocked for 15 minutes." });
             }
-
             await verifyUser.save();
             return res.status(400).json({ message: "Incorrect OTP" });
         }
@@ -120,11 +118,9 @@ const OtpVerification = async (req, res) => {
     }
 };
 
-
-
 const resendOtp = async (req, res) => {
     const { email } = req.body;
-    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false });
+    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }).toString();
 
     try {
         const user = await userModel.findOne({ email });
@@ -190,12 +186,12 @@ const login = async (req, res) => {
         if (user.isLoggedIn) {
             return res.status(404).json({ message: "user already logged in" });
         }
-
-        if (user.password !== password) {
+        const passIsValid =await user.comparePassword(password)
+        if (!passIsValid) {
             metadata.loginAttempts += 1;
 
             if (metadata.loginAttempts >= 5) {
-                metadata.lockUntil = Date.now() + 15 * 60 * 1000; 
+                metadata.lockUntil = Date.now() + 15 * 60 * 1000;
             }
             await metadata.save();
             return res.status(400).json({ message: "Incorrect password" });

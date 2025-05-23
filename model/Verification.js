@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
+const bcrypt = require("bcrypt")
 
 const verificationSchema = new Schema({
     userId: {
@@ -8,10 +9,8 @@ const verificationSchema = new Schema({
         unique: true
     },
     otp: {
-        type: Number,
+        type: String,
         select: false,
-        minlength: 6,
-        maxlength: 6
     },
     otpExpiresAt: {
         type: Date
@@ -24,5 +23,20 @@ const verificationSchema = new Schema({
         type: Date
     }
 }, { timestamps: true });
+
+verificationSchema.pre("save", async function (next) {
+    if (!this.isModified("otp")) return next();
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.otp = await bcrypt.hash(this.otp, salt);
+        next();
+    } catch (err) {
+        next(err);
+    }
+});
+
+verificationSchema.methods.compareOtp = async function (candidateOtp) {
+    return await bcrypt.compare(candidateOtp, this.otp);
+};
 
 module.exports = model("Verification", verificationSchema);

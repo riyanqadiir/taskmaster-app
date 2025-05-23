@@ -7,7 +7,7 @@ const userRoute = require("./routes/userRoute.js")
 const taskRoute = require("./routes/taskRoute.js")
 const userProfile = require("./routes/userProfileRoute")
 
-const Port = process.env.PORT
+
 require("dotenv").config()
 mongoose()
 
@@ -23,6 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoute,userProfile)
 app.use("/task", taskRoute)
 
-app.listen(Port, () => {
-    console.log(`server is listening on port ${Port}`)
+app.listen(process.env.PORT, () => {
+    console.log(`server is listening on port ${process.env.PORT}`)
 })
