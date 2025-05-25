@@ -26,10 +26,6 @@ const userSchema = new Schema({
         minlength: 8,
         select: false,
     },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
     isLoggedIn: {
         type: Boolean,
         default: false,
