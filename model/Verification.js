@@ -1,5 +1,5 @@
 const { Schema, model, Types } = require("mongoose");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 
 const verificationSchema = new Schema({
     userId: {
@@ -12,6 +12,10 @@ const verificationSchema = new Schema({
         type: String,
         select: false,
     },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
     otpExpiresAt: {
         type: Date
     },
@@ -21,6 +25,11 @@ const verificationSchema = new Schema({
     },
     otpBlockedUntil: {
         type: Date
+    },
+    status: {
+        type: String,
+        enum: ["signup", "reset-password", "email-change", "other"], // add your statuses here
+        default: "signup"
     }
 }, { timestamps: true });
 

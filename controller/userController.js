@@ -2,7 +2,7 @@
 const userModel = require("../model/User")
 const profileModel = require("../model/userProfile.js")
 const accControlModel = require("../model/AccountControl")
-const verificationModel = require("../model/verification.js")
+const verificationModel = require("../model/Verification.js")
 const metaModel = require("../model/UserMetadata.js")
 
 // dependencies
@@ -15,14 +15,13 @@ const signup = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction()
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }).toString();
+    const { firstName, lastName, username, email, password } = req.body;
     try {
-        const { firstName, lastName, username, email, password } = req.body;
-        console.log(typeof password) //gives string
         const existingEmail = await userModel.findOne({ email }).session(session);
         if (existingEmail) {
             await session.abortTransaction();
             session.endSession();
-            return res.status(400).json({ message: "Email already in use" });
+            return res.status(400).json({ message: "Account already created" });
         }
 
         const existingUsername = await userModel.findOne({ username }).session(session);
@@ -42,7 +41,7 @@ const signup = async (req, res) => {
         await user.save({ session });
 
         const profile = new profileModel({ userId: user._id })
-        const accControl = new accControlModel({ userId: user._id })
+        const accControl = new accControlModel({ userId: user._id,status:"pending",statusReason:"User Signup Successfully!" })
         const verification = new verificationModel({ userId: user._id, otp: otp, otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000) })
         const metaData = new metaModel({ userId: user._id })
 
@@ -85,14 +84,14 @@ const OtpVerification = async (req, res) => {
             return res.status(403).json({ message: `Too many failed attempts. Try again in ${remaining} minutes.` });
         }
 
-        if (user.isVerified) {
+        if (verifyUser.isVerified) {
             return res.status(400).json({ message: "User already verified" });
         }
 
         if (verifyUser.otpExpiresAt < Date.now()) {
             return res.status(400).json({ message: "OTP expired" });
         }
-        const otpIsValid =await verifyUser.compareOtp(otp)
+        const otpIsValid = await verifyUser.compareOtp(otp)
         if (!otpIsValid) {
             verifyUser.otpRequestCount = (verifyUser.otpRequestCount || 0) + 1;
 
@@ -105,10 +104,8 @@ const OtpVerification = async (req, res) => {
             return res.status(400).json({ message: "Incorrect OTP" });
         }
 
-        user.isVerified = true;
-        await user.save();
-
-        await verificationModel.deleteOne({ _id: verifyUser._id });
+        verifyUser.isVerified = true;
+        await verifyUser.save();
 
         return res.status(200).json({ message: "User verified successfully" });
 
@@ -121,7 +118,6 @@ const OtpVerification = async (req, res) => {
 const resendOtp = async (req, res) => {
     const { email } = req.body;
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }).toString();
-
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
@@ -134,7 +130,7 @@ const resendOtp = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (user.isVerified) {
+        if (verifyUser.isVerified) {
             return res.status(400).json({ message: "User already verified" });
         }
 
@@ -170,10 +166,12 @@ const login = async (req, res) => {
 
     try {
         const user = await userModel.findOne({ email }).select('+password');
+        const verifyUser = await verificationModel.findOne({ userId: user._id });
+        const accModel = await accControlModel.findOne({ userId: user._id })
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
-        if (!user.isVerified) {
+        if (!verifyUser.isVerified) {
             return res.status(404).json({ message: "user is not verified" });
         }
 
@@ -184,9 +182,9 @@ const login = async (req, res) => {
         }
 
         if (user.isLoggedIn) {
-            return res.status(404).json({ message: "user already logged in" });
+            return res.status(404).json({ message: "User Already Logged In!" });
         }
-        const passIsValid =await user.comparePassword(password)
+        const passIsValid = await user.comparePassword(password)
         if (!passIsValid) {
             metadata.loginAttempts += 1;
 
@@ -194,16 +192,22 @@ const login = async (req, res) => {
                 metadata.lockUntil = Date.now() + 15 * 60 * 1000;
             }
             await metadata.save();
-            return res.status(400).json({ message: "Incorrect password" });
+            return res.status(400).json({ message: "Invalid credentials" });
         }
 
         user.isLoggedIn = true;
-        await user.save()
+
+        accModel.status = "active"
+        accModel.statusReason = "User Logged In Successfully!"
+
 
         metadata.loginAttempts = 0;
         metadata.lockUntil = null;
         metadata.lastLoginAt = new Date();
+
         await metadata.save();
+        await accModel.save()
+        await user.save()
 
 
         const accessToken = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' })
@@ -216,7 +220,8 @@ const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
         })
             .header('authorization', accessToken)
-            .status(200).json({ message: "User logged in successfully!", user: user });
+            .status(200)
+            .json({ message: "User logged in successfully!", user: { firstName: user.firstName, lastName: user.lastName, username: user.username } });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
@@ -237,11 +242,11 @@ const refreshToken = (req, res) => {
 };
 
 const logout = async (req, res) => {
+    const userId = req.user._id;
     try {
-        const userId = req.user._id;
-
         const user = await userModel.findById(userId);
-
+        const accModel = await accControlModel.findOne({ userId: user._id })
+        
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -250,7 +255,11 @@ const logout = async (req, res) => {
             return res.status(400).json({ message: "User is already logged out" });
         }
 
+        accModel.status = "pending"
+        accModel.statusReason = "User Logged Out Successfully!"
         user.isLoggedIn = false;
+
+        await accModel.save()
         await user.save();
 
         return res.clearCookie("refreshToken")
