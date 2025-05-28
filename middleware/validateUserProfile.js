@@ -13,9 +13,6 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 const validateUserProfile = [
-    body("userId")
-        .isMongoId().withMessage("Invalid user ID"),
-
     body("address")
         .optional()
         .isString().withMessage("Address must be a string")
