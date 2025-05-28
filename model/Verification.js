@@ -28,7 +28,7 @@ const verificationSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["signup", "reset-password", "email-change", "other"], // add your statuses here
+        enum: ["signup"], 
         default: "signup"
     }
 }, { timestamps: true });

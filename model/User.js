@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const bcrypt = require("bcrypt")
+const crypto = require("crypto");
+const { type } = require("os");
 
 const userSchema = new Schema({
     firstName: { type: String, required: true, trim: true },
@@ -30,6 +32,22 @@ const userSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    resetPasswordToken: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpiry: {
+        type: Date,
+        default: null
+    },
+    passwordResetCount: {
+        type: Number,
+        default: 0
+    },
+    lastPasswordChanged: {
+        type: Date,
+        default: null
+    }
 }, { timestamps: true });
 
 
@@ -47,10 +65,27 @@ userSchema.pre("save", async function (next) {
 
 });
 
-
-
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
+
+userSchema.methods.getResetPasswordToken = async function () {
+    const now = Date.now();
+
+    if (!this.resetPasswordExpiry || this.resetPasswordExpiry < now) {
+        this.passwordResetCount = 0;
+    }
+    if (this.passwordResetCount >= 3) {
+        throw new Error("Too many reset attempts. Please try again later.");
+    }
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+    this.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    this.resetPasswordExpiry = now + 60 * 60 * 1000; 
+    this.passwordResetCount += 1;
+
+    return resetToken;
+};
+
 
 module.exports = model("User", userSchema);

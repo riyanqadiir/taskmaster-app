@@ -11,6 +11,9 @@ const userProfile = require("./routes/userProfileRoute")
 require("dotenv").config()
 mongoose()
 
+app.set("view engine", "ejs");
+app.set("views", "views");
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(cors({

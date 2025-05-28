@@ -10,11 +10,12 @@ const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
 const verifyEmail = require("../service/NodeMailer.js")
 const otpGenerator = require('otp-generator')
+const crypto = require("crypto")
 
 const signup = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction()
-    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }).toString();
+    const otp = String(otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }))
     const { firstName, lastName, username, email, password } = req.body;
     try {
         const existingEmail = await userModel.findOne({ email }).session(session);
@@ -31,7 +32,7 @@ const signup = async (req, res) => {
             return res.status(400).json({ message: "Username already taken" });
         }
 
-        const EmailResponse = await verifyEmail(email, otp)
+        const EmailResponse = await verifyEmail(email, { otp: otp })
         if (!EmailResponse) {
             await session.abortTransaction();
             session.endSession();
@@ -41,7 +42,7 @@ const signup = async (req, res) => {
         await user.save({ session });
 
         const profile = new profileModel({ userId: user._id })
-        const accControl = new accControlModel({ userId: user._id,status:"pending",statusReason:"User Signup Successfully!" })
+        const accControl = new accControlModel({ userId: user._id, status: "pending", statusReason: "User Signup Successfully!" })
         const verification = new verificationModel({ userId: user._id, otp: otp, otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000) })
         const metaData = new metaModel({ userId: user._id })
 
@@ -66,7 +67,10 @@ const signup = async (req, res) => {
 
 const OtpVerification = async (req, res) => {
     const { email } = req.body;
-    const otp = req.body.otp.toString()
+    const otp = String(req.body.otp)
+    const option = {
+        otp: otp
+    }
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
@@ -117,7 +121,7 @@ const OtpVerification = async (req, res) => {
 
 const resendOtp = async (req, res) => {
     const { email } = req.body;
-    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }).toString();
+    const otp = String(otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false }));
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
@@ -149,7 +153,7 @@ const resendOtp = async (req, res) => {
         verifyUser.otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
         await verifyUser.save();
 
-        const emailSent = await verifyEmail(email, otp);
+        const emailSent = await verifyEmail(email, { otp: otp });
         if (!emailSent) {
             return res.status(500).json({ message: "Failed to send OTP" });
         }
@@ -246,7 +250,7 @@ const logout = async (req, res) => {
     try {
         const user = await userModel.findById(userId);
         const accModel = await accControlModel.findOne({ userId: user._id })
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -271,6 +275,124 @@ const logout = async (req, res) => {
     }
 };
 
-module.exports = logout;
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
 
-module.exports = { signup, login, refreshToken, OtpVerification, resendOtp, logout }
+    try {
+        const user = await userModel.findOne({ email: email.toLowerCase().trim() });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (
+            user.lastPasswordChanged &&
+            Date.now() - new Date(user.lastPasswordChanged).getTime() < 10 * 24 * 60 * 60 * 1000
+        ) {
+            const timeLeftMs = 10 * 24 * 60 * 60 * 1000 - (Date.now() - new Date(user.lastPasswordChanged).getTime());
+            const daysLeft = Math.floor(timeLeftMs / (24 * 60 * 60 * 1000));
+            const hoursLeft = Math.floor((timeLeftMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+
+            return res.status(403).json({
+                message: `You can only change your password every 10 days. Try again in ${daysLeft} day(s) and ${hoursLeft} hour(s).`
+            });
+        }
+
+        let resetPasswordToken;
+        try {
+            resetPasswordToken = await user.getResetPasswordToken();
+        } catch (err) {
+            return res.status(429).json({ message: err.message }); 
+        }
+        await user.save();
+
+        const resetPasswordUrl = `${req.protocol}://${req.get("host").split(':')[0]}:3000/user/forgot-password/${resetPasswordToken}`;
+
+        const emailSent = await verifyEmail(email, { reset_url: resetPasswordUrl });
+
+        if (!emailSent) {
+            return res.status(500).json({ message: "Failed to send email" });
+        }
+
+        return res.status(200).json({ message: "Password reset link sent!" });
+
+    } catch (err) {
+        console.error("Forgot password error:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+const getForgotPassword = async (req, res) => {
+    const { token } = req.params;
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    try {
+        const user = await userModel.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpiry: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).send("Invalid or expired password reset token.");
+        }
+
+        return res.render("reset-password.ejs", {
+            token,
+            email: user.email
+        });
+
+    } catch (err) {
+        console.error("Get forgot password error:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+const resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { email, password } = req.body;
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    try {
+        const user = await userModel.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpiry: { $gt: Date.now() },
+            email: email.toLowerCase().trim(),
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "Invalid or expired token" });
+        }
+
+        if (
+            user.lastPasswordChanged &&
+            Date.now() - new Date(user.lastPasswordChanged).getTime() < 10 * 24 * 60 * 60 * 1000
+        ) {
+            const timeLeftMs = 10 * 24 * 60 * 60 * 1000 - (Date.now() - new Date(user.lastPasswordChanged).getTime());
+            const daysLeft = Math.floor(timeLeftMs / (24 * 60 * 60 * 1000));
+            const hoursLeft = Math.floor((timeLeftMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+
+            return res.status(403).json({
+                message: `You can only change your password every 10 days. Try again in ${daysLeft} day(s) and ${hoursLeft} hour(s).`
+            });
+        }
+
+        user.password = password;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpiry = null;
+        user.passwordResetCount = 0;
+        user.lastPasswordChanged = new Date();
+
+        await user.save();
+
+        return res.status(200).json({ message: "Password reset successfully!" });
+
+    } catch (err) {
+        console.error("Reset password error:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+module.exports = { signup, login, refreshToken, OtpVerification, resendOtp, logout, forgotPassword, getForgotPassword, resetPassword }
