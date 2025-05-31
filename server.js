@@ -24,7 +24,7 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRoute,userProfile)
-app.use("/task", taskRoute)
+app.use("/tasks", taskRoute)
 
 app.listen(process.env.PORT, () => {
     console.log(`server is listening on port ${process.env.PORT}`)

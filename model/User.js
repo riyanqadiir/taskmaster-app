@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 const bcrypt = require("bcrypt")
 const crypto = require("crypto");
-const { type } = require("os");
 
 const userSchema = new Schema({
     firstName: { type: String, required: true, trim: true },
