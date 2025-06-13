@@ -57,7 +57,8 @@ const taskSchema = new Schema({
 
 // Indexes
 taskSchema.index({ ownerId: 1 }); // Fast fetch for user-specific tasks
-taskSchema.index({ ownerId: 1, archived: 1 }); // Composite index for user + archived status
+taskSchema.index({ ownerId: 1, archived: 1 });// Composite index for user + archived status
+taskSchema.index({ ownerId: 1, isDeleted: 1 });  
 taskSchema.index({ dueDate: 1 }); // Sorting/filtering by due date
 taskSchema.index({ createdAt: 1 }); // Sorting by creation time
 taskSchema.index({ title: "text" }); // Text index for search

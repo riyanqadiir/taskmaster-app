@@ -1,4 +1,4 @@
-const { body, validationResult,query } = require('express-validator');
+const { body, validationResult, query, param } = require('express-validator');
 
 const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
@@ -26,7 +26,7 @@ const validateCreateTask = [
     body("status")
         .optional()
         .isIn(["not_started", "in_progress", "waiting", "completed"])
-        .withMessage("Status must be one of: pending, active, blocked, completed"),
+        .withMessage("Status must be one of: not_started, in_progress, waiting, completed"),
 
     body("priority")
         .optional()
@@ -61,7 +61,64 @@ const validateTaskQuery = [
         .isIn(["asc", "desc"])
         .withMessage("order must be 'asc' or 'desc'"),
 
+    query("title")
+        .optional()
+        .isString().withMessage("Title must be a string")
+        .trim(),
+
     handleValidationErrors
 ];
 
-module.exports = {validateCreateTask,validateTaskQuery};
+const validateUpdateTask = [
+    body("title")
+        .optional()
+        .isString().withMessage("Title must be a string")
+        .trim(),
+
+    body("description")
+        .optional()
+        .isString().withMessage("Description must be a string")
+        .trim(),
+
+    body("status")
+        .optional()
+        .isIn(["not_started", "in_progress", "waiting", "completed"])
+        .withMessage("Status must be one of: not_started, in_progress, waiting, completed"),
+
+    body("priority")
+        .optional()
+        .isIn(["High", "Medium", "Low"])
+        .withMessage("Priority must be High, Medium, or Low"),
+
+    body("tags")
+        .optional()
+        .isArray().withMessage("Tags must be an array")
+        .custom((value) => {
+            if (!value.every(tag => typeof tag === "string")) {
+                throw new Error("All tags must be strings");
+            }
+            return true;
+        }),
+    body("dueDate")
+        .optional()
+        .isISO8601().withMessage("Due date must be a valid ISO 8601 date"),
+
+    handleValidationErrors
+];
+
+const checkTaskId = [
+    param("taskId")
+        .isMongoId()
+        .withMessage("Invalid Task ID"),
+
+    handleValidationErrors
+]
+const validateArchiveTask = [
+    body("archive")
+        .isBoolean()
+        .withMessage("Archive must be a boolean value"),
+
+    handleValidationErrors
+]
+
+module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask };
