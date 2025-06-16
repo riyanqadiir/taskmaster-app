@@ -65,6 +65,10 @@ const validateTaskQuery = [
         .optional()
         .isString().withMessage("Title must be a string")
         .trim(),
+    query("status")
+        .optional()
+        .isIn(["not_started", "in_progress", "waiting", "completed"])
+        .withMessage("Status must be one of: not_started, in_progress, waiting, completed"),
 
     handleValidationErrors
 ];

@@ -27,10 +27,6 @@ const userSchema = new Schema({
         minlength: 8,
         select: false,
     },
-    isLoggedIn: {
-        type: Boolean,
-        default: false,
-    },
     resetPasswordToken: {
         type: String,
         default: null

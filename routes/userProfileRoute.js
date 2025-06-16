@@ -12,6 +12,6 @@ const { verifyToken } = require("../middleware/authMiddleware");
 
 router.get("/profile", verifyToken, getUserProfile);
 
-router.put("/profile", verifyToken, validateUserProfile, updateUserProfile);
+router.patch("/profile", verifyToken, validateUserProfile, updateUserProfile);
 
 module.exports = router;

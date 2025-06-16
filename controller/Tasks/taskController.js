@@ -14,7 +14,7 @@ const PRIORITY_VALUES = {
 
 const getFilteredTasks = async (req, res, condition = {}) => {
     const { _id: ownerId } = req.user;
-    const { sortBy = "createdAt", order = "desc", title } = req.query;
+    const { sortBy = "createdAt", order = "desc", title, status } = req.query;
     const sortOrder = order === "asc" ? 1 : -1;
 
     try {
@@ -22,6 +22,9 @@ const getFilteredTasks = async (req, res, condition = {}) => {
 
         if (title) {
             query.title = { $regex: title, $options: "i" };
+        }
+        if (status) {
+            query.status = status
         }
         const tasks = await Task.find(query).sort({ [sortBy]: sortOrder }).lean();
         const formattedTasks = tasks.map((task) => ({
@@ -37,11 +40,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
 };
 
 const getTasks = (req, res) => {
-    return getFilteredTasks(req, res, { isDeleted: false, archived: false, completed: false });
-};
-
-const getCompletedTasks = (req, res) => {
-    return getFilteredTasks(req, res, { isDeleted: false, archived: false, completed: true });
+    return getFilteredTasks(req, res, { isDeleted: false, archived: false });
 };
 
 const getTaskDetail = async (req, res) => {
@@ -83,7 +82,12 @@ const createTask = async (req, res) => {
 
         await newTask.save();
 
-        res.status(201).json({ message: "Task created successfully", task: newTask });
+        const formattedTask = {
+            ...newTask.toObject(),
+            priority: PRIORITY_LABELS[newTask.priority]
+        };
+
+        res.status(201).json({ message: "Task created successfully", task: formattedTask });
     } catch (err) {
         console.error("Error creating task:", err);
         res.status(500).json({ message: "Server error while creating task" });
@@ -118,6 +122,11 @@ const updateTask = async (req, res) => {
         }
         if (status !== undefined) {
             task.status = status;
+            if (task.status === 'completed') {
+                task.completedAt = new Date()
+            } else {
+                task.completedAt = null
+            }
         }
         if (tags !== undefined) {
             task.tags = tags;
@@ -149,7 +158,12 @@ const archiveToggle = async (req, res) => {
         }
         task.archived = archive
         await task.save();
-
+        if (!archive) {
+            return res.status(200).json({
+                message: "Task unarchive successfully!",
+                task
+            });
+        }
         res.status(200).json({
             message: "Task achieved successfully!",
             task
@@ -188,32 +202,32 @@ const deleteTask = async (req, res) => {
     }
 }
 
-const completeTask = async (req, res) => {
-    const { taskId } = req.params;
-    const { _id: ownerId } = req.user
-    try {
-        const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, archived: false })
+// const completeTask = async (req, res) => {
+//     const { taskId } = req.params;
+//     const { _id: ownerId } = req.user
+//     try {
+//         const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, archived: false })
 
-        if (!task) {
-            return res.status(404).json({ message: "Task not found" });
-        }
-        if (task.completed) {
-            return res.status(401).json({ message: "task already completed" })
-        }
+//         if (!task) {
+//             return res.status(404).json({ message: "Task not found" });
+//         }
+//         if (task.completed) {
+//             return res.status(401).json({ message: "task already completed" })
+//         }
 
-        task.completed = true;
+//         task.completed = true;
 
-        await task.save();
+//         await task.save();
 
-        res.status(200).json({
-            message: "Task completed successfully!",
-            task
-        });
-    } catch (err) {
-        console.error("Complete Task Error:", err);
-        res.status(500).json({ message: "Internal server error" });
-    }
-}
+//         res.status(200).json({
+//             message: "Task completed successfully!",
+//             task
+//         });
+//     } catch (err) {
+//         console.error("Complete Task Error:", err);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// }
 
 const getDeletedTasks = (req, res) => {
     return getFilteredTasks(req, res, { isDeleted: true });
@@ -237,6 +251,4 @@ module.exports = {
     getArchivedTasks,
     deleteTask,
     getDeletedTasks,
-    getCompletedTasks,
-    completeTask
 };
