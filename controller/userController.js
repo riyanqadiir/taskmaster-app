@@ -74,7 +74,7 @@ const OtpVerification = async (req, res) => {
     try {
         const user = await userModel.findOne({ email });
         if (!user) {
-            return res.status(404).json({ message: "Incorrect Email" });
+            return res.status(404).json({ message: "User with this email not found" });
         }
 
         const verifyUser = await verificationModel.findOne({ userId: user._id }).select('+otp');
@@ -97,18 +97,19 @@ const OtpVerification = async (req, res) => {
         }
         const otpIsValid = await verifyUser.compareOtp(otp)
         if (!otpIsValid) {
-            verifyUser.otpRequestCount = (verifyUser.otpRequestCount || 0) + 1;
+            // verifyUser.otpRequestCount = (verifyUser.otpRequestCount || 0) + 1;
 
-            if (verifyUser.otpRequestCount >= 3) {
-                verifyUser.otpBlockedUntil = new Date(Date.now() + 15 * 60 * 1000);
-                await verifyUser.save();
-                return res.status(403).json({ message: "Too many failed attempts. You are blocked for 15 minutes." });
-            }
-            await verifyUser.save();
-            return res.status(400).json({ message: "Incorrect OTP" });
+            // if (verifyUser.otpRequestCount >= 3) {
+            //     verifyUser.otpBlockedUntil = new Date(Date.now() + 15 * 60 * 1000);
+            //     await verifyUser.save();
+            //     return res.status(403).json({ message: "Too many failed attempts. You are blocked for 15 minutes." });
+            // }
+            // await verifyUser.save();
+            return res.status(400).json({ message: "Invalid OTP. Please check and try again." });
         }
 
         verifyUser.isVerified = true;
+        verifyUser.otpRequestCount = 0;
         await verifyUser.save();
 
         return res.status(200).json({ message: "User verified successfully" });
@@ -140,7 +141,7 @@ const resendOtp = async (req, res) => {
 
         if (verifyUser.otpBlockedUntil && verifyUser.otpBlockedUntil > new Date()) {
             const minutes = Math.ceil((verifyUser.otpBlockedUntil - new Date()) / 60000);
-            return res.status(429).json({ message: `Too many attempts. Try again in ${minutes} minutes.` });
+            return res.status(429).json({ message: `Too many OTP requests. Please wait ${minutes} minute(s) before trying again.` });
         }
 
         verifyUser.otpRequestCount = (verifyUser.otpRequestCount || 0) + 1;
@@ -185,9 +186,9 @@ const login = async (req, res) => {
             return res.status(403).json({ message: "Account temporarily locked. Try again later." });
         }
 
-        if (user.isLoggedIn) {
-            return res.status(404).json({ message: "User Already Logged In!" });
-        }
+        // if (user.isLoggedIn) {
+        //     return res.status(404).json({ message: "User Already Logged In!" });
+        // }
         const passIsValid = await user.comparePassword(password)
         if (!passIsValid) {
             metadata.loginAttempts += 1;
@@ -199,7 +200,7 @@ const login = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        user.isLoggedIn = true;
+        // user.isLoggedIn = true;
 
         accModel.status = "active"
         accModel.statusReason = "User Logged In Successfully!"
@@ -255,16 +256,16 @@ const logout = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        if (!user.isLoggedIn) {
-            return res.status(400).json({ message: "User is already logged out" });
-        }
+        // if (!user.isLoggedIn) {
+        //     return res.status(400).json({ message: "User is already logged out" });
+        // }
 
         accModel.status = "pending"
         accModel.statusReason = "User Logged Out Successfully!"
-        user.isLoggedIn = false;
+        // user.isLoggedIn = false;
 
         await accModel.save()
-        await user.save();
+        // await user.save();
 
         return res.clearCookie("refreshToken")
             .status(200)
@@ -284,7 +285,6 @@ const forgotPassword = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-
         if (
             user.lastPasswordChanged &&
             Date.now() - new Date(user.lastPasswordChanged).getTime() < 10 * 24 * 60 * 60 * 1000
