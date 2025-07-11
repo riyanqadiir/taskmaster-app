@@ -1,0 +1,9 @@
+# Backend node_modules and build artifacts
+node_modules/
+dist/
+.env
+
+# Ignore Mac system files
+.DS_Store
+
+# If you add frontend code, ignore its build artifacts here or in the root .gitignore
