@@ -7,7 +7,8 @@ const {
     validateTaskQuery,
     validateUpdateTask,
     checkTaskId,
-    validateArchiveTask } = require("../middleware/Tasks/validateTasks")
+    validateArchiveTask,
+    validatePaginationQuery } = require("../middleware/Tasks/validateTasks")
 const {
     getTasks,
     getTaskDetail,
@@ -20,10 +21,10 @@ const {
     // completeTask 
 } = require("../controller/Tasks/taskController")
 
-router.get("/", verifyToken, validateTaskQuery, getTasks);
-router.get("/detail/:taskId", verifyToken, checkTaskId, getTaskDetail)
-router.get("/archive", verifyToken, validateTaskQuery, getArchivedTasks)
-router.get("/delete", verifyToken, validateTaskQuery, getDeletedTasks)
+router.get("/", verifyToken, validatePaginationQuery, validateTaskQuery, getTasks);
+router.get("/detail/:taskId", verifyToken,checkTaskId, getTaskDetail)
+router.get("/archive", verifyToken, validatePaginationQuery, validateTaskQuery, getArchivedTasks)
+router.get("/delete", verifyToken, validatePaginationQuery, validateTaskQuery, getDeletedTasks)
 
 router.post('/', verifyToken, validateCreateTask, createTask);
 router.post("/archive/:taskId", verifyToken, checkTaskId, validateArchiveTask, archiveToggle)

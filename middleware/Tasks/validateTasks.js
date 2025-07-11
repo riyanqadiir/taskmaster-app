@@ -109,6 +109,17 @@ const validateUpdateTask = [
 
     handleValidationErrors
 ];
+const validatePaginationQuery = [
+    query("page")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Page number must be a positive integer"),
+
+    query("limit")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
+
+    handleValidationErrors
+];
 
 const checkTaskId = [
     param("taskId")
@@ -125,4 +136,4 @@ const validateArchiveTask = [
     handleValidationErrors
 ]
 
-module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask };
+module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask,validatePaginationQuery };
