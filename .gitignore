@@ -6,5 +6,11 @@
 /backend/.env
 /frontend/.env
 
+# Ignore .env files in root directory
+.env
+.env.local
+.env.development
+.env.production
+
 # Mac system files
 .DS_Store 
