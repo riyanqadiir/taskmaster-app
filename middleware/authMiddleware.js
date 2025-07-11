@@ -31,7 +31,7 @@ const validateSignup = [
 
     body('email')
         .isEmail().withMessage('A valid email is required')
-        .customSanitizer(value => value?.toLowerCase().trim()),
+        .customSanitizer(value => value?.toLowerCase().trim()), 
 
     body('password')
         .isString().withMessage('Password must be a string')

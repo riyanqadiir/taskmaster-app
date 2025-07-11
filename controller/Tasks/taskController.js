@@ -1,3 +1,4 @@
+const task = require("../../model/Task/task.js");
 const Task = require("../../model/Task/task.js");
 
 const PRIORITY_LABELS = {
@@ -15,24 +16,53 @@ const PRIORITY_VALUES = {
 const getFilteredTasks = async (req, res, condition = {}) => {
     const { _id: ownerId } = req.user;
     const { sortBy = "createdAt", order = "desc", title, status } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 2;
+
     const sortOrder = order === "asc" ? 1 : -1;
 
+    const startIndex = (page - 1) * limit
+    const endIndex = page * limit
+    let results = {};
     try {
         const query = { ownerId, ...condition };
 
-        if (title) {
+        if (title?.trim()) {
             query.title = { $regex: title, $options: "i" };
         }
         if (status) {
             query.status = status
         }
-        const tasks = await Task.find(query).sort({ [sortBy]: sortOrder }).lean();
+        const [tasks, total] = await Promise.all([
+            Task.find(query)
+                .sort({ [sortBy]: sortOrder })
+                .skip(startIndex)
+                .limit(limit)
+                .lean(),
+            Task.countDocuments(query)
+        ]);
+
         const formattedTasks = tasks.map((task) => ({
             ...task,
             priority: PRIORITY_LABELS[task.priority],
         }));
 
-        res.status(200).json({ tasks: formattedTasks });
+        results.tasks = formattedTasks;
+
+        if (endIndex < total) {
+            results.next = {
+                page: page + 1,
+                limit: limit
+            }
+        }
+        if (startIndex > 0) {
+            results.previous = {
+                page: page - 1,
+                limit: limit
+            }
+        }
+
+        res.status(200).json(results);
     } catch (err) {
         console.error("Error fetching tasks:", err);
         res.status(500).json({ error: "Failed to retrieve tasks" });
