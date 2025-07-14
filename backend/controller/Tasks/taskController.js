@@ -17,7 +17,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
     const { _id: ownerId } = req.user;
     const { sortBy = "createdAt", order = "desc", title, status } = req.query;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 2;
+    const limit = parseInt(req.query.limit) || 10;
 
     const sortOrder = order === "asc" ? 1 : -1;
 
@@ -48,18 +48,18 @@ const getFilteredTasks = async (req, res, condition = {}) => {
         }));
 
         results.tasks = formattedTasks;
-
+        
         if (endIndex < total) {
             results.next = {
                 page: page + 1,
                 limit: limit
             }
         }
-        if (startIndex > 0) {
+        if (startIndex > 0 && total > 0) {
             results.previous = {
                 page: page - 1,
                 limit: limit
-            }
+            };
         }
 
         res.status(200).json(results);
