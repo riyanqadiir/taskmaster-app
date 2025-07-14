@@ -167,18 +167,18 @@ const resendOtp = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, remember_me=false } = req.body;
 
     try {
         const user = await userModel.findOne({ email }).select('+password');
-        const verifyUser = await verificationModel.findOne({ userId: user._id });
-        const accModel = await accControlModel.findOne({ userId: user._id })
         if (!user) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
+        const verifyUser = await verificationModel.findOne({ userId: user._id });
         if (!verifyUser.isVerified) {
             return res.status(404).json({ message: "user is not verified" });
         }
+        const accModel = await accControlModel.findOne({ userId: user._id })
 
         let metadata = await metaModel.findOne({ userId: user._id });
 
