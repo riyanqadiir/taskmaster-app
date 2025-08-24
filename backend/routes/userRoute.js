@@ -9,7 +9,8 @@ const {
     validateForgotPassword,
     validateResetPassword,
     verifyToken,
-    verifyRefreshToken
+    verifyRefreshToken,
+    verifyCaptcha
 } = require("../middleware/authMiddleware");
 
 const {
@@ -26,21 +27,21 @@ const {
 
 const { body } = require("express-validator");
 
-router.post("/signup", validateSignup, signup)
+router.post("/signup", verifyCaptcha, validateSignup, signup)
 
-router.post("/login", validateLogin, login)
+router.post("/login",verifyCaptcha, validateLogin, login)
 
 router.post('/refresh-token', verifyRefreshToken, refreshToken);
 
-router.post("/verify-otp", validateOtp, OtpVerification)
+router.post("/verify-otp",verifyCaptcha, validateOtp, OtpVerification)
 
-router.post("/resend-otp", validateResendOtp,resendOtp)
+router.post("/resend-otp",verifyCaptcha, validateResendOtp, resendOtp)
 
-router.post("/forgot-password",validateForgotPassword,forgotPassword)
+router.post("/forgot-password",verifyCaptcha, validateForgotPassword, forgotPassword)
 
 router.get("/forgot-password/:token", getForgotPassword)
 
-router.post("/reset-password/:token",validateResetPassword,resetPassword)
+router.post("/reset-password/:token", validateResetPassword, resetPassword)
 
 
 

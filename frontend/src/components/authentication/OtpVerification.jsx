@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
 import "./auth.css";
 
 const OtpVerification = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const recaptchaRef = useRef();
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState("");
     const [error, setError] = useState("");
@@ -29,9 +31,13 @@ const OtpVerification = () => {
         }
 
         try {
+            const token = await recaptchaRef.current.executeAsync();
+            recaptchaRef.current.reset();
+
             const response = await axios.post("http://localhost:3000/user/verify-otp", {
                 email,
-                otp
+                otp,
+                token
             }, {
                 headers: { "Content-Type": "application/json" }
             });
@@ -55,8 +61,12 @@ const OtpVerification = () => {
         setIsResending(true);
         setResendMessage("");
         try {
+            const token = await recaptchaRef.current.executeAsync();
+            recaptchaRef.current.reset();
+
             const response = await axios.post("http://localhost:3000/user/resend-otp", {
-                email
+                email,
+                token
             }, {
                 headers: { "Content-Type": "application/json" }
             });
@@ -91,8 +101,13 @@ const OtpVerification = () => {
                 {success && <p className="success">{success}</p>}
                 {resendMessage && <p className="info">{resendMessage}</p>}
 
-                <button type="submit">Verify OTP</button>
+                <ReCAPTCHA
+                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                    size="invisible"
+                    ref={recaptchaRef}
+                />
 
+                <button type="submit">Verify OTP</button>
                 <button
                     type="button"
                     className="resend-btn"

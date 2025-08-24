@@ -266,16 +266,10 @@ const logout = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // if (!user.isLoggedIn) {
-        //     return res.status(400).json({ message: "User is already logged out" });
-        // }
-
         accModel.status = "pending"
         accModel.statusReason = "User Logged Out Successfully!"
-        // user.isLoggedIn = false;
 
         await accModel.save()
-        // await user.save();
 
         return res.clearCookie("refreshToken")
             .status(200)
@@ -348,7 +342,8 @@ const getForgotPassword = async (req, res) => {
 
         return res.render("reset-password.ejs", {
             token,
-            email: user.email
+            email: user.email,
+            siteKey: process.env.RECAPTCHA_SITE_KEY,
         });
 
     } catch (err) {
