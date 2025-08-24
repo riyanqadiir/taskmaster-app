@@ -31,7 +31,7 @@ const validateSignup = [
 
     body('email')
         .isEmail().withMessage('A valid email is required')
-        .customSanitizer(value => value?.toLowerCase().trim()), 
+        .customSanitizer(value => value?.toLowerCase().trim()),
 
     body('password')
         .isString().withMessage('Password must be a string')
@@ -88,7 +88,7 @@ const validateResetPassword = [
         .notEmpty().withMessage('Password is required')
         .isString().withMessage('Password must be a string')
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
-        
+
     body('confirmPassword')
         .notEmpty().withMessage('Confirm password is required')
         .custom((value, { req }) => {
@@ -133,6 +133,35 @@ const verifyRefreshToken = (req, res, next) => {
     });
 };
 
+const verifyCaptcha = async (req, res, next) => {
+    const token = req.body.token ?? req.body["g-recaptcha-response"];
+
+    if (!token) {
+        return res.status(400).json({ message: "Missing reCAPTCHA token" });
+    }
+
+    try {
+        const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+        const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `secret=${secretKey}&response=${token}`,
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            return res.status(400).json({ message: "reCAPTCHA verification failed" });
+        }
+
+        next();
+    } catch (err) {
+        console.error("Captcha verification error:", err);
+        return res.status(500).json({ message: "Captcha verification error" });
+    }
+};
+
+
 module.exports = {
     validateSignup,
     validateLogin,
@@ -141,5 +170,6 @@ module.exports = {
     validateForgotPassword,
     validateResetPassword,
     verifyToken,
-    verifyRefreshToken
+    verifyRefreshToken,
+    verifyCaptcha
 };

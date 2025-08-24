@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import './auth.css';
+import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Login = () => {
         password: '',
         rememberMe: false,
     });
-
+    const recaptchaRef = useRef();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
@@ -33,10 +34,14 @@ const Login = () => {
         }
 
         try {
+            const token = await recaptchaRef.current.executeAsync();
+            recaptchaRef.current.reset();
+
             const response = await axios.post('http://localhost:3000/user/login', {
                 email,
                 password,
-                rememberMe
+                rememberMe,
+                token
             }, {
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -44,7 +49,7 @@ const Login = () => {
             if (response.status === 200 || response.status === 201) {
                 setSuccess('Login successful!');
                 setError('');
-                setTimeout(() => navigate('/dashboard'), 1500); // redirect example
+                setTimeout(() => navigate('/dashboard'), 1500); 
             }
         } catch (err) {
             console.error(err);
@@ -52,7 +57,6 @@ const Login = () => {
             setSuccess('');
         }
     };
-
     return (
         <div className="auth-container">
             <h1>Login</h1>
@@ -89,10 +93,14 @@ const Login = () => {
                     />
                     <label htmlFor="rememberMe">Remember Me</label>
                 </div>
-
+                <Link type='button' to="/forgot-password" >Forgot Password</Link>
                 {error && <p className="error">{error}</p>}
                 {success && <p className="success">{success}</p>}
-
+                <ReCAPTCHA
+                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                    size="invisible"
+                    ref={recaptchaRef}
+                />
                 <button type="submit">Login</button>
             </form>
         </div>

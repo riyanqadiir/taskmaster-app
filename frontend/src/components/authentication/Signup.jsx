@@ -1,5 +1,6 @@
 // Signup.jsx
-import React, { useState } from "react";
+import React, { useState,useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./auth.css";
@@ -16,6 +17,7 @@ const Signup = () => {
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const recaptchaRef = useRef();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,44 +25,47 @@ const Signup = () => {
     };
 
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { firstName, lastName, username, email, password, confirmPassword } = formData;
+        e.preventDefault();
+        const { firstName, lastName, username, email, password, confirmPassword } = formData;
 
-    if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
-        setError('Please fill in all fields');
-        return;
-    }
-
-    if (password.length < 8) {
-        setError("Password must be at least 8 characters");
-        return;
-    }
-
-    if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        return;
-    }
-
-    try {
-        const response = await axios.post("http://localhost:3000/user/signup", formData, {
-            headers: { "Content-Type": "application/json" }
-        });
-
-        if (response.status === 200 || response.status === 201) {
-            const email = response.data?.body?.email; // Adjust this line based on your API
-            if (email) {
-                setSuccess('Signup successful. Redirecting to OTP verification...');
-                setError('');
-                setTimeout(() => {
-                    navigate("/verify-otp", { state: { email } });
-                }, 1000);
-            }
+        if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
+            setError('Please fill in all fields');
+            return;
         }
-    } catch (err) {
-        console.log(err);
-        setError(err?.response?.data?.message || "Failed to signup");
-    }
-};
+
+        if (password.length < 8) {
+            setError("Password must be at least 8 characters");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
+        try {
+            const token = await recaptchaRef.current.executeAsync();
+            recaptchaRef.current.reset();
+
+            const response = await axios.post("http://localhost:3000/user/signup", {...formData,token}, {
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (response.status === 200 || response.status === 201) {
+                const email = response.data?.body?.email;
+                if (email) {
+                    setSuccess('Signup successful. Redirecting to OTP verification...');
+                    setError('');
+                    setTimeout(() => {
+                        navigate("/verify-otp", { state: { email } });
+                    }, 1000);
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            setError(err?.response?.data?.message || "Failed to signup");
+        }
+    };
 
 
     return (
@@ -71,7 +76,7 @@ const Signup = () => {
                     <div className="form-control" key={field}>
                         <label htmlFor={field}>{field === "confirmPassword" ? "Confirm Password" : field.charAt(0).toUpperCase() + field.slice(1)}</label>
                         <input
-                            type={(field.includes("password") ||field.includes("confirmPassword") ) ? "password" : "text"}
+                            type={(field.includes("password") || field.includes("confirmPassword")) ? "password" : "text"}
                             id={field}
                             name={field}
                             onChange={handleChange}
@@ -81,6 +86,11 @@ const Signup = () => {
                 ))}
                 {error && <p className="error">{error}</p>}
                 {success && <p className="success">{success}</p>}
+                <ReCAPTCHA
+                    sitekey= {import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                    size="invisible"
+                    ref={recaptchaRef}
+                />
                 <button type="submit">Sign Up</button>
             </form>
         </div>
