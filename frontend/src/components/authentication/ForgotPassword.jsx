@@ -1,7 +1,7 @@
 import React, { useState,useRef } from 'react';
 import './auth.css';
 import ReCAPTCHA from "react-google-recaptcha";
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
@@ -35,11 +35,9 @@ const ForgotPassword = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await axios.post('http://localhost:3000/user/forgot-password', {
+            const response = await api.post('/user/forgot-password', {
                 email,
                 token
-            }, {
-                headers: { 'Content-Type': 'application/json' }
             });
 
             if (response.status === 200 || response.status === 201) {

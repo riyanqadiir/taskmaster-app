@@ -399,5 +399,11 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const checkToken = (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Token is valid",
+    });
+}
 
-module.exports = { signup, login, refreshToken, OtpVerification, resendOtp, logout, forgotPassword, getForgotPassword, resetPassword }
+module.exports = { signup, login, refreshToken, OtpVerification, resendOtp, logout, forgotPassword, getForgotPassword, resetPassword, checkToken }

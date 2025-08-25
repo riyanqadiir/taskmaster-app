@@ -1,42 +1,74 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* App.css - Layout & Custom Styles */
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1976d2; /* MUI Primary Blue */
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+}
+
+.header .logo {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.header nav ul {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.header nav ul li {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.header nav ul li:hover {
+  color: #bbdefb;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background-color: #fff;
+  height: 100vh;
+  padding: 1rem;
+  border-right: 1px solid #ddd;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar ul {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar ul li {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.sidebar ul li:hover {
+  background-color: #f0f4ff;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 240px; /* Sidebar width */
   padding: 2rem;
+}
+
+/* Footer */
+.footer {
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  padding: 1rem;
+  background-color: #1976d2;
+  color: white;
+  margin-top: auto;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api/axios";
 import ReCAPTCHA from "react-google-recaptcha";
 import "./auth.css";
 
@@ -34,12 +34,10 @@ const OtpVerification = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await axios.post("http://localhost:3000/user/verify-otp", {
+            const response = await api.post("/user/verify-otp", {
                 email,
                 otp,
                 token
-            }, {
-                headers: { "Content-Type": "application/json" }
             });
 
             if (response.status === 200 || response.status === 201) {
@@ -64,11 +62,9 @@ const OtpVerification = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await axios.post("http://localhost:3000/user/resend-otp", {
+            const response = await api.post("/user/resend-otp", {
                 email,
                 token
-            }, {
-                headers: { "Content-Type": "application/json" }
             });
 
             if (response.status === 200 || response.status === 201) {

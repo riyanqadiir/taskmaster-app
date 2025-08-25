@@ -232,43 +232,10 @@ const deleteTask = async (req, res) => {
     }
 }
 
-// const completeTask = async (req, res) => {
-//     const { taskId } = req.params;
-//     const { _id: ownerId } = req.user
-//     try {
-//         const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, archived: false })
-
-//         if (!task) {
-//             return res.status(404).json({ message: "Task not found" });
-//         }
-//         if (task.completed) {
-//             return res.status(401).json({ message: "task already completed" })
-//         }
-
-//         task.completed = true;
-
-//         await task.save();
-
-//         res.status(200).json({
-//             message: "Task completed successfully!",
-//             task
-//         });
-//     } catch (err) {
-//         console.error("Complete Task Error:", err);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// }
 
 const getDeletedTasks = (req, res) => {
     return getFilteredTasks(req, res, { isDeleted: true });
 };
-
-
-// TODO: update all tasks 
-
-// TODO: Archive multiple (more than one task)
-
-// TODO: Archived all (Bulk Archive)
 
 
 

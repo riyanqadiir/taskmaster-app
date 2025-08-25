@@ -22,7 +22,8 @@ const {
     logout,
     forgotPassword,
     getForgotPassword,
-    resetPassword
+    resetPassword,
+    checkToken
 } = require("../controller/userController");
 
 const { body } = require("express-validator");
@@ -42,6 +43,8 @@ router.post("/forgot-password",verifyCaptcha, validateForgotPassword, forgotPass
 router.get("/forgot-password/:token", getForgotPassword)
 
 router.post("/reset-password/:token", validateResetPassword, resetPassword)
+
+router.get("/verify-token",verifyToken, checkToken)
 
 
 

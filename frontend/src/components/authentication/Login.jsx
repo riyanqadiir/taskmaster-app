@@ -1,8 +1,10 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import './auth.css';
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -14,6 +16,7 @@ const Login = () => {
     const recaptchaRef = useRef();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const {user,setUser} = useAuth();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -37,19 +40,20 @@ const Login = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await axios.post('http://localhost:3000/user/login', {
+            const response = await api.post('/user/login', {
                 email,
                 password,
                 rememberMe,
                 token
-            }, {
-                headers: { 'Content-Type': 'application/json' }
             });
 
-            if (response.status === 200 || response.status === 201) {
-                setSuccess('Login successful!');
-                setError('');
-                setTimeout(() => navigate('/dashboard'), 1500); 
+            if (response.status === 200) {
+                setUser(response.data.user)
+                console.log(response.data.user)//undefined
+                const accessToken = response.headers['authorization'];
+                localStorage.setItem("accessToken", accessToken); // only store access token
+                setSuccess(response.data.message);
+                setTimeout(() => navigate('/dashboard'), 1000);
             }
         } catch (err) {
             console.error(err);
