@@ -399,6 +399,23 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const getMe = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user._id).select("-password");
+        res.status(200)
+            .json({
+                user: {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    username: user.username,
+                    email: user.email
+                }
+            });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 const checkToken = (req, res) => {
     res.status(200).json({
         success: true,
@@ -406,4 +423,16 @@ const checkToken = (req, res) => {
     });
 }
 
-module.exports = { signup, login, refreshToken, OtpVerification, resendOtp, logout, forgotPassword, getForgotPassword, resetPassword, checkToken }
+module.exports = {
+    signup,
+    login,
+    refreshToken,
+    OtpVerification,
+    resendOtp,
+    logout,
+    forgotPassword,
+    getForgotPassword,
+    resetPassword,
+    getMe,
+    checkToken
+}

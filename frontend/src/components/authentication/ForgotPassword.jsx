@@ -21,6 +21,7 @@ const ForgotPassword = () => {
         }));
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { email} = formData;
@@ -48,6 +49,7 @@ const ForgotPassword = () => {
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.message || 'Failed to send reset link');
+            console.log(err.response?.data)
             setSuccess('');
         }
     };

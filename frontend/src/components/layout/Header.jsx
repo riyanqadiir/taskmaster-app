@@ -1,26 +1,23 @@
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
-import LogoutButton from "../authentication/LogoutButton";
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Navbar from 'react-bootstrap/Navbar';
+import { Link } from "react-router-dom";
+function Header({ onMenuClick }) {
 
-function Header() {
     return (
-        <AppBar
-            position="fixed"
-            sx={{
-                width: "100%",
-                zIndex: (theme) => theme.zIndex.drawer + 1, // keep above sidebar
-                bgcolor: "#1976d2",
-            }}
-        >
-            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="h6" noWrap component="div">
-                    TaskMaster Dashboard
-                </Typography>
-
-                <Box>
-                    <LogoutButton />
-                </Box>
-            </Toolbar>
-        </AppBar>
+        <Navbar className="bg-body-tertiary">
+            <Container className="d-flex justify-content-between align-items-center">
+                <Navbar.Brand as={Link} to="/">Task Master</Navbar.Brand>
+                <Button
+                    variant="outline-secondary"
+                    className="d-lg-none me-2 w-25 "
+                    onClick={onMenuClick}
+                    aria-label="Open sidebar"
+                >
+                    Menu
+                </Button>
+            </Container>
+        </Navbar>
     );
 }
 

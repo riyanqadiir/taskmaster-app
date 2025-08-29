@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from '../components/authentication/Login';
+import Login from "../components/authentication/Login";
 import Signup from '../components/authentication/Signup';
 import OtpVerification from '../components/authentication/OtpVerification';
 import ForgotPassword from '../components/authentication/ForgotPassword';

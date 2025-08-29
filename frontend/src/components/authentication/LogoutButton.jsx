@@ -1,4 +1,3 @@
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 
@@ -19,8 +18,8 @@ export default function LogoutButton() {
     };
 
     return (
-        <Button variant="contained" color="error" onClick={handleLogout}>
+        <button onClick={handleLogout}>
             Logout
-        </Button>
+        </button>
     );
 }
