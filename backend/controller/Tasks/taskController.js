@@ -1,4 +1,3 @@
-const task = require("../../model/Task/task.js");
 const Task = require("../../model/Task/task.js");
 
 const PRIORITY_LABELS = {
@@ -48,7 +47,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
         }));
 
         results.tasks = formattedTasks;
-        
+
         if (endIndex < total) {
             results.next = {
                 page: page + 1,
@@ -61,7 +60,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
                 limit: limit
             };
         }
-
+        results.total = total;
         res.status(200).json(results);
     } catch (err) {
         console.error("Error fetching tasks:", err);
@@ -167,9 +166,14 @@ const updateTask = async (req, res) => {
 
         await task.save();
 
+        const formattedTask = {
+            ...task.toObject(),
+            priority: PRIORITY_LABELS[task.priority]
+        };
+
         res.status(200).json({
             message: "Task updated successfully",
-            task
+            task: formattedTask
         });
     } catch (err) {
         console.error("Update Task Error:", err);
@@ -182,7 +186,7 @@ const archiveToggle = async (req, res) => {
     const { taskId } = req.params;
     const { _id: ownerId } = req.user;
     try {
-        const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, completed: false })
+        const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, status: { $ne: 'completed' } })
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
         }
@@ -190,12 +194,12 @@ const archiveToggle = async (req, res) => {
         await task.save();
         if (!archive) {
             return res.status(200).json({
-                message: "Task unarchive successfully!",
+                message: "Task unarchived successfully!",
                 task
             });
         }
         res.status(200).json({
-            message: "Task achieved successfully!",
+            message: "Task archived successfully!",
             task
         });
     } catch (err) {
@@ -212,7 +216,7 @@ const deleteTask = async (req, res) => {
     const { taskId } = req.params;
     const { _id: ownerId } = req.user
     try {
-        const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, completed: false })
+        const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, })
 
         if (!task) {
             return res.status(404).json({ message: "Task not found" });

@@ -2,7 +2,7 @@
 import React, { useState,useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import api from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import "./auth.css";
 
 const Signup = () => {
@@ -89,6 +89,7 @@ const Signup = () => {
                     size="invisible"
                     ref={recaptchaRef}
                 />
+                <Link to="/login">Login</Link>
                 <button type="submit">Sign Up</button>
             </form>
         </div>

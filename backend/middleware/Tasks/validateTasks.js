@@ -53,7 +53,7 @@ const validateCreateTask = [
 const validateTaskQuery = [
     query("sortBy")
         .optional()
-        .isIn(["createdAt", "priority", "title"])
+        .isIn(["createdAt", "priority", "title","completedAt"])
         .withMessage("sortBy must be 'createdAt', 'priority', or 'title'"),
 
     query("order")

@@ -23,6 +23,7 @@ const {
     forgotPassword,
     getForgotPassword,
     resetPassword,
+    getMe,
     checkToken
 } = require("../controller/userController");
 
@@ -46,7 +47,7 @@ router.post("/reset-password/:token", validateResetPassword, resetPassword)
 
 router.get("/verify-token",verifyToken, checkToken)
 
-
+router.get("/me",verifyToken,getMe)
 
 
 router.post("/logout", verifyToken, logout);

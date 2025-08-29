@@ -1,16 +1,70 @@
-import React from "react";
-import { useState,useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Container, Row, Col } from "react-bootstrap";
 import api from "../api/axios";
+import StatusCard from "../components/Dashboard/StatusCard";
 import { useAuth } from "../context/AuthContext";
-const Dashboard = () => {
-  const {user} = useAuth();
-  
-    return (
-        <div>
-            <h1>Welcome {user?.firstName} {user?.lastName} 👋</h1>
-            <p>Your tasks will be listed here.</p>
-        </div>
-    );
-};
+export default function Dashboard() {
+    const [loading, setLoading] = useState({
+        todo: true,
+        progress: true,
+        done: true,
+    });
+    const [todo, setTodo] = useState([]);
+    const [inProgress, setInProgress] = useState([]);
+    const [completed, setCompleted] = useState([]);
+    const {user} = useAuth();
+    const loadTasks = async () => {
+        try {
+            setLoading({ todo: true, progress: true, done: true });
 
-export default Dashboard;
+            const [todoRes, progRes, doneRes] = await Promise.all([
+                api.get("/tasks", { params: { status: "not_started", sortBy: "createdAt", order: "desc" } }),
+                api.get("/tasks", { params: { status: "in_progress", sortBy: "createdAt", order: "desc" } }),
+                api.get("/tasks", { params: { status: "completed", sortBy: "completedAt", order: "desc" } }),
+            ]);
+
+            setTodo(todoRes.data.tasks || []);
+            setInProgress(progRes.data.tasks || []);
+            setCompleted(doneRes.data.tasks || []);
+        } catch (err) {
+            console.error("Error loading tasks:", err);
+        } finally {
+            setLoading({ todo: false, progress: false, done: false });
+        }
+    };
+
+    const markComplete = async (taskId) => {
+        try {
+            await api.patch(`/tasks/${taskId}`, { status: "completed" });
+            loadTasks();
+        } catch (err) {
+            console.error("Error marking task complete:", err);
+        }
+    };
+
+    useEffect(() => {
+        loadTasks();
+    }, []);
+
+    return (
+        <Container fluid className="mt-3">
+            <h1>Welcome! {user?.firstName ?? "" } {user?.lastName ?? "" } </h1>
+            <Row>
+                <Col xs={12} lg={4}>
+                    <StatusCard title="To-Do" tasks={todo} loading={loading.todo} onComplete={markComplete} />
+                </Col>
+                <Col xs={12} lg={4}>
+                    <StatusCard
+                        title="In-Progress"
+                        tasks={inProgress}
+                        loading={loading.progress}
+                        onComplete={markComplete}
+                    />
+                </Col>
+                <Col xs={12} lg={4}>
+                    <StatusCard title="Completed" tasks={completed} loading={loading.done} />
+                </Col>
+            </Row>
+        </Container>
+    );
+}

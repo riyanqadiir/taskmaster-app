@@ -1,12 +1,17 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Container, Row, Col } from "react-bootstrap";
 
-function Footer() {
+export default function Footer() {
     return (
-        <Box sx={{ textAlign: "center", p: 2, mt: "auto", bgcolor: "grey.200" }}>
-            <Typography variant="body2">© 2025 My Dashboard. All rights reserved.</Typography>
-        </Box>
+        <footer className="bg-dark text-white py-2 ">
+            <Container>
+                <Row className="align-items-center justify-content-center text-center ">
+                    <Col md={6}>
+                        <h5 className="fw-bold">Task Master</h5>
+                        <p className="mb-0">© {new Date().getFullYear()} Task Master. All rights reserved.</p>
+                    </Col>
+                </Row>
+            </Container>
+        </footer>
     );
 }
-
-export default Footer;

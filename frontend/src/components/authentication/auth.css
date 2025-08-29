@@ -1,93 +1,134 @@
-/* Auth.css */
-.auth-container {
-  min-width: 400px;
-  margin: 2rem auto;
+/* ==============================
+   AUTH PAGE STYLES (scoped under .auth)
+   ============================== */
+
+.auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 60px);
+  /* leaves space if footer/header exist */
+  background: #f5f7fa;
+  padding: 1rem;
+}
+
+.auth .auth-container {
+  width: 100%;
+  max-width: 440px;
   padding: 2rem;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background: #f9f9f9;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e0e0e0;
 }
 
-h1 {
+/* Heading */
+.auth h1 {
   text-align: center;
-  margin-bottom: 1rem;
-  color: #000;
-  padding-top: 0;
+  margin-bottom: 1.5rem;
+  color: #111;
+  font-size: 1.75rem;
+  font-weight: 600;
 }
 
-.form-control {
-  margin-bottom: 0;
+/* Form controls */
+.auth .form-control {
   display: flex;
   flex-direction: column;
   text-align: left;
-}
-
-.form-control label {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #000;
-}
-
-.form-control input {
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
   margin-bottom: 1rem;
 }
 
-
-.error {
-  color: red;
-  margin-top: 0.5rem;
+.auth .form-control label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
 }
 
-.success {
-  color: green;
-  margin-top: 0.5rem;
+.auth .form-control input {
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
 }
 
-button {
+.auth .form-control input:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .15);
+}
+
+/* Remember me */
+.auth .remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Buttons */
+.auth button {
   width: 100%;
-  padding: 0.6rem;
+  padding: 0.65rem;
   border: none;
-  border-radius: 5px;
-  background-color: #0066cc;
-  color: white;
-  font-weight: bold;
+  border-radius: 8px;
+  background-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background-color .2s ease, transform .02s ease;
 }
 
-button:hover {
-  background-color: #004999;
+.auth button:hover {
+  background-color: #0b5ed7;
 }
-.resend-btn {
+
+.auth button:active {
+  transform: translateY(1px);
+}
+
+/* Resend OTP button */
+.auth .resend-btn {
   margin-top: 10px;
-  padding: 10px;
+  padding: 0.6rem;
   background-color: transparent;
-  border: 1px solid #007bff;
-  color: #007bff;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+  border-radius: 8px;
+  transition: background-color .2s ease;
 }
 
-.resend-btn:hover {
-  background-color: #007bff;
-  color: white;
+.auth .resend-btn:hover {
+  background-color: #0d6efd;
+  color: #fff;
 }
 
-.info {
-  color: #0066cc;
+/* Messages */
+.auth .error {
+  color: #dc3545;
+  margin-top: 0.25rem;
+}
+
+.auth .success {
+  color: #198754;
+  margin-top: 0.25rem;
+}
+
+.auth .info {
+  color: #0d6efd;
   margin: 10px 0;
 }
 
+/* Responsive */
+@media (max-width: 576px) {
+  .auth .auth-container {
+    margin: 1.25rem;
+    padding: 1.25rem;
+  }
 
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    color: #555;
+  .auth h1 {
+    font-size: 1.5rem;
+  }
 }
