@@ -1,13 +1,8 @@
-/* ==============================
-   AUTH PAGE STYLES (scoped under .auth)
-   ============================== */
-
 .auth {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 60px);
-  /* leaves space if footer/header exist */
+  min-height: calc(100vh - 72px);
   background: #f5f7fa;
   padding: 1rem;
 }
@@ -15,17 +10,18 @@
 .auth .auth-container {
   width: 100%;
   max-width: 440px;
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 12px;
   background: #fff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   border: 1px solid #e0e0e0;
+  margin: 0 auto;
 }
 
 /* Heading */
 .auth h1 {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: #111;
   font-size: 1.75rem;
   font-weight: 600;
@@ -36,7 +32,8 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  margin-bottom: 1rem;
+  border: none;
+  margin-bottom: 0;
 }
 
 .auth .form-control label {
@@ -58,7 +55,7 @@
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .15);
 }
 
-/* Remember me */
+
 .auth .remember-me {
   display: flex;
   align-items: center;
@@ -68,7 +65,6 @@
   color: #555;
 }
 
-/* Buttons */
 .auth button {
   width: 100%;
   padding: 0.65rem;
@@ -105,7 +101,6 @@
   color: #fff;
 }
 
-/* Messages */
 .auth .error {
   color: #dc3545;
   margin-top: 0.25rem;

@@ -20,7 +20,7 @@ export default function Sidebar({ show, onHide, width = 240 }) {
                     width,
                     top: 0,
                     // 56px ~= default Bootstrap navbar height; tweak if needed
-                    height: "calc(100vh - 56px)",
+                    height: "calc(100vh - 168px)",
                 }}
             >
                 <div className="p-3 fw-semibold">Navigation</div>
