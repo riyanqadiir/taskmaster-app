@@ -1,17 +1,23 @@
-import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+// Footer.jsx
+import { useLayoutEffect, useRef } from "react";
 
 export default function Footer() {
+    const ref = useRef(null);
+
+    useLayoutEffect(() => {
+        const setVar = () => {
+            const h = ref.current?.offsetHeight || 56;
+            document.documentElement.style.setProperty("--footer-h", `${h}px`);
+        };
+        setVar();
+        window.addEventListener("resize", setVar);
+        return () => window.removeEventListener("resize", setVar);
+    }, []);
+
     return (
-        <footer className="bg-dark text-white py-2 ">
-            <Container>
-                <Row className="align-items-center justify-content-center text-center ">
-                    <Col md={6}>
-                        
-                        <p className="mb-0">© {new Date().getFullYear()} Task Master. All rights reserved.</p>
-                    </Col>
-                </Row>
-            </Container>
+        <footer ref={ref} className="bg-dark text-white py-3 text-center">
+            <p className="mb-0">© {new Date().getFullYear()} Task Master. All rights reserved.</p>
         </footer>
     );
 }
+

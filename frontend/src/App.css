@@ -29,11 +29,15 @@
   color: #bbdefb;
 }
 
+.main-scroll {
+  height: calc(100vh - var(--header-h) - var(--footer-h));
+  overflow-y: auto;
+}
+
 /* Sidebar */
 .sidebar {
   width: 240px;
   background-color: #fff;
-  height: 100vh;
   padding: 1rem;
   border-right: 1px solid #ddd;
   position: fixed;

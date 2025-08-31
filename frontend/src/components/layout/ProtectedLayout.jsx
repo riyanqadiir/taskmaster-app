@@ -10,7 +10,7 @@ export default function ProtectedLayout({ children }) {
 
     return (
         <>
-            <div className="d-flex flex-column min-vh-100">
+            <div className="d-flex flex-column min-vh-100 ">
                 <Header onMenuClick={() => setShowSidebar(true)} />
                 <div className="flex-grow-1">
                     <Container fluid className="px-0">
@@ -22,7 +22,7 @@ export default function ProtectedLayout({ children }) {
                                     width={240}
                                 />
                             </Col>
-                            <Col className="p-3">
+                            <Col className="p-3 main-scroll">
                                 <main>{children}</main>
                             </Col>
                         </Row>
