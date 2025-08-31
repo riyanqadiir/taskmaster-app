@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Table, Badge, Form } from "react-bootstrap";
-import { PencilSquare, Trash, CheckCircle } from "react-bootstrap-icons";
+import { PencilSquare, Trash, CheckCircle, InfoCircle } from "react-bootstrap-icons";
 import api from "../api/axios"; // your axios instance
-import AddTaskModal from "../components/Task/AddTaskModal";
+import AddTaskModal from "../components/task/AddTaskModal";
+import { Link } from "react-router-dom";
 
 function Tasks() {
     const [tasks, setTasks] = useState([]);
@@ -165,8 +166,13 @@ function Tasks() {
                                             >
                                                 <PencilSquare />
                                             </Button>
-                                            <Button size="sm" variant="outline-danger" onClick={() => markDelete(task._id)}>
+                                            <Button size="sm" className="me-2" variant="outline-danger" onClick={() => markDelete(task._id)}>
                                                 <Trash />
+                                            </Button>
+                                            <Button size="sm"  variant="outline-secondary" >
+                                                <Link to={`/tasks/${task._id}`}>
+                                                <InfoCircle />
+                                                </Link>
                                             </Button>
                                         </td>
                                     </tr>

@@ -9,6 +9,7 @@ import PublicLayout from "../components/layout/PublicLayout";
 import ProtectedLayout from '../components/layout/ProtectedLayout';
 import Tasks from '../pages/Tasks';
 import Profile from '../pages/Profile';
+import TaskDetail from '../pages/TaskDetail';
 export default function AppRoutes() {
     return (
         <Routes>
@@ -38,6 +39,16 @@ export default function AppRoutes() {
                 }
             />
             <Route
+                path="/tasks/:id"
+                element={
+                    <ProtectedRoute>
+                        <ProtectedLayout>
+                            <TaskDetail />
+                        </ProtectedLayout>
+                    </ProtectedRoute>
+                }
+            />
+            <Route
                 path="/profile"
                 element={
                     <ProtectedRoute>
@@ -47,7 +58,7 @@ export default function AppRoutes() {
                     </ProtectedRoute>
                 }
             />
-            
+
 
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Routes>

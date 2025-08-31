@@ -101,7 +101,6 @@ const validateResetPassword = [
     handleValidationErrors
 ];
 
-// Token Middleware
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers["authorization"];
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

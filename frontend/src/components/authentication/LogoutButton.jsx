@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-
-export default function LogoutButton() {
+import { Button } from "react-bootstrap";
+const LogoutButton = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -18,8 +18,8 @@ export default function LogoutButton() {
     };
 
     return (
-        <button onClick={handleLogout}>
-            Logout
-        </button>
+        <Button variant="outline-dark" onClick={handleLogout}>Logout</Button>
     );
 }
+
+export default LogoutButton 

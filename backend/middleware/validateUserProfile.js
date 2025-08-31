@@ -14,22 +14,22 @@ const handleValidationErrors = (req, res, next) => {
 
 const validateUserProfile = [
     body("address")
-        .optional()
+        .optional({ checkFalsy: true })
         .isString().withMessage("Address must be a string")
         .trim(),
 
     body("phone")
-        .optional()
+        .optional({ checkFalsy: true })
         .matches(/^[\d\s()+-]{7,}$/)
         .withMessage("Phone number must contain only digits, spaces, and symbols (+, -, (, ))"),
 
     body("bio")
-        .optional()
+        .optional({ checkFalsy: true })
         .isString().withMessage("Bio must be a string")
         .trim(),
 
     body("interests")
-        .optional()
+        .optional({ checkFalsy: true })
         .isArray().withMessage("Interests must be an array of strings")
         .custom((value) => {
             if (!value.every(item => typeof item === 'string')) {
@@ -39,27 +39,27 @@ const validateUserProfile = [
         }),
 
     body("socialLinks")
-        .optional()
+        .optional({ checkFalsy: true })
         .isObject().withMessage("Social links must be an object"),
 
     body("socialLinks.facebook")
-        .optional()
+        .optional({ checkFalsy: true })
         .isURL().withMessage("Facebook link must be a valid URL"),
 
     body("socialLinks.twitter")
-        .optional()
+        .optional({ checkFalsy: true })
         .isURL().withMessage("Twitter link must be a valid URL"),
 
     body("socialLinks.linkedin")
-        .optional()
+        .optional({ checkFalsy: true })
         .isURL().withMessage("LinkedIn link must be a valid URL"),
 
     body("socialLinks.github")
-        .optional()
+        .optional({ checkFalsy: true })
         .isURL().withMessage("GitHub link must be a valid URL"),
 
     body("socialLinks.website")
-        .optional()
+        .optional({ checkFalsy: true })
         .isURL().withMessage("Website must be a valid URL"),
 
     handleValidationErrors

@@ -97,14 +97,16 @@ const createTask = async (req, res) => {
     const normalizedPriority = Object.keys(PRIORITY_LABELS).find(
         key => PRIORITY_LABELS[key].toLowerCase() === priority?.toLowerCase()
     );
-
+    if(new Date(dueDate) < new Date()){
+        return res.status(400).json({ message: "invalid duedate" });
+    }
     try {
         const newTask = new Task({
             ownerId,
             title,
             description,
             status,
-            priority: normalizedPriority || 3, // Default to Low
+            priority: normalizedPriority || 3, 
             tags,
             dueDate
         });

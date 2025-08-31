@@ -49,9 +49,9 @@ const Login = () => {
 
             if (response.status === 200) {
                 setUser(response.data.user)
-                console.log(response.data.user)//undefined
+                console.log(response.data.user)
                 const accessToken = response.headers['authorization'];
-                localStorage.setItem("accessToken", accessToken); // only store access token
+                localStorage.setItem("accessToken", accessToken); 
                 setSuccess(response.data.message);
                 setTimeout(() => navigate('/dashboard'), 1000);
             }
