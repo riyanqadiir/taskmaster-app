@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/userRoute.js")
 const taskRoute = require("./routes/taskRoute.js")
 const userProfile = require("./routes/userProfileRoute")
-
+const path = require("path")
 
 require("dotenv").config()
 mongoose()
@@ -25,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRoute,userProfile)
 app.use("/tasks", taskRoute)
+
+app.use('/uploads', express.static(path.join(__dirname, 'public')));
 
 app.listen(process.env.PORT, () => {
     console.log(`server is listening on port ${process.env.PORT}`)

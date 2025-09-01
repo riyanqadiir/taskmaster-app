@@ -8,6 +8,7 @@ const {
     validateResendOtp,
     validateForgotPassword,
     validateResetPassword,
+    validateChangePassword,
     verifyToken,
     verifyRefreshToken,
     verifyCaptcha
@@ -23,6 +24,7 @@ const {
     forgotPassword,
     getForgotPassword,
     resetPassword,
+    ChangePassword,
     getMe,
     checkToken
 } = require("../controller/userController");
@@ -44,6 +46,8 @@ router.post("/forgot-password",verifyCaptcha, validateForgotPassword, forgotPass
 router.get("/forgot-password/:token", getForgotPassword)
 
 router.post("/reset-password/:token", validateResetPassword, resetPassword)
+
+router.patch("/change-password",verifyToken,validateChangePassword,ChangePassword)
 
 router.get("/verify-token",verifyToken, checkToken)
 

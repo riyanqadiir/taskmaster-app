@@ -1,20 +1,17 @@
 const User = require("../model/User.js");
 const UserProfile = require("../model/userProfile.js");
-
-const formatUser = (user) => ({
-    _id: user._id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    email: user.email,
+const uploadOnCloudinary = require("../utility/cloudinary.js")
+const formatUser = (u) => ({
+    _id: u._id, firstName: u.firstName, lastName: u.lastName, username: u.username, email: u.email,
 });
 
-const formatProfile = (profile) => ({
-    address: profile.address || "",
-    phone: profile.phone || "",
-    bio: profile.bio || "",
-    interests: profile.interests || [],
-    socialLinks: profile.socialLinks || {},
+const formatProfile = (p) => ({
+    address: p.address || "",
+    phone: p.phone || "",
+    bio: p.bio || "",
+    avatarUrl: p.avatarUrl || "",
+    interests: Array.isArray(p.interests) ? p.interests : [],
+    socialLinks: p.socialLinks || {},
 });
 
 const getUserProfile = async (req, res) => {
@@ -41,8 +38,15 @@ const getUserProfile = async (req, res) => {
 const updateUserAndProfile = async (req, res) => {
     const { _id } = req.user;
     const { firstName, lastName, username, ...profileData } = req.body;
-
     try {
+        if (req.file?.path) {
+            const uploaded = await uploadOnCloudinary(req.file.path, _id);
+            if (!uploaded) {
+                return res.status(400).json({ message: "Avatar upload failed. Please try a different image." });
+            }
+            profileData.avatarUrl = uploaded.secure_url;
+        }
+
         let updatedUser = await User.findById(_id).select("firstName lastName username email");
         if (firstName || lastName || username) {
             updatedUser = await User.findByIdAndUpdate(
@@ -57,6 +61,8 @@ const updateUserAndProfile = async (req, res) => {
             { $set: profileData },
             { new: true, runValidators: true, upsert: true }
         );
+
+        // console.log()
 
         return res.status(200).json({
             message: "User and profile updated successfully",

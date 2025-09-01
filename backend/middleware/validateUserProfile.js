@@ -11,7 +11,16 @@ const handleValidationErrors = (req, res, next) => {
     }
     next();
 };
-
+const parseJsonIfString = (v) => {
+    if (typeof v === "string") {
+        try {
+            return JSON.parse(v);
+        } catch {
+            return Symbol.for("INVALID_JSON");
+        }
+    }
+    return v;
+};
 const validateUserProfile = [
     body("address")
         .optional({ checkFalsy: true })
@@ -30,9 +39,16 @@ const validateUserProfile = [
 
     body("interests")
         .optional({ checkFalsy: true })
-        .isArray().withMessage("Interests must be an array of strings")
+        .customSanitizer(parseJsonIfString)
         .custom((value) => {
-            if (!value.every(item => typeof item === 'string')) {
+            if (value === Symbol.for("INVALID_JSON")) {
+                throw new Error("Interests must be valid JSON (e.g. [\"coding\",\"music\"])");
+            }
+            return true;
+        })
+        .isArray().withMessage("Interests must be an array")
+        .custom((arr) => {
+            if (!arr.every((item) => typeof item === "string")) {
                 throw new Error("All interests must be strings");
             }
             return true;
@@ -40,8 +56,16 @@ const validateUserProfile = [
 
     body("socialLinks")
         .optional({ checkFalsy: true })
-        .isObject().withMessage("Social links must be an object"),
-
+        .customSanitizer(parseJsonIfString)
+        .custom((value) => {
+            if (value === Symbol.for("INVALID_JSON")) {
+                throw new Error("Social links must be valid JSON object");
+            }
+            if (typeof value !== "object" || Array.isArray(value)) {
+                throw new Error("Social links must be an object");
+            }
+            return true;
+        }),
     body("socialLinks.facebook")
         .optional({ checkFalsy: true })
         .isURL().withMessage("Facebook link must be a valid URL"),
@@ -62,7 +86,8 @@ const validateUserProfile = [
         .optional({ checkFalsy: true })
         .isURL().withMessage("Website must be a valid URL"),
 
-    handleValidationErrors
+    handleValidationErrors,
 ];
+
 
 module.exports = validateUserProfile;
