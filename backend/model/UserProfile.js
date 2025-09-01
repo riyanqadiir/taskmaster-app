@@ -6,6 +6,7 @@ const userProfileSchema = new Schema({
     phone: { type: String },
     bio: { type: String },
     interests: [{ type: String }],
+    avatarUrl:{type: String},
     socialLinks: {
         facebook: { type: String },
         twitter: { type: String },

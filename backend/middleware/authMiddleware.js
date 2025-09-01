@@ -100,7 +100,28 @@ const validateResetPassword = [
 
     handleValidationErrors
 ];
+const validateChangePassword = [
+    body("currentPassword")
+        .notEmpty().withMessage('Password is required')
+        .isString().withMessage('Password must be a string')
+        .isLength({ min: 8 }).withMessage('Current password is incorrect!')
+    ,
+    body('password')
+        .notEmpty().withMessage('Password is required')
+        .isString().withMessage('Password must be a string')
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long'),
 
+    body('confirmPassword')
+        .notEmpty().withMessage('Confirm password is required')
+        .custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Confirm password does not match password');
+            }
+            return true;
+        }),
+
+    handleValidationErrors
+]
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers["authorization"];
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -168,6 +189,7 @@ module.exports = {
     validateResendOtp,
     validateForgotPassword,
     validateResetPassword,
+    validateChangePassword,
     verifyToken,
     verifyRefreshToken,
     verifyCaptcha

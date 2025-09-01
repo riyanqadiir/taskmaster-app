@@ -7,41 +7,40 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [pwSaving, setPwSaving] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
+    const [profileSuccess, setProfileSuccess] = useState("");
+    const [pwSuccess, setPwSuccess] = useState(false)
+    const [profileError, setProfileError] = useState("");
+    const [pwError, setPwError] = useState(false)
     const [rawInterests, setRawInterests] = useState("");
 
-    // user fields
     const [user, setUser] = useState({
         firstName: "", lastName: "", username: "", email: ""
     });
 
-    // profile fields (from UserProfile)
     const [profile, setProfile] = useState({
         address: "",
         phone: "",
         bio: "",
-        interests: [],                    // array on the wire
-        socialLinks: {                     // object on the wire
+        avatarUrl: "",
+        interests: [],
+        socialLinks: {
             github: "", linkedin: "", twitter: "", website: ""
         },
-        avatarUrl: ""                      // optional if you add avatar later
+        image: ""
     });
 
-    // change password form
     const [pwForm, setPwForm] = useState({
-        currentPassword: "", newPassword: "", confirmPassword: ""
+        currentPassword: "", password: "", confirmPassword: ""
     });
 
     const onSocialChange = (name, value) => {
         setProfile(p => ({ ...p, socialLinks: { ...p.socialLinks, [name]: value } }));
     };
 
-    // Load profile
     useEffect(() => {
         (async () => {
             try {
-                const { data } = await api.get("/user/profile"); // must return { user, profile }
+                const { data } = await api.get("/user/profile");
                 setUser({
                     firstName: data.user?.firstName || "",
                     lastName: data.user?.lastName || "",
@@ -53,6 +52,7 @@ export default function Profile() {
                     address: data.profile?.address || "",
                     phone: data.profile?.phone || "",
                     bio: data.profile?.bio || "",
+                    avatarUrl: data.profile?.avatarUrl,
                     interests: Array.isArray(data.profile?.interests) ? data.profile.interests : [],
                     socialLinks: {
                         github: data.profile?.socialLinks?.github || "",
@@ -62,18 +62,17 @@ export default function Profile() {
                     }
                 }));
             } catch (e) {
-                setError(e.response?.data?.message || "Failed to load profile");
+                setProfileError(e.response?.data?.message || "Failed to load profile");
             } finally {
                 setLoading(false);
             }
         })();
     }, []);
 
-    // Save Profile (user + profile in one call)
     const saveProfile = async (e) => {
         e.preventDefault();
         setSaving(true);
-        setError(""); setSuccess("");
+        setProfileError(""); setProfileSuccess("");
         try {
             const cleanedInterests = (rawInterests || "")
                 .split(",")
@@ -90,21 +89,28 @@ export default function Profile() {
             };
 
             const mergedInterests = dedupeCI([...(profile.interests || []), ...cleanedInterests]);
+
+            const fd = new FormData();
+            fd.append("firstName", user.firstName)
+            fd.append("lastName", user.lastName)
+            fd.append("username", user.username)
+            fd.append("address", profile.address)
+            fd.append("phone", profile.phone)
+            fd.append("bio", profile.bio)
+            fd.append("interests", JSON.stringify(mergedInterests))
+            fd.append("socialLinks", JSON.stringify(profile.socialLinks))
+            fd.append("image", profile.image)
             const payload = {
-                // user fields handled by updateUserAndProfile
                 firstName: user.firstName,
                 lastName: user.lastName,
                 username: user.username,
-                // profile fields (spread)
                 address: profile.address,
                 phone: profile.phone,
                 bio: profile.bio,
                 interests: mergedInterests,
                 socialLinks: profile.socialLinks
             };
-            const { data } = await api.patch("/user/profile", payload);
-            console.log(data)
-            // normalize response back into state
+            const { data } = await api.patch("/user/profile", fd);
             setUser({
                 firstName: data.user?.firstName || "",
                 lastName: data.user?.lastName || "",
@@ -125,9 +131,9 @@ export default function Profile() {
                 }
             }));
             setRawInterests("");
-            setSuccess("Profile updated successfully.");
+            setProfileSuccess("Profile updated successfully.");
         } catch (e) {
-            setError(e.response?.data?.message || "Failed to update profile");
+            setProfileError(e.response?.data?.message || "Failed to update profile");
         } finally {
             setSaving(false);
         }
@@ -136,17 +142,17 @@ export default function Profile() {
     const savePassword = async (e) => {
         e.preventDefault();
         setPwSaving(true);
-        setError(""); setSuccess("");
-        if (pwForm.newPassword !== pwForm.confirmPassword) {
+        setPwError(""); setPwSuccess("");
+        if (pwForm.password !== pwForm.confirmPassword) {
             setPwSaving(false);
-            return setError("New password and confirm password do not match.");
+            return setPwError("New password and confirm password do not match.");
         }
         try {
-            await api.post("/user/change-password", pwForm);
-            setSuccess("Password updated successfully.");
-            setPwForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+            await api.patch("/user/change-password", pwForm);
+            setPwSuccess("Password updated successfully.");
+            setPwForm({ currentPassword: "", password: "", confirmPassword: "" });
         } catch (e) {
-            setError(e.response?.data?.message || "Failed to update password");
+            setPwError(e.response?.data?.message || "Failed to update password");
         } finally {
             setPwSaving(false);
         }
@@ -163,15 +169,14 @@ export default function Profile() {
     return (
         <Container fluid className="py-4 overflow-scroll">
             <Row className="g-4">
-                {/* Left: Basic user meta */}
                 <Col lg={4}>
                     <Card className="shadow-sm">
                         <Card.Body className="text-center">
                             <div
-                                className="bg-secondary text-white d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                                className="bg-secondary text-white d-inline-flex align-items-center justify-content-center rounded-circle mb-3 overflow-hidden"
                                 style={{ width: 120, height: 120, fontSize: 32 }}
                             >
-                                {(user.firstName?.[0] || user.username?.[0] || "U").toUpperCase()}
+                                {!profile.avatarUrl ? (` ${user.firstName?.[0]}  ${user.lastName?.[0]}` || "U").toUpperCase() : <img  src={profile.avatarUrl} className="h-100 w-100 object-fit-cover " alt="hello" />}
                             </div>
                             <div className="text-start small">
                                 <div className="mb-1"><strong>Username:</strong> <span className="text-muted">{user.username || "—"}</span></div>
@@ -186,10 +191,11 @@ export default function Profile() {
                         </Card.Body>
                     </Card>
 
-                    {/* Change Password */}
                     <Card className="shadow-sm mt-4">
                         <Card.Header className="fw-semibold">Change Password</Card.Header>
                         <Card.Body>
+                            {pwError && <Alert variant="danger">{pwError}</Alert>}
+                            {pwSuccess && <Alert variant="success">{pwSuccess}</Alert>}
                             <Form onSubmit={savePassword}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Current Password</Form.Label>
@@ -205,8 +211,8 @@ export default function Profile() {
                                     <Form.Control
                                         type="password"
                                         minLength={8}
-                                        value={pwForm.newPassword}
-                                        onChange={(e) => setPwForm(f => ({ ...f, newPassword: e.target.value }))}
+                                        value={pwForm.password}
+                                        onChange={(e) => setPwForm(f => ({ ...f, password: e.target.value }))}
                                         required
                                     />
                                 </Form.Group>
@@ -229,18 +235,16 @@ export default function Profile() {
                         </Card.Body>
                     </Card>
                 </Col>
-
-                {/* Right: Full editable profile */}
                 <Col lg={8}>
                     <Card className="shadow-sm">
                         <Card.Header className="fw-semibold">Profile</Card.Header>
                         <Card.Body>
-                            {error && <Alert variant="danger">{error}</Alert>}
-                            {success && <Alert variant="success">{success}</Alert>}
+                            {profileError && <Alert variant="danger">{profileError}</Alert>}
+                            {profileSuccess && <Alert variant="success">{profileSuccess}</Alert>}
 
                             <Form onSubmit={saveProfile}>
                                 <Row className="g-3">
-                                    {/* User fields */}
+
                                     <Col md={6}>
                                         <Form.Group>
                                             <Form.Label>First Name</Form.Label>
@@ -305,6 +309,18 @@ export default function Profile() {
                                             />
                                         </Form.Group>
                                     </Col>
+                                    <Col md={12}>
+                                        <Form.Group>
+                                            <Form.Label>profile photo</Form.Label>
+                                            <Form.Control
+                                                type="file"
+                                                placeholder="upload your image here"
+                                                accept="image/*"
+                                                onChange={(e) => setProfile(p => ({ ...p, image: e.target.files[0] }))}
+                                            />
+                                        </Form.Group>
+                                    </Col>
+
 
                                     <Col xs={12}>
                                         <Form.Group>
@@ -338,8 +354,8 @@ export default function Profile() {
                                                 </div>
                                             )}
                                         </Form.Group>
-
                                     </Col>
+
 
                                     <Col md={6}>
                                         <Form.Group>
@@ -385,6 +401,7 @@ export default function Profile() {
                                             />
                                         </Form.Group>
                                     </Col>
+
 
                                     <Col xs={12} className="d-grid mt-2">
                                         <Button type="submit" disabled={saving}>

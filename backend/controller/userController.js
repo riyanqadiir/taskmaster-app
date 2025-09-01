@@ -399,6 +399,79 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const ChangePassword = async (req, res) => {
+    const { _id } = req.user;
+    const { currentPassword, password } = req.body;
+
+    const WINDOW_MS = 15 * 60 * 1000;
+    const MAX_ATTEMPTS = 5;
+    const BLOCK_MS = 30 * 60 * 1000;
+    const MIN_CHANGE_INTERVAL_MS = 10 * 24 * 60 * 60 * 1000;
+
+    try {
+        if (!currentPassword || !password) {
+            return res.status(400).json({ message: "currentPassword and password are required." });
+        }
+        const user = await userModel.findById(_id).select("+password");
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        let metadata = await metaModel.findOne({ userId: user._id });
+        const now = Date.now();
+
+        if (metadata.changePasswordBlockedUntil && metadata.changePasswordBlockedUntil.getTime() > now) {
+            const minutes = Math.ceil((metadata.changePasswordBlockedUntil.getTime() - now) / 60000);
+            return res.status(429).json({
+                message: `Too many change-password attempts. Please wait ${minutes} minute(s) and try again.`
+            });
+        }
+
+        if (user.lastPasswordChanged && (now - new Date(user.lastPasswordChanged).getTime()) < MIN_CHANGE_INTERVAL_MS) {
+            const timeLeftMs = MIN_CHANGE_INTERVAL_MS - (now - new Date(user.lastPasswordChanged).getTime());
+            const daysLeft = Math.floor(timeLeftMs / (24 * 60 * 60 * 1000));
+            const hoursLeft = Math.floor((timeLeftMs % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            return res.status(403).json({
+                message: `You can only change your password every 10 days. Try again in ${daysLeft} day(s) and ${hoursLeft} hour(s).`
+            });
+        }
+        const passIsValid = await user.comparePassword(currentPassword);
+        if (!passIsValid) {
+            const start = metadata.changePasswordWindowStart?.getTime() || 0;
+            if (!start || (now - start) > WINDOW_MS) {
+                metadata.changePasswordWindowStart = new Date(now);
+                metadata.changePasswordAttempts = 1;
+            } else {
+                metadata.changePasswordAttempts += 1;
+            }
+            if (metadata.changePasswordAttempts > MAX_ATTEMPTS) {
+                metadata.changePasswordBlockedUntil = new Date(now + BLOCK_MS);
+                metadata.changePasswordAttempts = 0;
+                metadata.changePasswordWindowStart = undefined;
+                await metadata.save();
+                const minutes = Math.ceil(BLOCK_MS / 60000);
+                return res.status(429).json({
+                    message: `Too many change-password attempts. Please wait ${minutes} minute(s) and try again.`
+                });
+            }
+            await metadata.save();
+            return res.status(401).json({ message: "Invalid current password." });
+        }
+        user.password = password;
+        user.lastPasswordChanged = new Date();
+        await user.save();
+        metadata.changePasswordAttempts = 0;
+        metadata.changePasswordWindowStart = undefined;
+        metadata.changePasswordBlockedUntil = undefined;
+        await metadata.save();
+        return res.status(200).json({ message: "Password changed successfully." });
+    } catch (err) {
+        console.error("Change password error:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+
 const getMe = async (req, res) => {
     try {
         const user = await userModel.findById(req.user._id).select("-password");
@@ -433,6 +506,7 @@ module.exports = {
     forgotPassword,
     getForgotPassword,
     resetPassword,
+    ChangePassword,
     getMe,
     checkToken
 }
