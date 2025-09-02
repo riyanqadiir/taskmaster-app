@@ -25,8 +25,8 @@ const validateCreateTask = [
 
     body("status")
         .optional()
-        .isIn(["not_started", "in_progress", "waiting", "completed"])
-        .withMessage("Status must be one of: not_started, in_progress, waiting, completed"),
+        .isIn(["all", "not_started", "in_progress", "waiting", "completed"])
+        .withMessage("Status must be one of: all ,not_started, in_progress, waiting, completed"),
 
     body("priority")
         .optional()
@@ -53,8 +53,8 @@ const validateCreateTask = [
 const validateTaskQuery = [
     query("sortBy")
         .optional()
-        .isIn(["createdAt", "priority", "title","completedAt"])
-        .withMessage("sortBy must be 'createdAt', 'priority', or 'title'"),
+        .isIn(["createdAt", "updatedAt", "completedAt", "dueDate", "priority", "title"])
+        .withMessage("sortBy must be 'createdAt', 'updatedAt', 'completedAt', 'dueDate', 'priority', 'title'"),
 
     query("order")
         .optional()
@@ -67,8 +67,8 @@ const validateTaskQuery = [
         .trim(),
     query("status")
         .optional()
-        .isIn(["not_started", "in_progress", "waiting", "completed"])
-        .withMessage("Status must be one of: not_started, in_progress, waiting, completed"),
+        .isIn(["all", "not_started", "in_progress", "waiting", "completed"])
+        .withMessage("Status must be one of: all ,not_started, in_progress, waiting, completed"),
 
     handleValidationErrors
 ];
@@ -86,8 +86,8 @@ const validateUpdateTask = [
 
     body("status")
         .optional()
-        .isIn(["not_started", "in_progress", "waiting", "completed"])
-        .withMessage("Status must be one of: not_started, in_progress, waiting, completed"),
+        .isIn(["all", "not_started", "in_progress", "waiting", "completed"])
+        .withMessage("Status must be one of: all ,not_started, in_progress, waiting, completed"),
 
     body("priority")
         .optional()
@@ -136,4 +136,4 @@ const validateArchiveTask = [
     handleValidationErrors
 ]
 
-module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask,validatePaginationQuery };
+module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask, validatePaginationQuery };

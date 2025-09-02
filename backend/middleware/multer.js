@@ -1,6 +1,8 @@
 const multer = require("multer");
 const path = require("path");
 
+const directoryPath = path.join(process.cwd(), 'public', 'temp')
+
 const imageFileFilter = (req, file, cb) => {
     if (typeof file.mimetype === "string" && file.mimetype.startsWith("image/")) {
         cb(null, true);
@@ -10,7 +12,7 @@ const imageFileFilter = (req, file, cb) => {
 };
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "./public/temp"),
+    destination: (req, file, cb) => cb(null, directoryPath),
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         const base = path.basename(file.originalname, ext).replace(/\s+/g, "-");

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Table, Badge, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Badge, Form, InputGroup } from "react-bootstrap";
 import { PencilSquare, Trash, CheckCircle, InfoCircle } from "react-bootstrap-icons";
 import api from "../api/axios"; // your axios instance
 import AddTaskModal from "../components/task/AddTaskModal";
@@ -7,21 +7,39 @@ import { Link } from "react-router-dom";
 
 function Tasks() {
     const [tasks, setTasks] = useState([]);
-    const [filter, setFilter] = useState("all");
+    const [filter, setFilter] = useState({
+        sortBy: "createdAt",
+        order: "desc",
+        title: "",
+        status: "all",
+    });
     const [showModal, setShowModal] = useState(false);
     const [mode, setMode] = useState("add")
     const [initialValues, setInitialValues] = useState({})
+    const [search, setSearch] = useState("")
+
     useEffect(() => {
-        const fetchTasks = async () => {
+        const fetchTasks = async (sortBy, order, title, status) => {
+            console.log(sortBy, order, title, status)
             try {
-                const { data } = await api.get("/tasks");
+                const { data } = await api.get("/tasks", { params: { sortBy, order, title, status } });
                 setTasks(data.tasks || []);
             } catch (err) {
                 console.error("Error fetching tasks:", err.response?.data || err.message);
             }
         };
-        fetchTasks();
-    }, []);
+        fetchTasks(filter.sortBy, filter.order, filter.title, filter.status);
+    }, [filter.sortBy, filter.order, filter.title, filter.status]);
+    useEffect(() => {
+        //debouncing technique
+        const delaySearch = setTimeout(() => {
+            setFilter((prev) => {
+                return { ...prev, title: search }
+            })
+        }, 1000)
+        return () => clearTimeout(delaySearch)
+
+    }, [search])
 
     const handleEditTask = (taskId) => {
         const task = tasks.find((task) => {
@@ -67,10 +85,18 @@ function Tasks() {
             );
         }
     };
+    const handleFilter = (e) => {
+        const { name, value } = e.target;
+        if (name === "title") {
+            return setSearch(value)
+        }else{
+            console.log("name : ", name, " value: ", value)
+            setFilter((prev) => {
+                return { ...prev, [name]: value }
+            })
+        }
 
-
-    const filteredTasks =
-        filter === "all" ? tasks : tasks.filter((task) => task.status === filter);
+    }
 
     return (
         <Container fluid className="py-4">
@@ -84,10 +110,11 @@ function Tasks() {
             </Row>
 
             <Row className="mb-3">
-                <Col xs={12} md={6}>
+                <Col xs={3} md={2}>
                     <Form.Select
-                        value={filter}
-                        onChange={(e) => setFilter(e.target.value)}
+                        name="status"
+                        value={filter.status}
+                        onChange={(e) => handleFilter(e)}
                     >
                         <option value="all">All Tasks</option>
                         <option value="not_started">Not Started</option>
@@ -96,26 +123,66 @@ function Tasks() {
                         <option value="completed">Completed</option>
                     </Form.Select>
                 </Col>
+                <Col xs={3} md={2}>
+                    <Form.Select
+                        name="sortBy"
+                        value={filter.sortBy}
+                        onChange={(e) => handleFilter(e)}
+                    >
+                        <option value="createdAt">Created At</option>
+                        <option value="updatedAt">Updated At</option>
+                        <option value="completedAt">Completed At</option>
+                        <option value="dueDate">Due Date</option>
+                        <option value="priority">Priority</option>
+                        <option value="title">Title</option>
+                    </Form.Select>
+                </Col>
+                <Col xs={3} md={2}>
+                    <Form.Select
+                        name="order"
+                        value={filter.order}
+                        onChange={(e) => handleFilter(e)}
+                    >
+                        <option value="desc">Descending</option>
+                        <option value="asc">Ascending</option>
+                    </Form.Select>
+                </Col>
+                <Col xs={3} md={{ span: 3, offset: 3 }}>
+                    <InputGroup className="mb-3">
+                        <Form.Control
+                            name="title"
+                            value={search}
+                            type="text"
+                            placeholder="Search For Tasks"
+                            onChange={(e) => handleFilter(e)}
+                        />
+                    </InputGroup>
+                </Col>
             </Row>
 
 
-            <Row>
+            <Row >
                 <Col>
-                    <Table striped bordered hover responsive className="shadow-sm">
+                    <Table striped bordered hover responsive className="shadow-sm " >
                         <thead className="table-light">
                             <tr>
                                 <th>Title</th>
+                                <th>Description</th>
                                 <th>Status</th>
                                 <th>Priority</th>
                                 <th>Due Date</th>
-                                <th className="text-center">Actions</th>
+                                <th className="text-center text-nowrap" style={{ width: '1%' }}>Actions</th>
+
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredTasks.length > 0 ? (
-                                filteredTasks.map((task) => (
+                            {tasks.length > 0 ? (
+                                tasks.map((task) => (
                                     <tr key={task._id}>
                                         <td>{task.title}</td>
+                                        <td>
+                                            {task.description}
+                                        </td>
                                         <td>
                                             <Badge
                                                 bg={
@@ -149,32 +216,43 @@ function Tasks() {
                                                 ? new Date(task.dueDate).toLocaleDateString()
                                                 : "-"}
                                         </td>
-                                        <td className="text-center">
-                                            <Button
-                                                size="sm"
-                                                variant="outline-success"
-                                                className="me-2"
-                                                onClick={() => markComplete(task._id)}
-                                            >
-                                                <CheckCircle />
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="outline-primary"
-                                                className="me-2"
-                                                onClick={() => handleEditTask(task._id)}
-                                            >
-                                                <PencilSquare />
-                                            </Button>
-                                            <Button size="sm" className="me-2" variant="outline-danger" onClick={() => markDelete(task._id)}>
-                                                <Trash />
-                                            </Button>
-                                            <Button size="sm"  variant="outline-secondary" >
-                                                <Link to={`/tasks/${task._id}`}>
-                                                <InfoCircle />
-                                                </Link>
-                                            </Button>
+                                        <td className="text-center text-nowrap">
+                                            <div className="btn-group btn-group-sm" role="group">
+                                                <Button
+                                                    variant="outline-success"
+                                                    onClick={() => markComplete(task._id)}
+                                                    title="Mark complete"
+                                                >
+                                                    <CheckCircle size={16} />
+                                                </Button>
+
+                                                <Button
+                                                    variant="outline-primary"
+                                                    onClick={() => handleEditTask(task._id)}
+                                                    title="Edit"
+                                                >
+                                                    <PencilSquare size={16} />
+                                                </Button>
+
+                                                <Button
+                                                    variant="outline-danger"
+                                                    onClick={() => markDelete(task._id)}
+                                                    title="Delete"
+                                                >
+                                                    <Trash size={16} />
+                                                </Button>
+
+                                                <Button
+                                                    as={Link}
+                                                    to={`/tasks/${task._id}`}
+                                                    variant="outline-secondary"
+                                                    title="Details"
+                                                >
+                                                    <InfoCircle size={16} />
+                                                </Button>
+                                            </div>
                                         </td>
+
                                     </tr>
                                 ))
                             ) : (
