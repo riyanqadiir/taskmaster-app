@@ -209,7 +209,7 @@ const login = async (req, res) => {
         await user.save()
 
 
-        const accessToken = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: '1h' })
+        const accessToken = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: "1h" })
 
         if (remember_me) {
             const refreshToken = jwt.sign(

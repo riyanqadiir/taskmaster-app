@@ -46,7 +46,6 @@ const updateUserAndProfile = async (req, res) => {
             }
             profileData.avatarUrl = uploaded.secure_url;
         }
-
         let updatedUser = await User.findById(_id).select("firstName lastName username email");
         if (firstName || lastName || username) {
             updatedUser = await User.findByIdAndUpdate(
@@ -62,7 +61,6 @@ const updateUserAndProfile = async (req, res) => {
             { new: true, runValidators: true, upsert: true }
         );
 
-        // console.log()
 
         return res.status(200).json({
             message: "User and profile updated successfully",

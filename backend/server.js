@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express")
 const app = express();
 const mongoose = require('./config/db.js');
@@ -7,8 +8,8 @@ const userRoute = require("./routes/userRoute.js")
 const taskRoute = require("./routes/taskRoute.js")
 const userProfile = require("./routes/userProfileRoute")
 const path = require("path")
+const fs = require("fs")
 
-require("dotenv").config()
 mongoose()
 
 app.set("view engine", "ejs");
@@ -23,10 +24,16 @@ app.use(cors({
 }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/user", userRoute,userProfile)
+app.use("/user", userRoute, userProfile)
 app.use("/tasks", taskRoute)
 
-app.use('/uploads', express.static(path.join(__dirname, 'public')));
+if(!fs.existsSync(path.join(__dirname,"/public/temp"))){
+    fs.mkdir(path.join(__dirname,"/public/temp"),{ recursive: true },(err)=>{
+        if (err){
+            return console.log(err)
+        }
+    })
+}
 
 app.listen(process.env.PORT, () => {
     console.log(`server is listening on port ${process.env.PORT}`)

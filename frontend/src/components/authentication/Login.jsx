@@ -11,7 +11,7 @@ const Login = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        rememberMe: false,
+        remember_me: false,
     });
     const recaptchaRef = useRef();
     const [error, setError] = useState('');
@@ -28,7 +28,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { email, password, rememberMe } = formData;
+        const { email, password, remember_me } = formData;
 
         if (!email || !password) {
             setError('All fields are required.');
@@ -43,7 +43,7 @@ const Login = () => {
             const response = await api.post('/user/login', {
                 email,
                 password,
-                rememberMe,
+                remember_me,
                 token
             });
 
@@ -87,15 +87,15 @@ const Login = () => {
                     />
                 </div>
 
-                <div className="remember-me">
+                <div className="remember_me">
                     <input
                         type="checkbox"
-                        name="rememberMe"
-                        id="rememberMe"
-                        checked={formData.rememberMe}
+                        name="remember_me"
+                        id="remember_me"
+                        checked={formData.remember_me}
                         onChange={handleChange}
                     />
-                    <label htmlFor="rememberMe">Remember Me</label>
+                    <label htmlFor="remember_me">Remember Me</label>
                 </div>
                 <Link type='button' to="/forgot-password" >Forgot Password</Link>
                 {error && <p className="error">{error}</p>}

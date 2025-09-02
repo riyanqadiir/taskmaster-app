@@ -29,7 +29,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
         if (title?.trim()) {
             query.title = { $regex: title, $options: "i" };
         }
-        if (status) {
+        if (status !== "all") {
             query.status = status
         }
         const [tasks, total] = await Promise.all([
