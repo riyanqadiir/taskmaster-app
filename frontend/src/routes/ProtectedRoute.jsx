@@ -40,7 +40,9 @@ const ProtectedRoute = ({ children }) => {
         checkAuth();
     }, []);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) {
+        return <p>Loading...</p>;
+    }
 
     return isAuthenticated ? children : <Navigate to="/login" replace />;
 };

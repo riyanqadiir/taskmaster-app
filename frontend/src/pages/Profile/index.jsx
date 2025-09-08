@@ -1,7 +1,7 @@
 // src/pages/Profile.jsx
 import { useEffect, useState, useMemo } from "react";
 import { Container, Row, Col, Card, Form, Button, Badge, Spinner, Alert, } from "react-bootstrap";
-import api from "../api/axios";
+import api from "../../api/axios";
 
 export default function Profile() {
     const [loading, setLoading] = useState(true);
@@ -82,7 +82,9 @@ export default function Profile() {
                 const seen = new Set();
                 return arr.filter(it => {
                     const k = it.toLowerCase();
-                    if (seen.has(k)) return false;
+                    if (seen.has(k)) {
+                        return false;
+                    }
                     seen.add(k);
                     return true;
                 });
@@ -176,7 +178,7 @@ export default function Profile() {
                                 className="bg-secondary text-white d-inline-flex align-items-center justify-content-center rounded-circle mb-3 overflow-hidden"
                                 style={{ width: 120, height: 120, fontSize: 32 }}
                             >
-                                {!profile.avatarUrl ? (` ${user.firstName?.[0]}  ${user.lastName?.[0]}` || "U").toUpperCase() : <img  src={profile.avatarUrl} className="h-100 w-100 object-fit-cover " alt="hello" />}
+                                {profile.avatarUrl ? <img src={profile.avatarUrl} className="h-100 w-100 object-fit-cover " alt="hello" /> : (` ${user.firstName?.[0]}  ${user.lastName?.[0]}` || "U").toUpperCase()}
                             </div>
                             <div className="text-start small">
                                 <div className="mb-1"><strong>Username:</strong> <span className="text-muted">{user.username || "—"}</span></div>

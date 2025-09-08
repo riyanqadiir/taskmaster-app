@@ -1,9 +1,9 @@
 // Signup.jsx
 import React, { useState,useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from "../../api/axios";
+import api from "../../../api/axios";
 import { useNavigate,Link } from "react-router-dom";
-import "./auth.css";
+import "../auth.css";
 
 const Signup = () => {
     const navigate = useNavigate();

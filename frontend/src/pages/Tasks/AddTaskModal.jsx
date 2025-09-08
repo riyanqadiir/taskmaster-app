@@ -2,7 +2,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import api from "../../api/axios";
 
-function AddTaskModal({ show, handleClose, onTaskCreated,onTaskUpdated, mode, initialValues }) {
+function AddTaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, initialValues }) {
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -11,8 +11,12 @@ function AddTaskModal({ show, handleClose, onTaskCreated,onTaskUpdated, mode, in
         dueDate: "",
     });
     useEffect(() => {
-        if (mode === "edit" && initialValues) setForm(initialValues);
-        if (mode === "add") setForm({ title: "", description: "", status: "not_started", priority: "Low", dueDate: "" });
+        if (mode === "edit" && initialValues) {
+            setForm(initialValues);
+        }
+        if (mode === "add") {
+            setForm({ title: "", description: "", status: "not_started", priority: "Low", dueDate: "" });
+        }
     }, [show, mode, initialValues]);
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import api from "../api/axios";
-import StatusCard from "../components/Dashboard/StatusCard";
-import { useAuth } from "../context/AuthContext";
+import api from "../../api/axios";
+import { useAuth } from "../../context/AuthContext";
+import StatusCard from "./StatusCard";
 export default function Dashboard() {
     const [loading, setLoading] = useState({
         todo: true,
@@ -18,9 +18,9 @@ export default function Dashboard() {
             setLoading({ todo: true, progress: true, done: true });
 
             const [todoRes, progRes, doneRes] = await Promise.all([
-                api.get("/tasks", { params: { status: "not_started", sortBy: "createdAt", order: "desc" } }),
-                api.get("/tasks", { params: { status: "in_progress", sortBy: "createdAt", order: "desc" } }),
-                api.get("/tasks", { params: { status: "completed", sortBy: "completedAt", order: "desc" } }),
+                api.get("/tasks", { params: { status: "not_started"} }),
+                api.get("/tasks", { params: { status: "in_progress"} }),
+                api.get("/tasks", { params: { status: "completed"} }),
             ]);
 
             setTodo(todoRes.data.tasks || []);

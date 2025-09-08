@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Table, Badge, Form, InputGroup } from "react-bootstrap";
+import { Container, Row, Col, Button, Table, Badge, Form } from "react-bootstrap";
 import { PencilSquare, Trash, CheckCircle, InfoCircle } from "react-bootstrap-icons";
-import api from "../api/axios"; // your axios instance
-import AddTaskModal from "../components/task/AddTaskModal";
+import api from "../../api/axios"; // your axios instance
+import AddTaskModal from "./AddTaskModal";
 import { Link } from "react-router-dom";
-
+import PaginationSection from "./PaginationSection";
 function Tasks() {
     const [tasks, setTasks] = useState([]);
     const [filter, setFilter] = useState({
@@ -12,24 +12,37 @@ function Tasks() {
         order: "desc",
         title: "",
         status: "all",
+        page: 1,
+        limit: 10
     });
+    const [pagination, setPagination] = useState({
+        "totalItems": 0,
+        "currentPage": 1,
+        "totalPages": 0,
+        "pageSize": 10,
+        "hasNextPage": false,
+        "hasPrevPage": false
+    })
+
     const [showModal, setShowModal] = useState(false);
     const [mode, setMode] = useState("add")
     const [initialValues, setInitialValues] = useState({})
     const [search, setSearch] = useState("")
 
     useEffect(() => {
-        const fetchTasks = async (sortBy, order, title, status) => {
+        const fetchTasks = async (sortBy, order, title, status, page, limit) => {
             console.log(sortBy, order, title, status)
             try {
-                const { data } = await api.get("/tasks", { params: { sortBy, order, title, status } });
+                const { data } = await api.get("/tasks", { params: { sortBy, order, title, status, page, limit } });
                 setTasks(data.tasks || []);
+                setPagination(data.pagination);
             } catch (err) {
                 console.error("Error fetching tasks:", err.response?.data || err.message);
             }
         };
-        fetchTasks(filter.sortBy, filter.order, filter.title, filter.status);
-    }, [filter.sortBy, filter.order, filter.title, filter.status]);
+        fetchTasks(filter.sortBy, filter.order, filter.title, filter.status, filter.page, filter.limit);
+    }, [filter.sortBy, filter.order, filter.title, filter.status, filter.page, filter.limit]);
+
     useEffect(() => {
         //debouncing technique
         const delaySearch = setTimeout(() => {
@@ -89,7 +102,7 @@ function Tasks() {
         const { name, value } = e.target;
         if (name === "title") {
             return setSearch(value)
-        }else{
+        } else {
             console.log("name : ", name, " value: ", value)
             setFilter((prev) => {
                 return { ...prev, [name]: value }
@@ -109,63 +122,74 @@ function Tasks() {
                 </Col>
             </Row>
 
-            <Row className="mb-3 align-center">
-                <Col xs={3} md={2}>
-                <Form className="label">Status</Form>
-                    <Form.Select
-                        name="status"
-                        value={filter.status}
-                        onChange={(e) => handleFilter(e)}
-                    >
-                        <option value="all">All Tasks</option>
-                        <option value="not_started">Not Started</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="waiting">Waiting</option>
-                        <option value="completed">Completed</option>
-                    </Form.Select>
+            <Row className="g-3 align-items-end mb-5">
+                <Col xs={12} md={3}>
+                    <Form.Group controlId="filterStatus">
+                        <Form.Label>Status</Form.Label>
+                        <Form.Select
+                            name="status"
+                            value={filter.status}
+                            onChange={handleFilter}
+                        >
+                            <option value="all">All Tasks</option>
+                            <option value="not_started">Not Started</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="waiting">Waiting</option>
+                            <option value="completed">Completed</option>
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
-                <Col xs={3} md={2}>
-                <Form className="label">Sort By</Form>
-                    <Form.Select
-                        name="sortBy"
-                        value={filter.sortBy}
-                        onChange={(e) => handleFilter(e)}
-                    >
-                        <option value="createdAt">Created At</option>
-                        <option value="updatedAt">Updated At</option>
-                        <option value="completedAt">Completed At</option>
-                        <option value="dueDate">Due Date</option>
-                        <option value="priority">Priority</option>
-                        <option value="title">Title</option>
-                    </Form.Select>
+
+                <Col xs={12} md={3}>
+                    <Form.Group controlId="filterSortBy">
+                        <Form.Label>Sort By</Form.Label>
+                        <Form.Select
+                            name="sortBy"
+                            value={filter.sortBy}
+                            onChange={handleFilter}
+                        >
+                            <option value="createdAt">Created At</option>
+                            <option value="updatedAt">Updated At</option>
+                            <option value="completedAt">Completed At</option>
+                            <option value="dueDate">Due Date</option>
+                            <option value="priority">Priority</option>
+                            <option value="title">Title</option>
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
-                <Col xs={3} md={2}>
-                <Form className="label">Order By</Form>
-                    <Form.Select
-                        name="order"
-                        value={filter.order}
-                        onChange={(e) => handleFilter(e)}
-                    >
-                        <option value="desc">Descending</option>
-                        <option value="asc">Ascending</option>
-                    </Form.Select>
+
+                <Col xs={12} md={3}>
+                    <Form.Group controlId="filterOrder">
+                        <Form.Label>Order</Form.Label>
+                        <Form.Select
+                            name="order"
+                            value={filter.order}
+                            onChange={handleFilter}
+                        >
+                            <option value="desc">Descending</option>
+                            <option value="asc">Ascending</option>
+                        </Form.Select>
+                    </Form.Group>
                 </Col>
-                <Col xs={3} md={{ span: 3, offset: 3 }}>
-                    <InputGroup className="mb-3">
+
+                <Col xs={12} md={3}>
+                    <Form.Group controlId="filterSearch">
+                        <Form.Label>Search</Form.Label>
                         <Form.Control
                             name="title"
                             value={search}
                             type="text"
-                            placeholder="Search For Tasks"
-                            onChange={(e) => handleFilter(e)}
+                            placeholder="Search for tasks"
+                            onChange={handleFilter}
                         />
-                    </InputGroup>
+                    </Form.Group>
                 </Col>
             </Row>
 
 
+
             <Row >
-                <Col>
+                <Col xs={12}>
                     <Table striped bordered hover responsive className="shadow-sm " >
                         <thead className="table-light">
                             <tr>
@@ -186,8 +210,9 @@ function Tasks() {
                                         <td>
                                             {task.description}
                                         </td>
-                                        <td>
+                                        <td className="text-center">
                                             <Badge
+                                                className="w-100"
                                                 bg={
                                                     task.status === "completed"
                                                         ? "success"
@@ -201,8 +226,9 @@ function Tasks() {
                                                 {task.status}
                                             </Badge>
                                         </td>
-                                        <td>
+                                        <td className="text-center">
                                             <Badge
+                                                className="w-100"
                                                 bg={
                                                     task.priority === "High"
                                                         ? "danger"
@@ -214,7 +240,7 @@ function Tasks() {
                                                 {task.priority}
                                             </Badge>
                                         </td>
-                                        <td>
+                                        <td className="text-center">
                                             {task.dueDate
                                                 ? new Date(task.dueDate).toLocaleDateString()
                                                 : "-"}
@@ -260,7 +286,7 @@ function Tasks() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="text-center text-muted">
+                                    <td colSpan="6" className="text-center text-muted">
                                         No tasks found
                                     </td>
                                 </tr>
@@ -268,7 +294,12 @@ function Tasks() {
                         </tbody>
                     </Table>
                 </Col>
+                <Col xs={12} className="d-flex justify-content-between align-items-stretch">
+                    <PaginationSection pagination={pagination} setFilter={setFilter} filter={filter} />
+                </Col>
+
             </Row>
+
             <AddTaskModal
                 show={showModal}
                 handleClose={() => setShowModal(false)}

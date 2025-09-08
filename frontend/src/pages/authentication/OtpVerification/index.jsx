@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import api from "../../api/axios";
+import api from "../../../api/axios";
 import ReCAPTCHA from "react-google-recaptcha";
-import "./auth.css";
+import "../auth.css";
 
 const OtpVerification = () => {
     const location = useLocation();
@@ -54,7 +54,9 @@ const OtpVerification = () => {
     };
 
     const handleResendOtp = async () => {
-        if (!email) return;
+        if (!email) {
+            return;
+        }
 
         setIsResending(true);
         setResendMessage("");

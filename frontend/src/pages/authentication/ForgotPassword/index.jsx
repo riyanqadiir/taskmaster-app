@@ -1,7 +1,7 @@
 import React, { useState,useRef } from 'react';
-import './auth.css';
+import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from '../../api/axios';
+import api from '../../../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
