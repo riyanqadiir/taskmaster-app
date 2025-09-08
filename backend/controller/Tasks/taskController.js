@@ -63,7 +63,11 @@ const getFilteredTasks = async (req, res, condition = {}) => {
 
         results.tasks = formattedTasks;
         //getting formatted pagination
-        results.pagination = getPagination(total, page, limit, res);
+        if (total === 0) {
+            results.pagination = getPagination(1, page, limit, res);
+        }else{
+            results.pagination = getPagination(total, page, limit, res);
+        }
 
         res.status(200).json(results);
     } catch (err) {

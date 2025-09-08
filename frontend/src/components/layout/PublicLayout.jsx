@@ -1,4 +1,3 @@
-import { Container } from "react-bootstrap";
 import Footer from "../layout/Footer";
 
 export default function PublicLayout({ children }) {

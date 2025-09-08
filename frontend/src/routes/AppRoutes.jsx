@@ -1,13 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from "../components/authentication/Login";
-import Signup from '../components/authentication/Signup';
-import OtpVerification from '../components/authentication/OtpVerification';
-import ForgotPassword from '../components/authentication/ForgotPassword';
-import Dashboard from '../pages/Dashboard';
-import ProtectedRoute from './ProtectedRoute';
+//Auth Routes
+import Login from "../pages/authentication/Login";
+import Signup from '../pages/authentication/Signup';
+import OtpVerification from '../pages/authentication/OtpVerification';
+import ForgotPassword from '../pages/authentication/ForgotPassword';
+// layouts
 import PublicLayout from "../components/layout/PublicLayout";
 import ProtectedLayout from '../components/layout/ProtectedLayout';
-import Tasks from '../pages/Tasks';
+// ProtectedRoute file
+import ProtectedRoute from './ProtectedRoute';
+//Protected Routes Pages:
+import Dashboard from '../pages/dashboard';
+import Tasks from '../pages/tasks';
 import Profile from '../pages/Profile';
 import TaskDetail from '../pages/TaskDetail';
 export default function AppRoutes() {

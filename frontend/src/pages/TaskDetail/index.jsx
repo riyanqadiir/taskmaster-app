@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import api from '../api/axios'
+import api from '../../api/axios'
 import { Spinner, Alert, Card, Badge, Container } from "react-bootstrap";
-import TaskCard from '../components/task/TaskCard';
+import TaskCard from './TaskCard';
 function TaskDetail() {
     const { id } = useParams()
     const navigate = useNavigate()
@@ -30,15 +30,21 @@ function TaskDetail() {
         getTaskDetail(id)
     }, [id, navigate])
 
-    if (loading) return <Spinner className='m-3' />
-    if (err) return <Alert variant='danger' className='m-3' >{err}</Alert>
-    if (!task) return null;
+    if (loading) {
+        return <Spinner className='m-3' />
+    }
+    if (err) {
+        return <Alert variant='danger' className='m-3' >{err}</Alert>
+    }
+    if (!task) {
+        return null;
+    }
 
     return (
-        <>  
-        <Container>
-            <TaskCard task={task} />
-        </Container>
+        <>
+            <Container>
+                <TaskCard task={task} />
+            </Container>
         </>
     )
 }

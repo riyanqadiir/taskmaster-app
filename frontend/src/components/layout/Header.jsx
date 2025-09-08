@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
-import LogoutButton from "../authentication/LogoutButton";
+import LogoutButton from "../common/LogoutButton";
 
 function Header({ onMenuClick }) {
     const ref = useRef(null);

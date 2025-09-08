@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
-import './auth.css';
+import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import axios from 'axios';
-import api from '../../api/axios';
+import api from '../../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();

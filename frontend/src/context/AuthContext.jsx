@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, createContext, useContext,useEffect } from 'react'
+import { useState, createContext, useContext, useEffect } from 'react'
 import api from '../api/axios';
 const AuthContext = createContext();
 
@@ -7,7 +7,9 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState();
     useEffect(() => {
         const token = localStorage.getItem("accessToken"); // or cookie
-        if (!token) return;
+        if (!token) {
+            return;
+        }
 
         const fetchUser = async () => {
             try {

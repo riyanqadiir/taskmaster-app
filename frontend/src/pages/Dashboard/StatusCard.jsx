@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Card, ListGroup, Badge, Button, Spinner } from "react-bootstrap";
 
 function StatusCard({ title, tasks, loading, onComplete }) {

@@ -35,3 +35,13 @@ a {
   margin: 0 auto;
   padding: 1rem;
 }
+
+.form-select-inline {
+  background-color: #f8f9fa;
+}
+
+.form-select-inline,
+.form-select-inline option:checked {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
