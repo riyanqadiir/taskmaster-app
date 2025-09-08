@@ -109,8 +109,9 @@ function Tasks() {
                 </Col>
             </Row>
 
-            <Row className="mb-3">
+            <Row className="mb-3 align-center">
                 <Col xs={3} md={2}>
+                <Form className="label">Status</Form>
                     <Form.Select
                         name="status"
                         value={filter.status}
@@ -124,6 +125,7 @@ function Tasks() {
                     </Form.Select>
                 </Col>
                 <Col xs={3} md={2}>
+                <Form className="label">Sort By</Form>
                     <Form.Select
                         name="sortBy"
                         value={filter.sortBy}
@@ -138,6 +140,7 @@ function Tasks() {
                     </Form.Select>
                 </Col>
                 <Col xs={3} md={2}>
+                <Form className="label">Order By</Form>
                     <Form.Select
                         name="order"
                         value={filter.order}

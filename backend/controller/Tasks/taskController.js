@@ -12,16 +12,31 @@ const PRIORITY_VALUES = {
     "Low": 3
 };
 
+const getPagination = (total, page, limit, res) => {
+    const totalPages = Math.ceil(total / limit);
+
+    if (page > totalPages) {
+        res.status(400).json({ message: `Invalid page number. The last page is ${totalPages}.` })
+    }
+    return {
+        totalItems: total,
+        currentPage: page,
+        totalPages: totalPages,
+        pageSize: limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+    }
+}
+
 const getFilteredTasks = async (req, res, condition = {}) => {
     const { _id: ownerId } = req.user;
-    const { sortBy = "createdAt", order = "desc", title, status } = req.query;
+    const { sortBy = "createdAt", order = "desc", title, status = "all" } = req.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
     const sortOrder = order === "asc" ? 1 : -1;
 
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
+    const startIndex = (page - 1) * limit;
     let results = {};
     try {
         const query = { ownerId, ...condition };
@@ -47,20 +62,9 @@ const getFilteredTasks = async (req, res, condition = {}) => {
         }));
 
         results.tasks = formattedTasks;
+        //getting formatted pagination
+        results.pagination = getPagination(total, page, limit, res);
 
-        if (endIndex < total) {
-            results.next = {
-                page: page + 1,
-                limit: limit
-            }
-        }
-        if (startIndex > 0 && total > 0) {
-            results.previous = {
-                page: page - 1,
-                limit: limit
-            };
-        }
-        results.total = total;
         res.status(200).json(results);
     } catch (err) {
         console.error("Error fetching tasks:", err);
@@ -97,8 +101,8 @@ const createTask = async (req, res) => {
     const normalizedPriority = Object.keys(PRIORITY_LABELS).find(
         key => PRIORITY_LABELS[key].toLowerCase() === priority?.toLowerCase()
     );
-    if(new Date(dueDate) < new Date()){
-        return res.status(400).json({ message: "invalid duedate" });
+    if (new Date(dueDate) < new Date()) {
+        return res.status(400).json({ message: "invalid due date" });
     }
     try {
         const newTask = new Task({
@@ -106,7 +110,7 @@ const createTask = async (req, res) => {
             title,
             description,
             status,
-            priority: normalizedPriority || 3, 
+            priority: normalizedPriority || 3,
             tags,
             dueDate
         });
