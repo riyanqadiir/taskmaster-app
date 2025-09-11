@@ -3,14 +3,7 @@ import { Pagination, Form } from "react-bootstrap";
 function PaginationSection({ pagination, setFilter, filter }) {
     const handleFilterChange = (key, value) => {
         setFilter((prev) => {
-            let updated = { ...prev, [key]: value };
-
-            if (key === "limit" && value === "all") {
-                updated.page = 1;
-                updated.limit = pagination.totalItems;
-            }
-
-            return updated;
+            return { ...prev, [key]: value };
         });
     };
 
@@ -26,7 +19,7 @@ function PaginationSection({ pagination, setFilter, filter }) {
                     onChange={(e) =>
                         handleFilterChange(
                             "limit",
-                            e.target.value === "all" ? "all" : Number(e.target.value)
+                            Number(e.target.value)
                         )
                     }
                     className="form-select-inline form-select-sm"
@@ -34,7 +27,7 @@ function PaginationSection({ pagination, setFilter, filter }) {
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
-                    <option value="all">All</option>
+                    <option value={pagination.totalItems}>{pagination.totalItems}</option>
                 </Form.Select>
             </Form.Group>
 

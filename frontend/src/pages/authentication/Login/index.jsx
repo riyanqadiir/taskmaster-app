@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from '../../../api/axios';
+import {login} from "../../../api/userApi"
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -39,7 +39,7 @@ const Login = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await api.post('/user/login', {
+            const response = await login({
                 email,
                 password,
                 remember_me,

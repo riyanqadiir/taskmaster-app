@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import api from '../../api/axios'
+import { taskDetail } from '../../api/tasksApi';
 import { Spinner, Alert, Card, Badge, Container } from "react-bootstrap";
 import TaskCard from './TaskCard';
 function TaskDetail() {
@@ -15,7 +15,7 @@ function TaskDetail() {
         const getTaskDetail = async (taskId) => {
             console.log(taskId)
             try {
-                const response = await api.get(`/tasks/detail/${taskId}`)
+                const response = await taskDetail(taskId)
                 if (response.status === 200) {
                     console.log(response.data.task)
                     setTask(response.data.task)

@@ -1,7 +1,7 @@
 // Signup.jsx
 import React, { useState,useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from "../../../api/axios";
+import {signup} from "../../../api/userApi"
 import { useNavigate,Link } from "react-router-dom";
 import "../auth.css";
 
@@ -47,7 +47,7 @@ const Signup = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await api.post("/user/signup", {...formData,token});
+            const response = await signup({...formData,token});
 
             if (response.status === 200 || response.status === 201) {
                 const email = response.data?.body?.email;

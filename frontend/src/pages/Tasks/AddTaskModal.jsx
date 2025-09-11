@@ -1,8 +1,9 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
-import api from "../../api/axios";
+import { createTask, updateTask } from "../../api/tasksApi";
 
 function AddTaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, initialValues }) {
+    const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -24,26 +25,29 @@ function AddTaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, i
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSaving(true);
         try {
             let response;
             if (mode === "edit") {
-                response = await api.patch(`/tasks/${form._id}`, form);
+                response = await updateTask(form._id, form);
                 onTaskUpdated(response.data.task)
                 console.log(response.data.task)
             } else {
-                response = await api.post("/tasks", form);
+                response = await createTask(form);
                 onTaskCreated(response.data.task);
             }
             handleClose();
         } catch (err) {
             console.error("Error creating task:", err.response?.data || err.message);
+        } finally {
+            setSaving(false);
         }
     };
 
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Add Task</Modal.Title>
+                <Modal.Title>{mode === "edit" ? "Edit Task" : "Add Task"}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit}>
@@ -98,7 +102,9 @@ function AddTaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, i
                         />
                     </Form.Group>
 
-                    <Button type="submit" variant="primary">Save Task</Button>
+                    <Button type="submit" variant="primary" disabled={saving}>
+                        {saving ? "Saving..." : "Save Task"}
+                    </Button>
                 </Form>
             </Modal.Body>
         </Modal>
