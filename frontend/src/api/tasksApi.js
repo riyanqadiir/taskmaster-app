@@ -11,3 +11,6 @@ export const updateTask = (id, payload) =>
 
 export const deleteTask = (id) =>
     api.delete(`/tasks/${id}`);
+export const taskDetail = (id) => {
+    api.get(`/tasks/detail/${id}`)
+}

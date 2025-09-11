@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import api from "../../api/axios";
+import {fetchTasks,updateTask} from "../../api/tasksApi"
 import { useAuth } from "../../context/AuthContext";
 import StatusCard from "./StatusCard";
 export default function Dashboard() {
@@ -18,9 +18,9 @@ export default function Dashboard() {
             setLoading({ todo: true, progress: true, done: true });
 
             const [todoRes, progRes, doneRes] = await Promise.all([
-                api.get("/tasks", { params: { status: "not_started"} }),
-                api.get("/tasks", { params: { status: "in_progress"} }),
-                api.get("/tasks", { params: { status: "completed"} }),
+                fetchTasks({ status: "not_started" }),
+                fetchTasks({ status: "in_progress" }),
+                fetchTasks({ status: "completed"} ),
             ]);
 
             setTodo(todoRes.data.tasks || []);
@@ -35,7 +35,7 @@ export default function Dashboard() {
 
     const markComplete = async (taskId) => {
         try {
-            await api.patch(`/tasks/${taskId}`, { status: "completed" });
+            await updateTask(taskId,{ status: "completed" });
             loadTasks();
         } catch (err) {
             console.error("Error marking task complete:", err);
@@ -47,7 +47,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <Container fluid className="mt-3">
+        <Container fluid className="mt-3 text-center">
             <h1>Welcome! {user?.firstName ?? "" } {user?.lastName ?? "" } </h1>
             <Row>
                 <Col xs={12} lg={4}>

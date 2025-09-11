@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import api from "../../../api/axios";
+import {verifyOtp} from "../../../api/userApi"
 import ReCAPTCHA from "react-google-recaptcha";
 import "../auth.css";
 
@@ -34,7 +34,7 @@ const OtpVerification = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await api.post("/user/verify-otp", {
+            const response = await verifyOtp({
                 email,
                 otp,
                 token

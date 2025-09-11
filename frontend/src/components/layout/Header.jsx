@@ -23,18 +23,26 @@ function Header({ onMenuClick }) {
     return (
         <Navbar ref={ref} className="bg-body-tertiary">
             <Container className="d-flex justify-content-between align-items-center">
-                <Navbar.Brand as={Link} to="/">Task Master</Navbar.Brand>
                 <div className="d-flex align-items-center">
                     <Button
                         variant="outline-secondary"
-                        className="d-lg-none me-2"
+                        className="me-2 border-0"
                         onClick={onMenuClick}
-                        aria-label="Open sidebar"
+                        aria-label="Toggle sidebar"
+                        style={{ padding: '0.25rem 0.5rem' }}
                     >
-                        Menu
+                        <svg
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            viewBox="0 0 16 16"
+                        >
+                            <path fillRule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
+                        </svg>
                     </Button>
-                    <LogoutButton />
+                    <Navbar.Brand as={Link} to="/">Task Master</Navbar.Brand>
                 </div>
+                <LogoutButton />
             </Container>
         </Navbar>
     );

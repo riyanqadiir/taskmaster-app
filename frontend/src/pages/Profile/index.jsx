@@ -1,18 +1,15 @@
 // src/pages/Profile.jsx
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Form, Button, Badge, Spinner, Alert, } from "react-bootstrap";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 import ResetPassword from "./ResetPassword";
-import api from "../../api/axios";
 import ProfileInfo from "./ProfileInfo";
 import ProfileForm from "./ProfileForm";
+import {fetchProfile} from "../../api/profileApi"
 export default function Profile() {
     const [loading, setLoading] = useState(true);
-    
-
     const [user, setUser] = useState({
         firstName: "", lastName: "", username: "", email: ""
     });
-
     const [profile, setProfile] = useState({
         address: "",
         phone: "",
@@ -28,7 +25,7 @@ export default function Profile() {
     useEffect(() => {
         (async () => {
             try {
-                const { data } = await api.get("/user/profile");
+                const { data } = await fetchProfile();
                 setUser({
                     firstName: data.user?.firstName || "",
                     lastName: data.user?.lastName || "",

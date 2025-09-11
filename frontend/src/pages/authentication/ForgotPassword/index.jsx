@@ -1,7 +1,7 @@
 import React, { useState,useRef } from 'react';
 import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from '../../../api/axios';
+import {forgotPassword} from "../../../api/userApi"
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
 
-            const response = await api.post('/user/forgot-password', {
+            const response = await forgotPassword({
                 email,
                 token
             });

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import {Row, Col, Card, Form, Button, Badge, Alert, } from "react-bootstrap";
-import api from "../../api/axios";
+import { Row, Col, Card, Form, Button, Badge, Alert, } from "react-bootstrap";
+import { updateProfile } from "../../api/profileApi"
 
 function ProfileForm({ profile, user, setUser, setProfile }) {
     const [saving, setSaving] = useState(false);
@@ -15,7 +15,8 @@ function ProfileForm({ profile, user, setUser, setProfile }) {
     const saveProfile = async (e) => {
         e.preventDefault();
         setSaving(true);
-        setProfileError(""); setProfileSuccess("");
+        setProfileError("");
+        setProfileSuccess("");
         try {
             const cleanedInterests = (rawInterests || "")
                 .split(",")
@@ -45,17 +46,8 @@ function ProfileForm({ profile, user, setUser, setProfile }) {
             fd.append("interests", JSON.stringify(mergedInterests))
             fd.append("socialLinks", JSON.stringify(profile.socialLinks))
             fd.append("image", profile.image)
-            const payload = {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
-                address: profile.address,
-                phone: profile.phone,
-                bio: profile.bio,
-                interests: mergedInterests,
-                socialLinks: profile.socialLinks
-            };
-            const { data } = await api.patch("/user/profile", fd);
+
+            const { data } = await updateProfile(fd);
             setUser({
                 firstName: data.user?.firstName || "",
                 lastName: data.user?.lastName || "",
@@ -83,6 +75,12 @@ function ProfileForm({ profile, user, setUser, setProfile }) {
             setSaving(false);
         }
     };
+    const deleteInterest = (index) => {
+        setProfile((prev) => {
+            return { ...prev, interests: prev.interests.filter((i, idx) => idx != index) }
+        })
+
+    }
     return (
         <>
             <Card className="shadow-sm">
@@ -196,8 +194,19 @@ function ProfileForm({ profile, user, setUser, setProfile }) {
                                     {profile.interests.length > 0 && (
                                         <div className="mt-2">
                                             {profile.interests.map((i, index) => (
-                                                <Badge key={`${i}-${index}`} bg="secondary" className="me-2 mb-2">
+                                                <Badge
+                                                    key={`${i}-${index}`}
+                                                    bg="secondary"
+                                                    className="mb-2 position-relative me-2 px-3 py-2 d-inline-flex align-items-center"
+                                                >
                                                     {i}
+                                                    <button
+                                                        type="button"
+                                                        className="btn-close btn-close-white position-absolute top-0 end-0 m-1"
+                                                        aria-label="Remove"
+                                                        onClick={() => deleteInterest(index)}
+                                                        style={{ fontSize: "0.65rem" }}
+                                                    />
                                                 </Badge>
                                             ))}
                                         </div>

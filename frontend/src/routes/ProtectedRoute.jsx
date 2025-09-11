@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import {verifyToken,verifyRefreshToken} from "../api/userApi";
 
 const ProtectedRoute = ({ children }) => {
     const [loading, setLoading] = useState(true);
@@ -16,11 +16,11 @@ const ProtectedRoute = ({ children }) => {
                     return;
                 }
 
-                await api.get("/user/verify-token");
+                await verifyToken();
                 setIsAuthenticated(true);
             } catch (error) {
                 try {
-                    const refreshResponse = await api.post("/user/refresh-token");
+                    const refreshResponse = await verifyRefreshToken();
 
                     const newToken = refreshResponse.headers['authorization'];
                     if (newToken) {

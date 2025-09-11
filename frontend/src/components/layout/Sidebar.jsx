@@ -1,9 +1,22 @@
 // Sidebar.jsx
 import { Nav, Offcanvas } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export default function Sidebar({ show, onHide, width = 240 }) {
     const { pathname } = useLocation();
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check if screen is mobile size
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 992); // Bootstrap lg breakpoint
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const navItems = [
         { to: "/", label: "Dashboard" },
@@ -13,19 +26,19 @@ export default function Sidebar({ show, onHide, width = 240 }) {
 
     return (
         <>
-            {/* Desktop sidebar (lg and up) */}
+            {/* Desktop sidebar (lg and up) - now toggleable */}
             <aside
                 className="d-none d-lg-block bg-light border-end position-sticky"
                 style={{
-                    width,
+                    width: show ? width : 0,
                     top: 0,
-                    // 56px ~= default Bootstrap navbar height; tweak if needed
                     height: "calc(100vh - 144px)",
-                    // overflow : "hidden"
+                    overflow: "hidden",
+                    transition: "width 0.3s ease"
                 }}
             >
-                <div className="p-3 fw-semibold">Navigation</div>
-                <Nav className="flex-column" activeKey={pathname} variant="pills">
+                <div className="p-3 fw-semibold" style={{ width: width }}>Navigation</div>
+                <Nav className="flex-column" activeKey={pathname} variant="pills" style={{ width: width }}>
                     {navItems.map(n => (
                         <Nav.Link
                             key={n.to}
@@ -41,7 +54,7 @@ export default function Sidebar({ show, onHide, width = 240 }) {
             </aside>
 
             {/* Mobile Offcanvas (below lg) */}
-            <Offcanvas show={show} onHide={onHide} placement="start" className="d-lg-none">
+            <Offcanvas show={isMobile && show} onHide={onHide} placement="start" className="d-lg-none">
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Menu</Offcanvas.Title>
                 </Offcanvas.Header>
