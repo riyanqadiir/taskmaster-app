@@ -8,7 +8,7 @@ import AddTaskModal from "./AddTaskModal";
 import PaginationSection from "./PaginationSection";
 import FilterTasks from "./FilterTasks";
 import TaskTable from "./TaskTable";
-
+import "./Task.css";
 
 function Tasks() {
     const navigate = useNavigate();

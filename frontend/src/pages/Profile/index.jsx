@@ -4,7 +4,9 @@ import { Container, Row, Col, Spinner } from "react-bootstrap";
 import ResetPassword from "./ResetPassword";
 import ProfileInfo from "./ProfileInfo";
 import ProfileForm from "./ProfileForm";
-import {fetchProfile} from "../../api/profileApi"
+import { fetchProfile } from "../../api/profileApi";
+import "./profile.css"; // ← add this
+
 export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState({
@@ -16,11 +18,10 @@ export default function Profile() {
         bio: "",
         avatarUrl: "",
         interests: [],
-        socialLinks: {
-            github: "", linkedin: "", twitter: "", website: ""
-        },
+        socialLinks: { github: "", linkedin: "", twitter: "", website: "" },
         image: ""
     });
+    const [profileError, setProfileError] = useState("");
 
     useEffect(() => {
         (async () => {
@@ -56,23 +57,43 @@ export default function Profile() {
 
     if (loading) {
         return (
-            <Container className="py-4">
-                <div className="d-flex justify-content-center py-5"><Spinner animation="border" /></div>
+            <Container className="py-5 profile-loading">
+                <div className="d-flex justify-content-center py-5">
+                    <Spinner animation="border" />
+                </div>
             </Container>
         );
     }
 
     return (
-        <Container fluid className="py-4 overflow-scroll">
-            <Row className="g-4">
-                <Col lg={4}>
-                    <ProfileInfo profile={profile} user={user} />
-                    <ResetPassword />
-                </Col>
-                <Col lg={8}>
-                    <ProfileForm user={user} setUser={setUser} profile={profile} setProfile={setProfile} />
-                </Col>
-            </Row>
-        </Container>
+        <div className="profile-page">
+            <div className="profile-hero">
+                <div className="profile-hero__inner">
+                    <h1 className="profile-hero__title">Your Profile</h1>
+                    <p className="profile-hero__subtitle">Manage your info, preferences, and security</p>
+                </div>
+            </div>
+
+            <Container fluid className="py-4">
+                {profileError && (
+                    <div className="alert alert-danger mb-3">{profileError}</div>
+                )}
+
+                <Row className="g-4 align-items-start">
+                    <Col lg={4}>
+                        <ProfileInfo profile={profile} user={user} />
+                        <ResetPassword />
+                    </Col>
+                    <Col lg={8}>
+                        <ProfileForm
+                            user={user}
+                            setUser={setUser}
+                            profile={profile}
+                            setProfile={setProfile}
+                        />
+                    </Col>
+                </Row>
+            </Container>
+        </div>
     );
 }

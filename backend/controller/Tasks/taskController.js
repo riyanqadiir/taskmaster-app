@@ -52,7 +52,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
                 .sort({ [sortBy]: sortOrder })
                 .skip(startIndex)
                 .limit(limit)
-                .lean(),
+                .lean(),    
             Task.countDocuments(query)
         ]);
 
@@ -84,7 +84,7 @@ const getTaskDetail = async (req, res) => {
     const { _id: ownerId } = req.user
     const { taskId } = req.params
     try {
-        const task = await Task.findOne({ _id: taskId, ownerId })
+        const task = await Task.findOne({ _id: taskId, ownerId }).lean();
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
         }

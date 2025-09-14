@@ -15,7 +15,7 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer ref={ref} className="bg-dark text-white py-3 text-center">
+        <footer ref={ref} className="bg-dark text-white py-3 text-center app-footer">
             <p className="mb-0">© {new Date().getFullYear()} Task Master. All rights reserved.</p>
         </footer>
     );

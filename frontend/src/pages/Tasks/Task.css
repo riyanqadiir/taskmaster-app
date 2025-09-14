@@ -1,0 +1,680 @@
+/* Task.css - Comprehensive Task Management Styling */
+
+/* =================================================================== */
+/* THEME TOKENS & VARIABLES                                           */
+/* =================================================================== */
+
+:root {
+    /* Color palette matching the layout theme */
+    --task-bg-primary: #ffffff;
+    --task-bg-secondary: rgba(255, 255, 255, 0.95);
+    --task-text-primary: #1e293b;
+    --task-text-secondary: #475569;
+    --task-text-muted: #64748b;
+    --task-text-white: #ffffff;
+    --task-border: #e2e8f0;
+    --task-border-soft: rgba(226, 232, 240, 0.6);
+
+    /* Colorful gradients */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+
+    /* Status colors */
+    --status-completed: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --status-progress: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    --status-waiting: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --status-not-started: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+
+    /* Priority colors */
+    --priority-high: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    --priority-medium: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    --priority-low: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+
+    /* Effects */
+    --task-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --task-shadow-md: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --task-shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+    --task-shadow-colorful: 0 8px 32px rgba(102, 126, 234, 0.15);
+    --task-ring: rgba(102, 126, 234, 0.25);
+
+    /* Layout */
+    --task-radius: 16px;
+    --task-radius-sm: 12px;
+    --task-radius-lg: 20px;
+}
+
+/* =================================================================== */
+/* MAIN TASK PAGE STYLING                                             */
+/* =================================================================== */
+
+/* Page header with white text for dark backgrounds */
+.py-4 h2 {
+    color: var(--task-text-white) !important;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    text-shadow: none;
+}
+
+/* Filter section styling */
+.g-3 .form-label {
+    color: var(--task-text-white) !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.g-3 .form-select,
+.g-3 .form-control {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--task-radius-sm);
+    color: var(--task-text-primary);
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+}
+
+.g-3 .form-select:focus,
+.g-3 .form-control:focus {
+    background: var(--task-bg-primary);
+    border-color: rgba(102, 126, 234, 0.8);
+    box-shadow:
+        0 0 0 0.25rem var(--task-ring),
+        var(--task-shadow-colorful);
+    transform: translateY(-1px);
+}
+
+/* Error and loading states */
+.text-danger {
+    color: #ff6b6b !important;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: var(--task-radius-sm);
+    backdrop-filter: blur(10px);
+}
+
+.text-center.my-4 {
+    color: var(--task-text-white) !important;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: var(--task-radius);
+    backdrop-filter: blur(10px);
+}
+
+/* =================================================================== */
+/* TABLE STYLING                                                      */
+/* =================================================================== */
+
+.table {
+    background: var(--task-bg-primary);
+    border-radius: var(--task-radius);
+    overflow: hidden;
+    box-shadow: var(--task-shadow-lg);
+    border: 1px solid var(--task-border-soft);
+    backdrop-filter: blur(10px);
+}
+
+.table thead th {
+    background: var(--gradient-primary) !important;
+    color: var(--task-text-white) !important;
+    border: none !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+    padding: 1.25rem 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.table tbody td {
+    background: var(--task-bg-primary);
+    color: var(--task-text-primary);
+    border-color: var(--task-border-soft) !important;
+    padding: 1rem;
+    vertical-align: middle;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.08) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.table tbody tr:hover td {
+    background: transparent;
+}
+
+/* Enhanced badges for status and priority */
+.table .badge {
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: 999px;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Status badge colors */
+.badge.bg-success {
+    background: var(--status-completed) !important;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.badge.bg-info {
+    background: var(--status-progress) !important;
+    border-color: rgba(6, 182, 212, 0.3);
+}
+
+.badge.bg-warning {
+    background: var(--status-waiting) !important;
+    border-color: rgba(245, 158, 11, 0.3);
+    color: var(--task-text-white) !important;
+}
+
+.badge.bg-secondary {
+    background: var(--status-not-started) !important;
+    border-color: rgba(107, 114, 128, 0.3);
+}
+
+/* Priority badge colors */
+.badge.bg-danger {
+    background: var(--priority-high) !important;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.badge.bg-warning {
+    background: var(--priority-medium) !important;
+    border-color: rgba(245, 158, 11, 0.3);
+    color: var(--task-text-white) !important;
+}
+
+/* Action buttons */
+.btn-group-sm .btn {
+    border-radius: var(--task-radius-sm);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-width: 2px;
+    margin: 0 1px;
+}
+
+.btn-outline-success {
+    border-color: #10b981;
+    color: #059669;
+}
+
+.btn-outline-success:hover {
+    background: var(--status-completed) !important;
+    border-color: #10b981;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.3);
+}
+
+.btn-outline-primary {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.btn-outline-primary:hover {
+    background: var(--gradient-primary) !important;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+}
+
+.btn-outline-danger {
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.btn-outline-danger:hover {
+    background: var(--priority-high) !important;
+    border-color: #ef4444;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+}
+
+/* =================================================================== */
+/* PAGINATION STYLING                                                 */
+/* =================================================================== */
+
+.pagination {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--task-radius);
+    box-shadow: var(--task-shadow-md);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--task-border-soft);
+}
+
+.pagination .page-item .page-link {
+    border: none;
+    color: var(--task-text-primary);
+    font-weight: 600;
+    border-radius: var(--task-radius-sm);
+    margin: 0 2px;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.pagination .page-item .page-link:hover {
+    background: var(--gradient-accent) !important;
+    color: var(--task-text-white) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3);
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--gradient-primary) !important;
+    border-color: transparent;
+    color: var(--task-text-white) !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Limit selector */
+.form-group .form-label {
+    color: var(--task-text-white) !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.form-select-sm {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--task-radius-sm);
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.form-select-sm:focus {
+    border-color: rgba(102, 126, 234, 0.8);
+    box-shadow: 0 0 0 0.25rem var(--task-ring);
+}
+
+/* =================================================================== */
+/* MODAL STYLING                                                      */
+/* =================================================================== */
+
+.modal-content {
+    border-radius: var(--task-radius);
+    border: none;
+    box-shadow: var(--task-shadow-lg);
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.98);
+}
+
+.modal-header {
+    background: var(--gradient-primary);
+    color: var(--task-text-white);
+    border: none;
+    border-radius: var(--task-radius) var(--task-radius) 0 0;
+}
+
+.modal-title {
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-close {
+    filter: invert(1) brightness(2);
+    opacity: 0.8;
+}
+
+.modal-body .form-label {
+    font-weight: 600;
+    color: var(--task-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+    border-radius: var(--task-radius-sm);
+    border: 2px solid var(--task-border);
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem var(--task-ring);
+}
+
+/* =================================================================== */
+/* TASK DETAIL PAGE STYLING                                           */
+/* =================================================================== */
+
+.td-wrapper {
+    min-height: 60vh;
+    padding: clamp(16px, 3vw, 32px);
+    display: grid;
+    place-items: start center;
+    position: relative;
+}
+
+.td-header {
+    width: min(100%, 960px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem 1.5rem;
+    border-radius: var(--task-radius);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.td-breadcrumbs {
+    font-size: 0.95rem;
+    color: var(--task-text-white) !important;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.td-actions .btn {
+    font-weight: 600;
+    border-radius: var(--task-radius-sm);
+    transition: all 0.3s ease;
+}
+
+.td-actions .btn-outline-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.8);
+    color: var(--task-text-primary);
+    backdrop-filter: blur(10px);
+}
+
+.td-actions .btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.td-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.td-card {
+    width: min(100%, 960px);
+    border: none;
+    border-radius: var(--task-radius-lg);
+    box-shadow: var(--task-shadow-lg);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--task-bg-primary);
+    position: relative;
+}
+
+.td-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-accent);
+    opacity: 0.8;
+}
+
+.td-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--task-shadow-lg), 0 30px 60px rgba(0, 0, 0, 0.1);
+}
+
+.td-card .card-body {
+    padding: clamp(20px, 3vw, 40px);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.td-title {
+    font-weight: 800;
+    font-size: clamp(1.25rem, 1.5rem + 0.5vw, 1.75rem);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.td-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem 2rem;
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: var(--task-radius-sm);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+@media (min-width: 640px) {
+    .td-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.td-label {
+    color: var(--task-text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.td-badges .badge {
+    letter-spacing: 0.3px;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.td-desc {
+    margin-top: 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--task-text-primary);
+    background: rgba(248, 250, 252, 0.8);
+    padding: 1.5rem;
+    border-radius: var(--task-radius-sm);
+    border-left: 4px solid var(--gradient-accent);
+}
+
+.td-dates {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 2rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+    border-radius: var(--task-radius-sm);
+    font-size: 0.95rem;
+}
+
+@media (min-width: 640px) {
+    .td-dates {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.td-dates div {
+    color: var(--task-text-secondary);
+    font-weight: 500;
+}
+
+/* =================================================================== */
+/* SKELETON LOADING                                                   */
+/* =================================================================== */
+
+.td-skeleton {
+    width: min(100%, 960px);
+    background: var(--task-bg-primary);
+    border-radius: var(--task-radius-lg);
+    box-shadow: var(--task-shadow-lg);
+    padding: clamp(20px, 3vw, 40px);
+    position: relative;
+    overflow: hidden;
+}
+
+.td-skeleton::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-accent);
+    opacity: 0.6;
+}
+
+.td-skel-line {
+    height: 16px;
+    background: linear-gradient(90deg,
+            rgba(102, 126, 234, 0.1) 25%,
+            rgba(102, 126, 234, 0.2) 37%,
+            rgba(102, 126, 234, 0.1) 63%);
+    background-size: 400% 100%;
+    border-radius: 8px;
+    animation: td-shimmer 1.5s ease-in-out infinite;
+    margin: 1rem 0;
+}
+
+.td-skel-line.lg {
+    height: 24px;
+    width: 75%;
+}
+
+.td-skel-line.md {
+    width: 60%;
+}
+
+.td-skel-line.sm {
+    width: 40%;
+}
+
+@keyframes td-shimmer {
+    0% {
+        background-position: 100% 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+/* =================================================================== */
+/* RESPONSIVE DESIGN                                                  */
+/* =================================================================== */
+
+@media (max-width: 991.98px) {
+    .table thead th {
+        font-size: 0.8rem;
+        padding: 1rem 0.75rem;
+    }
+
+    .table tbody td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-group-sm .btn {
+        padding: 0.4rem 0.6rem;
+    }
+
+    .td-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .td-meta {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .py-4 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .table-responsive {
+        border-radius: var(--task-radius-sm);
+    }
+
+    .pagination {
+        padding: 0.5rem 0.75rem;
+        justify-content: center;
+    }
+
+    .pagination .page-item .page-link {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .td-wrapper {
+        padding: 1rem;
+    }
+
+    .td-card .card-body {
+        padding: 1.25rem;
+    }
+
+    .td-desc,
+    .td-dates,
+    .td-meta {
+        padding: 1rem;
+    }
+}
+
+/* =================================================================== */
+/* ACCESSIBILITY & FOCUS STATES                                       */
+/* =================================================================== */
+
+.table tbody tr:focus-within {
+    outline: 2px solid var(--gradient-primary);
+    outline-offset: 2px;
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 0.25rem var(--task-ring), 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+/* Enhanced contrast for better readability */
+.text-muted {
+    color: var(--task-text-secondary) !important;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    scroll-behavior: smooth;
+}
+
+.table,
+.modal-content,
+.td-card,
+.pagination,
+.btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

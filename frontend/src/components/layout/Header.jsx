@@ -21,7 +21,7 @@ function Header({ onMenuClick }) {
     }, []);
 
     return (
-        <Navbar ref={ref} className="bg-body-tertiary">
+        <Navbar ref={ref} className="bg-body-tertiary app-header">
             <Container className="d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
                     <Button
