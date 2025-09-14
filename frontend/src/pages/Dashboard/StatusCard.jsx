@@ -1,62 +1,39 @@
-import { Card, ListGroup, Badge, Button, Spinner } from "react-bootstrap";
+// StatusCard.jsx
+import { useDroppable } from "@dnd-kit/core";
+import { Card, ListGroup, Spinner } from "react-bootstrap";
+import DraggableTaskCard from "./DraggableTaskCard";
 
-function StatusCard({ title, tasks, loading, onComplete }) {
+function StatusCard({ title, statusKey, tasks, loading, count, activeTaskId }) {
+    const { setNodeRef, isOver } = useDroppable({ id: statusKey });
+
     return (
-        <>
-            <Card className="mb-3 shadow-sm">
-                <Card.Header className="d-flex justify-content-between align-items-center">
-                    <span className="fw-semibold">{title}</span>
+        <Card className="mb-3 shadow-sm status-card">
+            <Card.Header className="d-flex justify-content-between align-items-center">
+                <span className="status-title"><span className="separator" />{title}</span>
+                <div className="d-flex align-items-center gap-2">
+                    <span className="status-count">{count}</span>
                     {loading && <Spinner animation="border" size="sm" />}
-                </Card.Header>
-                <ListGroup variant="flush">
-                    {!loading && tasks.length === 0 && (
-                        <ListGroup.Item className="text-muted">No tasks</ListGroup.Item>
-                    )}
-                    {tasks.map((task) => (
-                        <ListGroup.Item
-                            key={task._id}
-                            className="d-flex justify-content-between align-items-start"
-                        >
-                            <div>
-                                <div className="fw-semibold">{task.title}</div>
-                                <small className="text-muted">
-                                    {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "No due date"}
-                                </small>
-                            </div>
-                            <div className="text-end">
-                                <Badge
-                                    bg={
-                                        task.priority === "High"
-                                            ? "danger"
-                                            : task.priority === "Medium"
-                                                ? "warning"
-                                                : "secondary"
-                                    }
-                                >
-                                    {task.priority}
-                                </Badge>
-                                {onComplete && (
-                                    <div>
-                                        <Button
-                                            size="sm"
-                                            className="ms-2 mt-2"
-                                            variant="outline-success"
-                                            onClick={() => onComplete(task._id)}
-                                        >
-                                            Mark done
-                                        </Button>
-                                    </div>
-                                )}
-                                {
-                                    
-                                }
-                            </div>
-                        </ListGroup.Item>
+                </div>
+            </Card.Header>
+
+            <ListGroup
+                ref={setNodeRef}
+                variant="flush"
+                className={`task-list ${isOver ? "droppable-over" : ""}`}
+            >
+                {!loading && tasks.length === 0 && (
+                    <ListGroup.Item className="task-empty">No tasks</ListGroup.Item>
+                )}
+
+                {tasks
+                    // hide the source item while it's being dragged (prevents duplicate “ghost”)
+                    .filter(task => task._id !== activeTaskId)
+                    .map(task => (
+                        <DraggableTaskCard key={task._id} task={task} />
                     ))}
-                </ListGroup>
-            </Card>
-        </>
-    )
+            </ListGroup>
+        </Card>
+    );
 }
 
-export default StatusCard
+export default StatusCard;

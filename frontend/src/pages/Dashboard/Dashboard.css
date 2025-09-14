@@ -1,0 +1,205 @@
+/* Dashboard.css */
+
+:root {
+    --dash-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
+    --text-strong: #1e293b;
+    --text-muted: #64748b;
+    --primary: #3b82f6;
+    /* clean blue */
+    --primary-light: #dbeafe;
+    --accent: #059669;
+    /* emerald green */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --ring: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Page scaffold */
+.dashboard-page {
+    background: var(--dash-bg);
+    min-height: 100vh;
+    padding: 24px 0;
+}
+
+.dashboard-title {
+    font-weight: 800;
+    letter-spacing: 0.2px;
+    color: var(--text-strong);
+    margin-bottom: 20px;
+    line-height: 1.1;
+}
+
+/* Column layout spacing */
+.dashboard-row {
+    row-gap: 18px;
+}
+
+/* Status columns / cards */
+.status-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border) !important;
+    box-shadow: var(--shadow-sm);
+    border-radius: 12px !important;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.status-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.status-card .card-header {
+    background: linear-gradient(180deg, #fff, #f8fafc);
+    border-bottom: 1px solid var(--card-border);
+    padding: 12px 16px;
+}
+
+.status-title {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--text-strong);
+}
+
+/* tiny pill showing count */
+.status-count {
+    font-size: 12px;
+    color: #fff;
+    background: var(--primary);
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-weight: 500;
+}
+
+/* Task list area */
+.task-list {
+    min-height: 140px;
+    transition: box-shadow .12s ease, outline .12s ease, background-color .12s ease;
+    background-color: #fff;
+}
+
+.task-list.droppable-over {
+    outline: var(--ring);
+    background-color: var(--primary-light);
+}
+
+/* Empty state */
+.task-empty {
+    color: var(--text-muted) !important;
+    font-style: italic;
+}
+
+/* Individual task cards */
+.task-card {
+    border: none !important;
+    border-bottom: 1px dashed var(--card-border) !important;
+    padding: 12px 16px !important;
+    transition: background-color .12s ease, transform .12s ease, box-shadow .12s ease;
+    background: #fff;
+}
+
+.task-card:last-child {
+    border-bottom: none !important;
+}
+
+.task-card:hover {
+    background: #f8fafc;
+}
+
+.task-title {
+    font-weight: 600;
+    color: var(--text-strong);
+    margin-bottom: 2px;
+}
+
+.task-meta {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Drag states */
+.task-card.dragging,
+.task-card.overlay {
+    box-shadow: var(--shadow-md);
+    transform: scale(1.02);
+    cursor: grabbing;
+    z-index: 9999;
+}
+
+/* Priority badges - soft, pleasing colors with higher specificity */
+.badge.badge-priority-high {
+    background-color: #ff9999 !important;
+    /* soft pink-red */
+    color: #2d3748 !important;
+    border: none !important;
+}
+
+.badge.badge-priority-medium {
+    background-color: #81c784 !important;
+    /* soft green */
+    color: #2d3748 !important;
+    border: none !important;
+}
+
+.badge.badge-priority-low {
+    background-color: #90caf9 !important;
+    /* soft blue */
+    color: #2d3748 !important;
+    border: none !important;
+}
+
+/* Small utility for subtle separators in headers */
+.separator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+}
+
+/* Smooth the board's layout shifts a bit */
+.status-card,
+.task-list,
+.task-card {
+    will-change: transform, box-shadow;
+}
+
+/* While dragging, the original "ghost" gets lighter; overlay pops */
+.task-card.dragging {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Overlay clone: subtle tilt & scale, strong shadow */
+.task-card.overlay {
+    transform: translate3d(0, 0, 0) scale(1.04) rotate(0.6deg);
+    box-shadow: var(--shadow-md);
+}
+
+/* Opt-in motion for items entering lists (after move) */
+@keyframes task-enter {
+    from {
+        transform: translateY(6px);
+        opacity: 0.0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.task-card {
+    animation: task-enter .14s ease;
+}
+
+/* Make drops feel receptive */
+.task-list.droppable-over {
+    outline: var(--ring);
+    background-color: var(--primary-light);
+    box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.08);
+}
