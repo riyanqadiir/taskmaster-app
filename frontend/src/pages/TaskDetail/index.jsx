@@ -5,7 +5,7 @@ import { taskDetail } from '../../api/tasksApi';
 import { Alert, Button } from "react-bootstrap";
 import TaskCard from './TaskDetailCard';
 import './TaskDetail.css';
-import AddTaskModal from "../Tasks/AddTaskModal";
+import TaskModal from "../Tasks/TaskModal";
 
 function TaskDetail() {
     const { id } = useParams();
@@ -23,8 +23,8 @@ function TaskDetail() {
         _id: "",
         title: "",
         description: "",
-        status: "not_started",
-        priority: "Low",
+        status: "",
+        priority: "",
         dueDate: "",
     });
 
@@ -76,7 +76,7 @@ function TaskDetail() {
             description: t.description ?? "",
             status: t.status || "",
             priority: t.priority ?? "",
-            dueDate: t.dueDate ??  "",
+            dueDate: t.dueDate ? t.dueDate.split("T")[0] : "",
         });
     }, []);
 
@@ -154,7 +154,7 @@ function TaskDetail() {
             {!loading && !err && task && <TaskCard task={task} />}
 
 
-            <AddTaskModal
+            <TaskModal
                 show={showModal}
                 handleClose={() => setShowModal(false)}
                 onTaskUpdated={handleTaskUpdated}

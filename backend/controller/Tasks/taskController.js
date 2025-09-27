@@ -32,8 +32,8 @@ const getFilteredTasks = async (req, res, condition = {}) => {
     const { _id: ownerId } = req.user;
     const { sortBy = "createdAt", order = "desc", title, status = "all" } = req.query;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
+    const limitParam = req.query.limit;
+    const limit = limitParam === "all" ? null : parseInt(limitParam) || 10;
     const sortOrder = order === "asc" ? 1 : -1;
 
     const startIndex = (page - 1) * limit;
@@ -51,8 +51,8 @@ const getFilteredTasks = async (req, res, condition = {}) => {
             Task.find(query)
                 .sort({ [sortBy]: sortOrder })
                 .skip(startIndex)
-                .limit(limit)
-                .lean(),    
+                .limit(limit || 0)
+                .lean(),
             Task.countDocuments(query)
         ]);
 
@@ -65,7 +65,7 @@ const getFilteredTasks = async (req, res, condition = {}) => {
         //getting formatted pagination
         if (total === 0) {
             results.pagination = getPagination(1, page, limit, res);
-        }else{
+        } else {
             results.pagination = getPagination(total, page, limit, res);
         }
 

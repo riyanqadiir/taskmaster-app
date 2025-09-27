@@ -4,7 +4,7 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 
 import { fetchTasks as fetchTasksApi, updateTask, deleteTask } from "../../api/tasksApi";
 
-import AddTaskModal from "./AddTaskModal";
+import TaskModal from "./TaskModal";
 import PaginationSection from "./PaginationSection";
 import FilterTasks from "./FilterTasks";
 import TaskTable from "./TaskTable";
@@ -154,7 +154,7 @@ function Tasks() {
                 </Col>
             </Row>
 
-            <AddTaskModal
+            <TaskModal
                 show={showModal}
                 handleClose={() => setShowModal(false)}
                 onTaskCreated={(newTask) => setTasks((prev) => [...prev, newTask])}
