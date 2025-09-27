@@ -2,7 +2,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
 
-export default function DraggableTaskCard({ task }) {
+export default function DraggableTaskCard({ task,onEdit }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } =
         useDraggable({ id: task._id });
 
@@ -18,6 +18,7 @@ export default function DraggableTaskCard({ task }) {
             style={style}
             isDragging={isDragging}
             task={task}
+            onEdit={onEdit}
         />
     );
 }

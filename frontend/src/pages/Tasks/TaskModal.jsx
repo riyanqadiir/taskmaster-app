@@ -2,7 +2,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { createTask, updateTask } from "../../api/tasksApi";
 
-function AddTaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, initialValues }) {
+function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, initialValues }) {
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({
         title: "",
@@ -111,4 +111,4 @@ function AddTaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, i
     );
 }
 
-export default AddTaskModal;
+export default TaskModal;

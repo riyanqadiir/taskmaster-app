@@ -20,7 +20,7 @@ export default function Sidebar({ show, onHide }) {
     }, [pathname]);
 
     const navItems = [
-        { to: "/", label: "Dashboard" },
+        { to: "/dashboard", label: "Dashboard" },
         { to: "/tasks", label: "Tasks" },
         { to: "/profile", label: "Profile" },
     ];

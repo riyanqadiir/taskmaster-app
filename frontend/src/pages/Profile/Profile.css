@@ -59,7 +59,7 @@
     border-radius: 16px;
     box-shadow: var(--shadow-colorful);
     transition: all 0.3s ease;
-    margin-top: 1rem;
+    margin: 1rem 1rem 0 1rem ;
 }
 
 .profile-hero::after {
@@ -261,7 +261,7 @@
 
 .profile-form .form-label {
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
     margin-bottom: 0.5rem;
 }
 

@@ -116,7 +116,15 @@ const validatePaginationQuery = [
 
     query("limit")
         .optional()
-        .isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
+        .custom((value) => {
+            if (value === "all") {
+                return true;
+            } // allow 'all'
+            if (!Number.isInteger(Number(value)) || Number(value) < 1) {
+                throw new Error("Limit must be a positive integer or 'all'");
+            }
+            return true;
+        }),
 
     handleValidationErrors
 ];

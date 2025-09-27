@@ -6,10 +6,6 @@ import StatusCard from "./StatusCard";
 import {
     DndContext,
     DragOverlay,
-    closestCorners,
-    PointerSensor,
-    useSensor,
-    useSensors,
 } from "@dnd-kit/core";
 import TaskCard from "./TaskCard";
 import "./Dashboard.css";
@@ -25,15 +21,12 @@ export default function Dashboard() {
     const [activeTaskId, setActiveTaskId] = useState(null);
     const { user } = useAuth();
 
-    const sensors = useSensors(
-        useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
-    );
 
 
     const loadTasks = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await fetchTasks();
+            const { data } = await fetchTasks({limit:"all"});
             // group once; avoid multiple setState calls
             const grouped = data.tasks.reduce(
                 (acc, t) => {
@@ -58,7 +51,9 @@ export default function Dashboard() {
                 const next = { not_started: [], in_progress: [], completed: [] };
                 for (const k of STATUS_KEYS) next[k] = prev[k].filter((t) => t._id !== taskId);
                 const moved = Object.values(prev).flat().find((t) => t._id === taskId) ?? null;
-                if (moved) next[status].push({ ...moved, status });
+                if (moved) {
+                    next[status].push({ ...moved, status });
+                }
                 return next;
             });
         } catch (err) {
@@ -114,7 +109,8 @@ export default function Dashboard() {
                             tasks={tasks.not_started}
                             loading={loading}
                             count={tasks.not_started.length}
-                            activeTaskId={activeTaskId}   
+                            activeTaskId={activeTaskId}
+                            setTasks = {setTasks}
                         />
                     </Col>
                     <Col xs={12} lg={4}>
@@ -125,6 +121,7 @@ export default function Dashboard() {
                             loading={loading}
                             count={tasks.in_progress.length}
                             activeTaskId={activeTaskId}
+                            setTasks = {setTasks}
                         />
                     </Col>
                     <Col xs={12} lg={4}>
@@ -135,6 +132,7 @@ export default function Dashboard() {
                             loading={loading}
                             count={tasks.completed.length}
                             activeTaskId={activeTaskId}
+                            setTasks = {setTasks}
                         />
                     </Col>
 
