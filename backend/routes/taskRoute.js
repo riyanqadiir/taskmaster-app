@@ -8,7 +8,8 @@ const {
     validateUpdateTask,
     checkTaskId,
     validateArchiveTask,
-    validatePaginationQuery } = require("../middleware/Tasks/validateTasks")
+    validatePaginationQuery,
+    validateDeleteTask } = require("../middleware/Tasks/validateTasks")
 const {
     getTasks,
     getTaskDetail,
@@ -16,13 +17,13 @@ const {
     updateTask,
     archiveToggle,
     getArchivedTasks,
-    deleteTask,
+    deleteToggle,
     getDeletedTasks,
-    // completeTask 
+    hardDeleteTask
 } = require("../controller/Tasks/taskController")
 
 router.get("/", verifyToken, validatePaginationQuery, validateTaskQuery, getTasks);
-router.get("/detail/:taskId", verifyToken,checkTaskId, getTaskDetail)
+router.get("/detail/:taskId", verifyToken, checkTaskId, getTaskDetail)
 router.get("/archive", verifyToken, validatePaginationQuery, validateTaskQuery, getArchivedTasks)
 router.get("/delete", verifyToken, validatePaginationQuery, validateTaskQuery, getDeletedTasks)
 
@@ -31,6 +32,6 @@ router.post("/archive/:taskId", verifyToken, checkTaskId, validateArchiveTask, a
 
 router.patch("/:taskId", verifyToken, checkTaskId, validateUpdateTask, updateTask);
 
-router.delete("/:taskId", verifyToken, checkTaskId, deleteTask)
-
+router.delete("/:taskId", verifyToken, checkTaskId,validateDeleteTask, deleteToggle)
+router.delete("/hard-delete/:taskId", verifyToken, checkTaskId, hardDeleteTask)
 module.exports = router;

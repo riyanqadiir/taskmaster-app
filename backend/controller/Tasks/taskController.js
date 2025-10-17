@@ -222,17 +222,18 @@ const getArchivedTasks = (req, res) => {
     return getFilteredTasks(req, res, { isDeleted: false, archived: true });
 };
 
-const deleteTask = async (req, res) => {
+const deleteToggle = async (req, res) => {
     const { taskId } = req.params;
     const { _id: ownerId } = req.user
+    const { deleted } = req.body;
     try {
-        const task = await Task.findOne({ _id: taskId, ownerId, isDeleted: false, })
+        const task = await Task.findOne({ _id: taskId, ownerId})
 
         if (!task) {
             return res.status(404).json({ message: "Task not found" });
         }
 
-        task.isDeleted = true;
+        task.isDeleted = deleted;
 
         await task.save();
 
@@ -245,7 +246,30 @@ const deleteTask = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+const hardDeleteTask = async (req, res) => {
+    const { taskId } = req.params;
+    const { _id: ownerId } = req.user;
 
+    try {
+        // Use findOneAndDelete with a composite filter to ensure the task ID and owner ID match
+        const task = await Task.findOneAndDelete({ 
+            _id: taskId, 
+            ownerId,
+        });
+
+        if (!task) {
+            return res.status(404).json({ message: "Task not found or unauthorized" });
+        }
+
+        res.status(200).json({
+            message: "Task permanently deleted successfully!",
+            task, // Optionally return the deleted task
+        });
+    } catch (err) {
+        console.error("Hard Delete Task Error:", err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 const getDeletedTasks = (req, res) => {
     return getFilteredTasks(req, res, { isDeleted: true });
@@ -260,6 +284,7 @@ module.exports = {
     updateTask,
     archiveToggle,
     getArchivedTasks,
-    deleteTask,
+    deleteToggle,
     getDeletedTasks,
+    hardDeleteTask
 };

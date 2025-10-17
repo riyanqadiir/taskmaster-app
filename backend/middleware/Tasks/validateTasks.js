@@ -143,5 +143,12 @@ const validateArchiveTask = [
 
     handleValidationErrors
 ]
+const validateDeleteTask = [
+    body("deleted")
+        .isBoolean()
+        .withMessage("Deleted must be a boolean value"),
 
-module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask, validatePaginationQuery };
+    handleValidationErrors
+]
+
+module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask, validatePaginationQuery,validateDeleteTask };

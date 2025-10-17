@@ -500,3 +500,114 @@
 * {
     transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
+
+/* =================================================================== */
+/* ACCORDION — DESKTOP + MOBILE SIDEBAR UNIFIED STYLE                 */
+/* =================================================================== */
+
+/* Remove Bootstrap's default accordion styles */
+.sidebar .accordion,
+.offcanvas .accordion {
+    background: transparent;
+    border: none;
+    margin: 0 0.5rem;
+}
+
+.sidebar .accordion-item,
+.offcanvas .accordion-item {
+    background: transparent;
+    border: none;
+}
+
+/* Accordion header styled like a nav link */
+.sidebar .accordion-button,
+.offcanvas .accordion-button {
+    background: transparent;
+    color: var(--sidebar-text);
+    font-weight: 500;
+    border: none;
+    box-shadow: none !important;
+    padding: 0.875rem 1.25rem;
+    border-radius: 12px;
+    margin: 0.25rem 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar .accordion-button::after,
+.offcanvas .accordion-button::after {
+    filter: brightness(1.3);
+    transform: scale(0.8);
+    transition: transform 0.25s ease;
+}
+
+.sidebar .accordion-button:not(.collapsed)::after,
+.offcanvas .accordion-button:not(.collapsed)::after {
+    transform: rotate(90deg) scale(0.8);
+}
+
+.sidebar .accordion-button:hover,
+.offcanvas .accordion-button:hover {
+    background: rgba(102, 126, 234, 0.15);
+    color: var(--sidebar-text-active);
+    transform: translateX(4px);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    box-shadow:
+        0 4px 12px rgba(102, 126, 234, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Expanded state (active section) */
+.sidebar .accordion-button:not(.collapsed),
+.offcanvas .accordion-button:not(.collapsed) {
+    background: var(--gradient-primary);
+    color: var(--sidebar-text-active);
+    transform: translateX(6px);
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(102, 126, 234, 0.35);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Accordion body (sublinks container) */
+.sidebar .accordion-body,
+.offcanvas .accordion-body {
+    padding: 0;
+    margin-left: 0.25rem;
+    border-left: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Sublinks look like sidebar links but slightly indented */
+.sidebar .accordion-body .nav-item-link,
+.offcanvas .accordion-body .nav-item-link {
+    padding: 0.75rem 1.75rem !important;
+    margin: 0.2rem 1rem;
+    font-size: 0.9rem;
+    color: var(--sidebar-text) !important;
+    border-radius: 10px;
+    display: block;
+}
+
+.sidebar .accordion-body .nav-item-link:hover,
+.offcanvas .accordion-body .nav-item-link:hover {
+    background: rgba(102, 126, 234, 0.15);
+    color: var(--sidebar-text-active) !important;
+}
+
+.sidebar .accordion-body .nav-item-link.active,
+.offcanvas .accordion-body .nav-item-link.active {
+    background: var(--gradient-primary) !important;
+    color: var(--sidebar-text-active) !important;
+    transform: translateX(6px);
+    font-weight: 600;
+}
+
+/* MOBILE — extra touch padding and spacing */
+@media (max-width: 991.98px) {
+    .offcanvas .accordion-button {
+        padding: 1rem 1.25rem;
+        margin: 0.25rem 0.75rem;
+    }
+
+    .offcanvas .accordion-body .nav-item-link {
+        padding-left: 2rem !important;
+    }
+}
