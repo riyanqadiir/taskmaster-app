@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { fetchTasks, updateTask as patchUpdateTask } from "../../api/tasksApi";
 import { useAuth } from "../../context/AuthContext";
+import { useTaskContext } from "../../context/TaskContext";
 import StatusCard from "./StatusCard";
+import TaskModal from "../Tasks/TaskModal"
 import {
     DndContext,
     DragOverlay,
@@ -10,31 +12,33 @@ import {
 import TaskCard from "./TaskCard";
 import "./Dashboard.css";
 
-const STATUS_KEYS = ["not_started", "in_progress", "completed"];
+const STATUS_KEYS = ["not_started", "waiting", "in_progress", "completed"];
 export default function Dashboard() {
     const [loading, setLoading] = useState(true);
     const [tasks, setTasks] = useState({
         not_started: [],
         in_progress: [],
         completed: [],
+        waiting: []
     });
     const [activeTaskId, setActiveTaskId] = useState(null);
     const { user } = useAuth();
+    const { showModal, setShowModal, mode, setMode, initialValues, setInitialValues } = useTaskContext();
 
 
 
     const loadTasks = useCallback(async () => {
         try {
             setLoading(true);
-            const { data } = await fetchTasks({limit:"all"});
+            const { data } = await fetchTasks({ limit: "all" });
             // group once; avoid multiple setState calls
             const grouped = data.tasks.reduce(
                 (acc, t) => {
-                    const key = STATUS_KEYS.includes(t.status) ? t.status : "not_started";
+                    const key = STATUS_KEYS.includes(t.status) && t.status;
                     acc[key].push(t);
                     return acc;
                 },
-                { not_started: [], in_progress: [], completed: [] }
+                { not_started: [], waiting: [], in_progress: [], completed: [] }
             );
             setTasks(grouped);
         } catch (err) {
@@ -48,7 +52,7 @@ export default function Dashboard() {
         try {
             await patchUpdateTask(taskId, { status });
             setTasks((prev) => {
-                const next = { not_started: [], in_progress: [], completed: [] };
+                const next = { not_started: [], waiting: [], in_progress: [], completed: [] };
                 for (const k of STATUS_KEYS) next[k] = prev[k].filter((t) => t._id !== taskId);
                 const moved = Object.values(prev).flat().find((t) => t._id === taskId) ?? null;
                 if (moved) {
@@ -70,7 +74,48 @@ export default function Dashboard() {
         for (const list of Object.values(tasks)) for (const t of list) map.set(t._id, t);
         return map;
     }, [tasks]);
+    const handleTaskUpdated = useCallback((updatedTask) => {
+        if (updatedTask) {
+            setTasks((prev) => {
+                const next = {
+                    not_started: [...prev.not_started],
+                    waiting: [...prev.waiting],
+                    in_progress: [...prev.in_progress],
+                    completed: [...prev.completed],
+                };
+                // 1️⃣ Find which list the task originally belonged to
+                const originalKey = Object.keys(next).find((key) =>
+                    next[key].some((t) => t._id === updatedTask._id)
+                );
+                // 2️⃣ Remove it from that list
+                if (originalKey) {
+                    next[originalKey] = next[originalKey].filter((t) => t._id !== updatedTask._id);
+                }
+                const destKey = updatedTask.status;
+                // 3️⃣ If it’s the same list, replace in-place (keep same index)
+                if (originalKey === destKey) {
+                    const originalIndex = prev[destKey].findIndex((t) => t._id === updatedTask._id);
+                    if (originalIndex !== -1) {
+                        next[destKey].splice(originalIndex, 0, updatedTask);
+                    } else {
+                        next[destKey] = [updatedTask, ...next[destKey]]; // fallback
+                    }
+                } else {
+                    // 4️⃣ If status changed, add to top of new list
+                    next[destKey] = [updatedTask, ...next[destKey]];
+                }
+                return next;
+            });
+        }
+        setShowModal(false);
+    }, []);
 
+    const handleNewTask = (task) => {
+        setTasks((prev) => ({
+            ...prev,
+            [task.status]: [task, ...prev[task.status]]
+        }));
+    }
     return (
         <Container fluid className=" text-center dashboard-page">
             <h1 className="dashboard-title">Welcome! {user?.firstName ?? ""} {user?.lastName ?? ""}</h1>
@@ -89,7 +134,7 @@ export default function Dashboard() {
 
                         // 1) Optimistically move in local state FIRST
                         setTasks(prev => {
-                            const next = { not_started: [], in_progress: [], completed: [] };
+                            const next = { not_started: [], waiting: [], in_progress: [], completed: [] };
                             for (const k of Object.keys(prev)) next[k] = prev[k].filter(t => t._id !== active.id);
                             next[destStatus].push({ ...srcTask, status: destStatus });
                             return next;
@@ -102,7 +147,7 @@ export default function Dashboard() {
                         updateTask(active.id, destStatus);
                     }}
                 >
-                    <Col xs={12} lg={4}>
+                    <Col xs={12} lg={3}>
                         <StatusCard
                             statusKey="not_started"
                             title="Not started"
@@ -110,10 +155,25 @@ export default function Dashboard() {
                             loading={loading}
                             count={tasks.not_started.length}
                             activeTaskId={activeTaskId}
-                            setTasks = {setTasks}
+                            setInitialValues={setInitialValues}
+                            setShowModal={setShowModal}
+                            setMode={setMode}
                         />
                     </Col>
-                    <Col xs={12} lg={4}>
+                    <Col xs={12} lg={3}>
+                        <StatusCard
+                            statusKey="waiting"
+                            title="Waiting"
+                            tasks={tasks.waiting}
+                            loading={loading}
+                            count={tasks.waiting.length}
+                            activeTaskId={activeTaskId}
+                            setInitialValues={setInitialValues}
+                            setShowModal={setShowModal}
+                            setMode={setMode}
+                        />
+                    </Col>
+                    <Col xs={12} lg={3}>
                         <StatusCard
                             statusKey="in_progress"
                             title="In progress"
@@ -121,10 +181,12 @@ export default function Dashboard() {
                             loading={loading}
                             count={tasks.in_progress.length}
                             activeTaskId={activeTaskId}
-                            setTasks = {setTasks}
+                            setInitialValues={setInitialValues}
+                            setShowModal={setShowModal}
+                            setMode={setMode}
                         />
                     </Col>
-                    <Col xs={12} lg={4}>
+                    <Col xs={12} lg={3}>
                         <StatusCard
                             statusKey="completed"
                             title="Completed"
@@ -132,7 +194,9 @@ export default function Dashboard() {
                             loading={loading}
                             count={tasks.completed.length}
                             activeTaskId={activeTaskId}
-                            setTasks = {setTasks}
+                            setInitialValues={setInitialValues}
+                            setShowModal={setShowModal}
+                            setMode={setMode}
                         />
                     </Col>
 
@@ -149,6 +213,14 @@ export default function Dashboard() {
                     </DragOverlay>
                 </DndContext>
             </Row>
+            <TaskModal
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                onTaskCreated={(newTask) => handleNewTask(newTask)}
+                onTaskUpdated={handleTaskUpdated}
+                mode={mode}
+                initialValues={initialValues}
+            />
         </Container>
     );
 }

@@ -1,5 +1,5 @@
 // Sidebar.jsx
-import { Nav, Offcanvas } from "react-bootstrap";
+import { Nav, Offcanvas, Accordion } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -21,7 +21,14 @@ export default function Sidebar({ show, onHide }) {
 
     const navItems = [
         { to: "/dashboard", label: "Dashboard" },
-        { to: "/tasks", label: "Tasks" },
+        {
+            to: "/tasks",
+            label: "Current Tasks",
+            sublinks: [
+                { to: "/tasks/deleted", label: "Deleted Tasks" },
+                { to: "/tasks/archive", label: "Archive Tasks" }
+            ]
+        },
         { to: "/profile", label: "Profile" },
     ];
 
@@ -32,11 +39,28 @@ export default function Sidebar({ show, onHide }) {
                 <div className="sidebar-inner">
                     <div className="sidebar-title">Navigation</div>
                     <Nav className="flex-column" activeKey={pathname} variant="pills">
-                        {navItems.map(n => (
-                            <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="nav-item-link">
-                                {n.label}
-                            </Nav.Link>
-                        ))}
+                        {navItems.map(n => {
+                            if (n.to !== "/tasks") {
+                                return <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="nav-item-link">
+                                    {n.label}
+                                </Nav.Link>
+                            }
+                            else {
+                                return <Accordion defaultActiveKey={n.to}  key={n.to}  alwaysOpen>
+                                    <Accordion.Item eventKey={n.to}>
+                                        <Accordion.Header>Tasks</Accordion.Header>
+                                        <Accordion.Body className="p-0"> {/* Use `p-0` to remove padding from the body */}
+                                            <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="nav-item-link">{n.label}</Nav.Link>
+                                            {n.sublinks.map((sub) => {
+                                                return <Nav.Link key={sub.to} as={Link} to={sub.to} eventKey={sub.to} className="nav-item-link">{sub.label}</Nav.Link>
+                                            })}
+
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            }
+                        }
+                        )}
                     </Nav>
                 </div>
             </aside>
@@ -45,12 +69,28 @@ export default function Sidebar({ show, onHide }) {
             <Offcanvas show={isMobile && show} onHide={onHide} placement="start" className="d-lg-none" backdrop scroll={false}>
                 <Offcanvas.Header closeButton><Offcanvas.Title>Menu</Offcanvas.Title></Offcanvas.Header>
                 <Offcanvas.Body>
-                    <Nav className="flex-column" activeKey={pathname} onSelect={onHide}>
-                        {navItems.map(n => (
-                            <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="px-2 py-2">
-                                {n.label}
-                            </Nav.Link>
-                        ))}
+                    <Nav className="flex-column py-5" activeKey={pathname} onSelect={onHide}>
+                        {navItems.map(n => {
+                            if (n.to !== "/tasks") {
+                                return <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="nav-item-link">
+                                    {n.label}
+                                </Nav.Link>
+                            }
+                            else {
+                                return <Accordion defaultActiveKey={n.to} key={n.to}  alwaysOpen>
+                                    <Accordion.Item eventKey={n.to}>
+                                        <Accordion.Header>Tasks</Accordion.Header>
+                                        <Accordion.Body className="p-0"> {/* Use `p-0` to remove padding from the body */}
+                                            <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="nav-item-link">{n.label}</Nav.Link>
+                                            {n.sublinks.map((sub) => {
+                                                return <Nav.Link key={sub.to} as={Link} to={sub.to} eventKey={sub.to} className="nav-item-link">{sub.label}</Nav.Link>
+                                            })}
+
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            }
+                        })}
                     </Nav>
                 </Offcanvas.Body>
             </Offcanvas>

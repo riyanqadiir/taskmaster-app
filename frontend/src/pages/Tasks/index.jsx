@@ -1,167 +1,87 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { useLocation } from "react-router-dom"; // 👈 import this
 
-import { fetchTasks as fetchTasksApi, updateTask, deleteTask } from "../../api/tasksApi";
-
-import TaskModal from "./TaskModal";
-import PaginationSection from "./PaginationSection";
-import FilterTasks from "./FilterTasks";
-import TaskTable from "./TaskTable";
+import TabularView from "./TabularView";
+import Dashboard from "../Dashboard";
+import { useTaskContext } from "../../context/TaskContext";
 import "./Task.css";
 
 function Tasks() {
-    const navigate = useNavigate();
-    const [tasks, setTasks] = useState([]);
-    const [filter, setFilter] = useState({
-        sortBy: "createdAt",
-        order: "desc",
-        title: "",
-        status: "all",
-        page: 1,
-        limit: 10
-    });
-    const [pagination, setPagination] = useState({
-        "totalItems": 0,
-        "currentPage": 1,
-        "totalPages": 0,
-        "pageSize": 10,
-        "hasNextPage": false,
-        "hasPrevPage": false
-    })
+    const { showModal, setShowModal, mode, setMode } = useTaskContext();
+    const [viewMode, setViewMode] = useState("tabular");
+    const location = useLocation();
 
-    const [showModal, setShowModal] = useState(false);
-    const [mode, setMode] = useState("add")
-    const [initialValues, setInitialValues] = useState({})
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    // Determine the page type based on path
+    const isDeletedPage = location.pathname.includes("/deleted");
+    const isArchivedPage = location.pathname.includes("/archive");
 
+    // Heading changes dynamically
+    const heading = isDeletedPage
+        ? "Deleted Tasks"
+        : isArchivedPage
+            ? "Archived Tasks"
+            : "My Tasks";
 
-    useEffect(() => {
-        let ignore = false;
-
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                const { data } = await fetchTasksApi(filter);
-                if (ignore) {
-                    return;
-                } // don't update if unmounted
-                setTasks(data.tasks ?? []);
-                setPagination(data.pagination);
-            } catch (err) {
-                if (!ignore) {
-                    setError(err.response?.data || err.message);
-                }
-            } finally {
-                if (!ignore) {
-                    setLoading(false);
-                }
-            }
-        };
-        fetchData();
-
-        return () => ignore = true
-
-    }, [filter]);
-
-    const handleEditOpen = useCallback((task) => {
-        setMode("edit");
-        setShowModal(true);
-        setInitialValues({
-            _id: task._id,
-            title: task.title,
-            description: task.description ?? "",
-            status: task.status,
-            priority: task.priority,
-            dueDate: task.dueDate ? task.dueDate.split("T")[0] : ""
-        });
-    }, [])
-    const handleDelete = useCallback(async (id) => {
-        try {
-            if (!window.confirm("Delete this task?")) {
-                return;
-            }
-            await deleteTask(id);
-            setTasks(prev => prev.filter(t => t._id !== id));
-        } catch (err) {
-            console.error("Delete failed:", err.response?.data || err.message);
-        }
-    }, [])
-
-    const handleDetails = useCallback((id) => {
-        navigate(`/tasks/${id}`);
-    }, [])
-    const handleComplete = useCallback(async (id) => {
-        try {
-            const res = await updateTask(id, { status: "completed" });
-            setTasks(prev => prev.map(t => (t._id === id ? res.data.task : t)));
-        } catch (err) {
-            console.error("Complete failed:", err.response?.data || err.message);
-        }
-    }, [])
+    const handleView = (e) => {
+        const { value } = e.target;
+        setViewMode(value);
+    };
 
     const handleAddTask = () => {
-        setMode("add")
-        setShowModal(true)
-    }
-
-
+        setMode("add");
+        setShowModal(true);
+    };
+    useEffect(() => {
+        setViewMode("tabular");
+    }, [location.pathname]);
     return (
         <Container fluid className="py-4">
-            <Row className="align-items-center mb-4">
-                <Col>
-                    <h2 className="fw-bold">My Tasks</h2>
+            <Row className="align-items-center mb-4 justify-content-between">
+                <Col xs={12} sm={6}>
+                    <Form.Group
+                        controlId="taskView"
+                        className="d-flex align-items-center flex-wrap gap-3 mb=3"
+                    >
+                        <Form.Label className="mb-0 fw-bold flex-shrink-0">
+                            <h2 className="fw-bold mb-0">{heading}</h2>
+                        </Form.Label>
+
+                        {/* Hide view toggle for deleted or archived pages */}
+                        {!isDeletedPage && !isArchivedPage && (
+                            <Form.Select
+                                name="view"
+                                value={viewMode}
+                                onChange={handleView}
+                                className="form-select-sm flex-shrink-0 w-50"
+                            >
+                                <option value="tabular">Tabular View</option>
+                                <option value="kanban">Kanban Board</option>
+                            </Form.Select>
+                        )}
+                    </Form.Group>
                 </Col>
-                <Col xs="auto">
-                    <Button variant="primary" onClick={() => handleAddTask()}>Add Task</Button>
-                </Col>
+
+                {/* Hide Add Task button on deleted or archived pages */}
+                {!isDeletedPage && !isArchivedPage && (
+                    <Col xs={12} sm={6} className="text-end mt-3 mt-sm-0">
+                        <Button variant="primary" onClick={handleAddTask}>
+                            Add Task
+                        </Button>
+                    </Col>
+                )}
             </Row>
 
-            <Row className="g-3 align-items-end mb-5">
-                <FilterTasks filter={filter} setFilter={setFilter} />
-            </Row>
-
-            <Row>
-                <Col xs={12}>
-                    {error && (
-                        <div className="text-danger text-center mb-3">
-                            {error} <Button onClick={() => setFilter({ ...filter })}>Retry</Button>
-                        </div>
-                    )}
-                    {loading ? (
-                        <div className="text-center my-4">Loading...</div>
-                    ) : (
-                        <TaskTable
-                            tasks={tasks}
-                            onEdit={handleEditOpen}
-                            onComplete={handleComplete}
-                            onDelete={handleDelete}
-                            onDetails={handleDetails}
-                        />
-                    )}
-                </Col>
-                <Col
-                    xs={12}
-                    className="d-flex justify-content-between align-items-stretch"
-                >
-                    <PaginationSection
-                        pagination={pagination}
-                        setFilter={setFilter}
-                        filter={filter}
-                    />
-                </Col>
-            </Row>
-
-            <TaskModal
-                show={showModal}
-                handleClose={() => setShowModal(false)}
-                onTaskCreated={(newTask) => setTasks((prev) => [...prev, newTask])}
-                onTaskUpdated={(updatedTask) => setTasks((prev) => prev.map((t) => t._id === updatedTask._id ? updatedTask : t))}
-                mode={mode}
-                initialValues={initialValues}
-            />
+            {viewMode === "tabular" ? (
+                <TabularView
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    mode={mode}
+                    setMode={setMode}
+                />
+            ) : (
+                <Dashboard />
+            )}
         </Container>
     );
 }

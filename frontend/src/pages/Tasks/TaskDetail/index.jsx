@@ -1,16 +1,17 @@
 // TaskDetail.jsx
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate,useLocation } from 'react-router-dom';
 import { useEffect, useState, useCallback } from 'react';
-import { taskDetail } from '../../api/tasksApi';
+import { taskDetail } from '../../../api/tasksApi';
 import { Alert, Button } from "react-bootstrap";
 import TaskCard from './TaskDetailCard';
 import './TaskDetail.css';
-import TaskModal from "../Tasks/TaskModal";
+import TaskModal from "../TaskModal";
 
 function TaskDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
-
+    const location = useLocation();
+    const fromPage = location.state?.from || '/tasks';
     const [task, setTask] = useState(null);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState("");
@@ -105,7 +106,7 @@ function TaskDetail() {
                     <Button
                         variant="outline-secondary"
                         size="sm"
-                        onClick={() => navigate('/tasks')}
+                        onClick={() => navigate(fromPage)} 
                         disabled={loading || saving}
                     >
                         Back
