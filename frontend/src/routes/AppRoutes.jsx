@@ -16,7 +16,7 @@ import ProtectedRoute from './ProtectedRoute';
 // Pages
 import Dashboard from '../pages/Dashboard';
 import Tasks from '../pages/Tasks';
-import TaskDetail from '../pages/Tasks/TaskDetail';
+import TaskDetail from '../pages/Tasks/TaskDetailPage'; 
 import Profile from '../pages/Profile';
 
 export default function AppRoutes() {

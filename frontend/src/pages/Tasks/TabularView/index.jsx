@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Row, Col, Button } from "react-bootstrap";
-import { fetchTasks as fetchTasksApi, fetchDeletedTasks, fetchArchiveTasks, updateTask, deleteToggle, archiveToggle, hardDelete } from "../../api/tasksApi";
-import TaskModal from "./TaskModal";
+import { fetchTasks as fetchTasksApi, fetchDeletedTasks, fetchArchiveTasks, updateTask, deleteToggle, archiveToggle, hardDelete } from "../../../api/tasksApi";
+import TaskModal from "../TaskModal";
 import PaginationSection from "./PaginationSection";
-import FilterTasks from "./FilterTasks";
+import FilterTasks from "../FilterTasks";
 import TaskTable from "./TaskTable";
-import "./Task.css";
+
 
 function TabularView(props) {
     const { showModal, setShowModal, mode, setMode, page } = props;
@@ -33,7 +33,7 @@ function TabularView(props) {
     const [initialValues, setInitialValues] = useState({})
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         let ignore = false;
@@ -74,7 +74,7 @@ function TabularView(props) {
 
         return () => ignore = true
 
-    }, [filter, window.location.pathname]);
+    }, [filter, window.location.pathname,refresh]);
 
     const handleEditOpen = useCallback((task) => {
         setMode("edit");
@@ -88,10 +88,11 @@ function TabularView(props) {
             dueDate: task.dueDate ? task.dueDate.split("T")[0] : ""
         });
     }, [])
-    const handleSoftDeleteToggle = useCallback(async (id,deleted) => {
+    const handleSoftDeleteToggle = useCallback(async (id, deleted) => {
         try {
-            const res = await deleteToggle(id,{ deleted: !deleted });
-            setTasks(prev => prev.filter(t => t._id !== id));
+            const res = await deleteToggle(id, { deleted: !deleted });
+            // setTasks(prev => prev.filter(t => t._id !== id));
+            setRefresh((prev) => !prev);
         } catch (err) {
             console.error("Delete failed:", err.response?.data || err.message);
         }
@@ -108,11 +109,11 @@ function TabularView(props) {
         }
     }, [])
     const handleDetails = useCallback(
-    (id) => {
-        navigate(`/tasks/${id}`, { state: { from: location.pathname } });
-    },
-    [navigate, location.pathname]
-);
+        (id) => {
+            navigate(`/tasks/${id}`, { state: { from: location.pathname } });
+        },
+        [navigate, location.pathname]
+    );
     const handleComplete = useCallback(async (id) => {
         try {
             const res = await updateTask(id, { status: "completed" });
@@ -124,7 +125,8 @@ function TabularView(props) {
     const handleArchive = useCallback(async (id, archive) => {
         try {
             const res = await archiveToggle(id, { archive: !archive });
-            setTasks(prev => prev.filter(t => (t._id !== id)));
+            // setTasks(prev => prev.filter(t => (t._id !== id)));
+            setRefresh((prev) => !prev);
         } catch (err) {
             console.error(`${archive ? "Un Archive" : "Archive"} failed:`, err.response?.data || err.message);
         }
