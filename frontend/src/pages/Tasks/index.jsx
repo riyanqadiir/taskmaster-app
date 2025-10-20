@@ -3,7 +3,7 @@ import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { useLocation } from "react-router-dom"; // 👈 import this
 
 import TabularView from "./TabularView";
-import Dashboard from "../Dashboard";
+import KanbanView from "./KanbanView";
 import { useTaskContext } from "../../context/TaskContext";
 import "./Task.css";
 
@@ -80,7 +80,7 @@ function Tasks() {
                     setMode={setMode}
                 />
             ) : (
-                <Dashboard />
+                <KanbanView />
             )}
         </Container>
     );
