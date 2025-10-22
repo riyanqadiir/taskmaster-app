@@ -1,9 +1,9 @@
 import React from 'react'
-
-function index() {
+import { Container } from 'react-bootstrap'
+function DashBoard() {
     return (
-        <div>index</div>
+        <Container fluid className="py-4">Dashboard</Container>
     )
 }
 
-export default index
+export default DashBoard
