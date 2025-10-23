@@ -34,7 +34,7 @@ export default function Dashboard() {
             // group once; avoid multiple setState calls
             const grouped = data.tasks.reduce(
                 (acc, t) => {
-                    const key = STATUS_KEYS.includes(t.status) && t.status;
+                    const key = STATUS_KEYS.includes(t.status) ? t.status : "not_started";
                     acc[key].push(t);
                     return acc;
                 },

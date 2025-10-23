@@ -1,0 +1,19 @@
+.dashboard-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.card-header {
+    background-color: #fff !important;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.chart-placeholder {
+    border: 2px dashed #dee2e6;
+    border-radius: 6px;
+    background: #fdfdfd;
+}
+
+.list-group-item {
+    font-size: 0.9rem;
+}
