@@ -1,6 +1,5 @@
 import React from "react";
 import { Col } from "react-bootstrap";
-import Widget from "../../components/Widget";
 import { Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -17,21 +16,19 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 function CompletionTrend({ data }) {
-    // Handle empty data early
-    if (!Array.isArray(data) || data.length === 0) {
+    const completed = data.completed;
+    if (!Array.isArray(completed) || completed.length === 0) {
         return (
             <Col md={6} lg={4}>
-                <Widget title="Completion Trend">
                     <div className="text-center text-muted py-5">
                         <i className="bi bi-graph-up"></i>
                         <p className="mb-0 mt-2">No completed tasks yet</p>
                     </div>
-                </Widget>
             </Col>
         );
     }
 
-    const countsByDate = data.reduce((acc, task) => {
+    const countsByDate = completed.reduce((acc, task) => {
         const date = task.completedAt;
         if (!date) return acc;
         acc[date] = (acc[date] || 0) + 1;
@@ -49,7 +46,7 @@ function CompletionTrend({ data }) {
                 data: values,
                 fill: true,
                 borderColor: "#0d6efd",
-                backgroundColor: "rgba(13, 110, 253, 0.15)", 
+                backgroundColor: "rgba(13, 110, 253, 0.15)",
                 tension: 0.4,
                 borderWidth: 2,
                 pointRadius: 5,
@@ -116,13 +113,9 @@ function CompletionTrend({ data }) {
     };
 
     return (
-        <Col md={6} lg={4}>
-            <Widget title="Completion Trend">
-                <div style={{ height: "280px", paddingTop: "10px" }}>
-                    <Line options={options} data={chartData} />
-                </div>
-            </Widget>
-        </Col>
+        <div style={{ height: "280px", paddingTop: "10px" }}>
+            <Line options={options} data={chartData} />
+        </div>
     );
 }
 
