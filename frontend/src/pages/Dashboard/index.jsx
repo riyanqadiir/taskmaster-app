@@ -1,15 +1,44 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Widget from "../../components/Widget";
-import "./Dashboard.css";
-import { Row, Col, Container, Spinner, Alert } from "react-bootstrap";
-import CompletionTrend from "./CompletionTrend";
-import StatusBreakdown from "./StatusBreakdown";
-import Deadlines from "./Deadlines";
-import Activities from "./Activities";
+
+import { Row, Container, Spinner, Alert } from "react-bootstrap";
+
+import {
+    DndContext,
+    useDraggable,
+    useDroppable,
+    pointerWithin
+} from "@dnd-kit/core";
+import {
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+    arrayMove,
+    sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+
+
+
 import { fetchTasks } from "../../api/tasksApi";
 
-const STATUS_KEYS = ["not_started", "waiting", "in_progress", "completed"];
+import "./Dashboard.css";
 
+import CompletionTrend from "./widgets/CompletionTrend";
+import StatusBreakdown from "./widgets/StatusBreakdown";
+import Deadlines from "./widgets/Deadlines";
+import Activities from "./widgets/Activities";
+import TaskSummary from "./widgets/TaskSummary";
+
+//COMPONENTS
+import SortableWidget from "./components/SortableWidget";
+
+const STATUS_KEYS = ["not_started", "waiting", "in_progress", "completed"];
+const WIDGETS = {
+    summary: TaskSummary,
+    trend: CompletionTrend,
+    status: StatusBreakdown,
+    deadlines: Deadlines,
+    activity: Activities,
+};
 const Dashboard = () => {
     const [tasks, setTasks] = useState({
         not_started: [],
@@ -19,6 +48,14 @@ const Dashboard = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const [widgets, setWidgets] = useState([
+        { title: "My Tasks Summary", id: "summary", size: 4 },
+        { title: "Completion Trend", id: "trend", size: 4 },
+        { title: "Status Breakdown", id: "status", size: 4 },
+        { title: "Recent Activity", id: "activity", size: 4 },
+        { title: "Upcoming Deadlines", id: "deadlines", size: 4 },
+    ]);
 
     const loadTasks = useCallback(async () => {
         try {
@@ -30,7 +67,6 @@ const Dashboard = () => {
 
             const grouped = data.tasks.reduce(
                 (acc, t) => {
-                    
                     if (t.completedAt) {
                         try {
                             const [datePart] = t.completedAt.split("T");
@@ -61,6 +97,33 @@ const Dashboard = () => {
         loadTasks();
     }, [loadTasks]);
 
+    const handleDragEnd = (event) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        setWidgets((items) => {
+            const oldIndex = items.findIndex(i => i.id === active.id);
+            const newIndex = items.findIndex(i => i.id === over.id);
+            const updated = arrayMove(items, oldIndex, newIndex);
+            localStorage.setItem("dashboardLayout", JSON.stringify(updated));
+            return updated;
+        });
+    };
+    const handleResize = (id, newSize) => {
+        setWidgets((prev) =>
+            prev.map((w) => (w.id === id ? { ...w, size: newSize } : w))
+        );
+
+        // Persist immediately
+        localStorage.setItem(
+            "dashboardLayout",
+            JSON.stringify(
+                widgets.map((w) =>
+                    w.id === id ? { ...w, size: newSize } : w
+                )
+            )
+        );
+    };
     if (loading) {
         return (
             <Container fluid className="py-5 text-center">
@@ -88,39 +151,29 @@ const Dashboard = () => {
     return (
         <Container fluid className="py-4 dashboard-container">
             <h4 className="mb-4">My Dashboard</h4>
+            <DndContext onDragEnd={handleDragEnd}>
+                <SortableContext items={widgets.map((widget) => widget.id)}>
+                    <Row>
+                        {widgets.map(({ title, id, size }) => {
+                            const WidgetComponent = WIDGETS[id];
+                            return (
+                                <SortableWidget title={title} key={id} id={id} size={size} onResize={handleResize}>
+                                    <WidgetComponent data={tasks} />
+                                </SortableWidget>
+                            );
+                        })}
 
-            <Row>
-                <Col md={6} lg={4}>
-                    <Widget title="My Tasks Summary">
-                        <div className="d-flex justify-content-between text-center align-items-center">
-                            <div>
-                                <h5 className="fw-bold text-danger p-0">
-                                    {tasks.not_started.length || 0}
-                                </h5>
-                                <small>Not Started</small>
-                            </div>
-                            <div>
-                                <h5 className="fw-bold text-warning">{tasks.waiting.length || 0}</h5>
-                                <small>Waiting</small>
-                            </div>
-                            <div>
-                                <h5 className="fw-bold text-info">{tasks.in_progress.length || 0}</h5>
-                                <small>In Progress</small>
-                            </div>
-                            <div>
-                                <h5 className="fw-bold text-success">{tasks.completed.length || 0}</h5>
-                                <small>Completed</small>
-                            </div>
-                        </div>
-                    </Widget>
-                </Col>
+                    </Row>
 
-                {/* Charts and Lists */}
+                </SortableContext>
+            </DndContext>
+            {/* <Row>
+                <TaskSummary data={tasks} />
                 <CompletionTrend data={tasks.completed || []} />
                 <StatusBreakdown data={tasks} />
                 <Deadlines data={[...tasks.waiting, ...tasks.in_progress]} />
                 <Activities data={[...tasks.completed, ...tasks.in_progress]} />
-            </Row>
+            </Row> */}
         </Container>
     );
 };

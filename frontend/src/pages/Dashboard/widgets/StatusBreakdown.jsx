@@ -1,6 +1,5 @@
 import React from 'react'
-import { Row, Col } from "react-bootstrap";
-import Widget from '../../components/Widget';
+import {  Col } from "react-bootstrap";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -10,7 +9,7 @@ function StatusBreakdown({ data }) {
         labels: ["To Do", "Waiting", "Inprogress", "Completed"],
         datasets: [
             {
-                label: '# of Votes',
+                label: 'Tasks',
                 data: [data.not_started.length, data.waiting.length, data.in_progress.length, data.completed.length],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -33,13 +32,11 @@ function StatusBreakdown({ data }) {
         ],
     };
     return (
-        < Col md={6} lg={4} >
-            <Widget title="Status Breakdown">
+            
                 <div className='d-flex justify-content-center' style={{ height: "280px", paddingTop: "10px" }}>
                     <Pie data={chartData} />;
                 </div>
-            </Widget>
-        </Col >
+         
     )
 }
 
