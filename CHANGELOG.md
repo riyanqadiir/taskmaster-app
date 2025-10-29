@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Project restructuring with separate backend and frontend folders
-- Comprehensive README.md documentation
+- Comprehensive README.md documentation with accurate frontend details
 - MIT License file
 - CHANGELOG.md for tracking project changes
+- Updated documentation to reflect existing React/Vite frontend
 
 ### Changed
 - Moved all backend code to `/backend` directory
@@ -79,6 +80,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - EJS for server-side templating
   - OTP-generator for verification codes
 
+- **Frontend Technologies**
+  - React 19 for modern UI development
+  - Vite for fast build tooling and development server
+  - React Router DOM for client-side routing
+  - Bootstrap & React Bootstrap for responsive UI components
+  - Chart.js & React Chart.js 2 for data visualization
+  - @dnd-kit for drag and drop functionality
+  - Axios for HTTP client and API communication
+  - React Google reCAPTCHA for security integration
+
 - **Project Structure**
   - MVC architecture pattern
   - Modular route organization
@@ -101,6 +112,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - nodemailer: ^7.0.3
 - nodemon: ^3.1.10
 - otp-generator: ^4.0.1
+
+### Frontend Dependencies
+- @dnd-kit/core: ^6.3.1
+- @dnd-kit/modifiers: ^9.0.0
+- @dnd-kit/sortable: ^10.0.0
+- @dnd-kit/utilities: ^3.2.2
+- axios: ^1.10.0
+- bootstrap: ^5.3.8
+- chart.js: ^4.5.1
+- react: ^19.1.0
+- react-bootstrap: ^2.10.10
+- react-bootstrap-icons: ^1.11.6
+- react-chartjs-2: ^5.3.0
+- react-dom: ^19.1.0
+- react-google-recaptcha: ^3.1.0
+- react-router-dom: ^7.6.3
 
 ## [0.1.0] - 2024-01-XX
 

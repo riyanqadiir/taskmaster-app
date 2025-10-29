@@ -43,7 +43,14 @@ A comprehensive task management application built with the MERN stack, featuring
 - **Multer** - File upload handling
 
 ### Frontend
-- Coming soon...
+- **React 19** - Frontend framework
+- **Vite** - Build tool and development server
+- **React Router DOM** - Client-side routing
+- **Bootstrap & React Bootstrap** - UI components and styling
+- **Chart.js & React Chart.js 2** - Data visualization
+- **@dnd-kit** - Drag and drop functionality
+- **Axios** - HTTP client for API calls
+- **React Google reCAPTCHA** - Security integration
 
 ## 📁 Project Structure
 
@@ -69,7 +76,17 @@ taskmaster-app/
 │   ├── views/            # EJS templates
 │   ├── server.js         # Main server file
 │   └── package.json      # Backend dependencies
-├── frontend/             # Frontend application (coming soon)
+├── frontend/             # React frontend application
+│   ├── src/             # Source code
+│   │   ├── components/  # Reusable components
+│   │   ├── pages/       # Page components
+│   │   ├── context/      # React context providers
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── api/          # API integration
+│   │   └── routes/       # Routing configuration
+│   ├── public/          # Static assets
+│   ├── package.json     # Frontend dependencies
+│   └── vite.config.js   # Vite configuration
 ├── .gitignore           # Git ignore rules
 ├── LICENSE              # MIT License
 ├── CHANGELOG.md         # Project changelog
@@ -98,7 +115,13 @@ taskmaster-app/
    npm install
    ```
 
-3. **Environment Setup**
+3. **Install frontend dependencies**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+4. **Environment Setup**
    ```bash
    # Create .env file in backend directory
    cp .env.example .env
@@ -118,10 +141,17 @@ taskmaster-app/
 
 4. **Start the backend server**
    ```bash
+   cd backend
    npm start
    ```
 
-The backend will be running on `http://localhost:3000`
+5. **Start the frontend development server**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+The backend will be running on `http://localhost:3000` and the frontend on `http://localhost:5173`
 
 ### API Endpoints
 
@@ -148,9 +178,16 @@ The backend will be running on `http://localhost:3000`
 
 ### Running in Development Mode
 
+**Backend:**
 ```bash
 cd backend
 npm run start  # Uses nodemon for auto-restart
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run dev  # Uses Vite dev server with hot reload
 ```
 
 ### Database Seeding
@@ -194,4 +231,4 @@ If you have any questions or need help, please:
 
 ---
 
-**Note**: This project is currently in active development. The frontend is coming soon!
+**Note**: This project is currently in active development with both frontend and backend components fully functional!
