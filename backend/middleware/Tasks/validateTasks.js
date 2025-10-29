@@ -150,5 +150,33 @@ const validateDeleteTask = [
 
     handleValidationErrors
 ]
+const validateDashboardLayout = [
+    body("layout")
+        .isArray({ min: 1 })
+        .withMessage("Layout must be a non-empty array"),
 
-module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask, validatePaginationQuery,validateDeleteTask };
+    body("layout.*.id")
+        .notEmpty()
+        .withMessage("Each layout item must have an id")
+        .isString()
+        .withMessage("Widget id must be a string"),
+
+    body("layout.*.title")
+        .optional()
+        .isString()
+        .withMessage("Widget title must be a string"),
+
+    body("layout.*.size")
+        .optional()
+        .isInt({ min: 1, max: 12 })
+        .withMessage("Widget size must be between 1 and 12"),
+
+    body("layout.*.position")
+        .optional()
+        .isInt({ min: 0 })
+        .withMessage("Widget position must be a positive integer"),
+
+    handleValidationErrors
+];
+
+module.exports = { validateCreateTask, validateTaskQuery, validateUpdateTask, checkTaskId, validateArchiveTask, validatePaginationQuery,validateDeleteTask,validateDashboardLayout };

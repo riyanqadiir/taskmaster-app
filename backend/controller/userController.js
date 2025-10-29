@@ -4,7 +4,7 @@ const profileModel = require("../model/userProfile.js")
 const accControlModel = require("../model/AccountControl")
 const verificationModel = require("../model/Verification.js")
 const metaModel = require("../model/UserMetadata.js")
-
+const DashboardLayout = require("../model/UserDashboardLayout");
 // dependencies
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
@@ -162,71 +162,75 @@ const login = async (req, res) => {
     const { email, password, remember_me = false } = req.body;
 
     try {
-        const user = await userModel.findOne({ email }).select('+password');
-
-        if (!user) {
-            return res.status(401).json({ message: "Invalid credentials" });
-        }
+        const user = await userModel.findOne({ email }).select("+password");
+        if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
         const verifyUser = await verificationModel.findOne({ userId: user._id });
-
-        if (!verifyUser || !verifyUser.isVerified) {
+        if (!verifyUser || !verifyUser.isVerified)
             return res.status(404).json({ message: "User is not verified" });
-        }
 
-        const accModel = await accControlModel.findOne({ userId: user._id })
+        const accModel = await accControlModel.findOne({ userId: user._id });
         let metadata = await metaModel.findOne({ userId: user._id });
 
-        if (!accModel || !metadata) {
-            return res.status(500).json({ message: "User account setup incomplete. Contact support." });
-        }
+        if (!accModel || !metadata)
+            return res.status(500).json({ message: "User account setup incomplete." });
 
-        if (metadata.lockUntil && metadata.lockUntil > Date.now()) {
-            return res.status(403).json({ message: "Account temporarily locked. Try again later." });
-        }
+        if (metadata.lockUntil && metadata.lockUntil > Date.now())
+            return res.status(403).json({ message: "Account temporarily locked." });
 
-        const passIsValid = await user.comparePassword(password)
+        const passIsValid = await user.comparePassword(password);
         if (!passIsValid) {
             metadata.loginAttempts += 1;
-
-            if (metadata.loginAttempts >= 5) {
+            if (metadata.loginAttempts >= 5)
                 metadata.lockUntil = Date.now() + 15 * 60 * 1000;
-            }
             await metadata.save();
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        accModel.status = "active"
-        accModel.statusReason = "User Logged In Successfully!"
-
-
+        // ✅ Update account + metadata
+        accModel.status = "active";
+        accModel.statusReason = "User Logged In Successfully!";
         metadata.loginAttempts = 0;
         metadata.lockUntil = null;
         metadata.lastLoginAt = new Date();
-
         await metadata.save();
-        await accModel.save()
-        await user.save()
+        await accModel.save();
 
+        // ✅ Get or create dashboard layout
+        let userLayout = await DashboardLayout.findOne({ userId: user._id });
+        if (!userLayout) {
+            const base = await DashboardLayout.findOne({ userId: null });
+            const baseLayout = base?.baseLayout || [];
+            userLayout = await DashboardLayout.create({
+                userId: user._id,
+                layout: baseLayout.map((item) => ({ ...item.toObject() })),
+                baseLayout,
+            });
+        }
 
-        const accessToken = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, { expiresIn: "1h" })
+        // ✅ Generate tokens
+        const accessToken = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
+            expiresIn: "1h",
+        });
 
         if (remember_me) {
             const refreshToken = jwt.sign(
                 { _id: user._id },
                 process.env.REFRESH_SECRET_KEY,
-                { expiresIn: '1d' }
+                { expiresIn: "1d" }
             );
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",
                 sameSite: "Strict",
-                maxAge: 24 * 60 * 60 * 1000, //1 days
+                maxAge: 24 * 60 * 60 * 1000,
             });
         }
 
-        return res.header('authorization', accessToken)
+        // ✅ Respond with layout included
+        return res
+            .header("authorization", accessToken)
             .status(200)
             .json({
                 message: "User logged in successfully!",
@@ -234,14 +238,17 @@ const login = async (req, res) => {
                     firstName: user.firstName,
                     lastName: user.lastName,
                     username: user.username,
-                    email: user.email
-                }
+                    email: user.email,
+                },
+                layout: userLayout.layout, // ← send layout here
+                baseLayout: userLayout.baseLayout, // ← send layout here
             });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error" });
     }
 };
+
 const refreshToken = (req, res) => {
     try {
         const userId = req.user._id;

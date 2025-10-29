@@ -1,25 +1,17 @@
-import React, { useEffect, useState, useCallback } from "react";
-
-import { Row, Container, Spinner, Alert } from "react-bootstrap";
-
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import { Row, Col, Container, Spinner, Alert, Button } from "react-bootstrap";
 import {
     DndContext,
-    useDraggable,
+    DragOverlay,
+    PointerSensor,
+    useSensor,
+    useSensors,
     useDroppable,
-    pointerWithin
 } from "@dnd-kit/core";
-import {
-    SortableContext,
-    useSortable,
-    verticalListSortingStrategy,
-    arrayMove,
-    sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
-
-
+import { SortableContext, arrayMove } from "@dnd-kit/sortable";
 
 import { fetchTasks } from "../../api/tasksApi";
-
+import { updateDashboardLayout } from "../../api/tasksApi"
 import "./Dashboard.css";
 
 import CompletionTrend from "./widgets/CompletionTrend";
@@ -28,8 +20,8 @@ import Deadlines from "./widgets/Deadlines";
 import Activities from "./widgets/Activities";
 import TaskSummary from "./widgets/TaskSummary";
 
-//COMPONENTS
 import SortableWidget from "./components/SortableWidget";
+import AddWidgetSidebar from "./components/AddWidgetSidebar";
 
 const STATUS_KEYS = ["not_started", "waiting", "in_progress", "completed"];
 const WIDGETS = {
@@ -39,7 +31,8 @@ const WIDGETS = {
     deadlines: Deadlines,
     activity: Activities,
 };
-const Dashboard = () => {
+
+export default function Dashboard() {
     const [tasks, setTasks] = useState({
         not_started: [],
         waiting: [],
@@ -48,134 +41,249 @@ const Dashboard = () => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [show, setShow] = useState(false);
+    const [widgets, setWidgets] = useState(() => {
+        const saved = localStorage.getItem("dashboardLayout");
+        return saved ? JSON.parse(saved) : [];
+    });
 
-    const [widgets, setWidgets] = useState([
-        { title: "My Tasks Summary", id: "summary", size: 4 },
-        { title: "Completion Trend", id: "trend", size: 4 },
-        { title: "Status Breakdown", id: "status", size: 4 },
-        { title: "Recent Activity", id: "activity", size: 4 },
-        { title: "Upcoming Deadlines", id: "deadlines", size: 4 },
-    ]);
+    const [activeWidget, setActiveWidget] = useState(null);
+    const [overlayStyle, setOverlayStyle] = useState({});
+    const containerRef = useRef(null);
 
-    const loadTasks = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError("");
+    const { setNodeRef, isOver } = useDroppable({ id: "dashboard-dropzone" });
 
-            const { data } = await fetchTasks({ limit: "all" });
-            if (!data?.tasks) throw new Error("Invalid response format");
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: { delay: 100, tolerance: 5 },
+        })
+    );
 
-            const grouped = data.tasks.reduce(
-                (acc, t) => {
-                    if (t.completedAt) {
-                        try {
+    const loadTasks = useCallback(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const { data } = await fetchTasks({ limit: "all" });
+                if (!data?.tasks) throw new Error("Invalid response format");
+
+                const grouped = data.tasks.reduce(
+                    (acc, t) => {
+                        if (t.completedAt) {
                             const [datePart] = t.completedAt.split("T");
-                            t.completedAt = datePart.replace("/", "-");
-                        } catch {
-                            t.completedAt = "";
+                            t.completedAt = datePart || "";
                         }
-                    }
-
-                    const key = STATUS_KEYS.includes(t.status) ? t.status : "not_started";
-                    acc[key].push(t);
-                    return acc;
-                },
-                { not_started: [], waiting: [], in_progress: [], completed: [] }
-            );
-
-            setTasks(grouped);
-            console.log("Grouped tasks:", grouped);
-        } catch (err) {
-            console.error("Error loading tasks:", err);
-            setError(err.message || "Failed to load tasks");
-        } finally {
-            setLoading(false);
-        }
+                        const key = STATUS_KEYS.includes(t.status)
+                            ? t.status
+                            : "not_started";
+                        acc[key].push(t);
+                        return acc;
+                    },
+                    { not_started: [], waiting: [], in_progress: [], completed: [] }
+                );
+                setTasks(grouped);
+            } catch (err) {
+                setError(err.message || "Failed to load tasks");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, []);
 
-    useEffect(() => {
-        loadTasks();
-    }, [loadTasks]);
+    useEffect(() => loadTasks(), [loadTasks]);
 
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-        if (!over || active.id === over.id) return;
+    const handleDragStart = (event) => {
+        const comp = event.active.data?.current;
+        setActiveWidget(comp);
 
-        setWidgets((items) => {
-            const oldIndex = items.findIndex(i => i.id === active.id);
-            const newIndex = items.findIndex(i => i.id === over.id);
-            const updated = arrayMove(items, oldIndex, newIndex);
+        // Capture original dimensions for smoother overlay scaling
+        const element = event.active?.node?.current;
+        if (element) {
+            const rect = element.getBoundingClientRect();
+            setOverlayStyle({ width: rect.width, height: rect.height });
+        }
+    };
+
+    const handleAddWidget = (id, title) => {
+        const exists = widgets.find((w) => w.id === id);
+        if (!exists) {
+            const newWidget = { id, title, size: 4 };
+            const updated = [...widgets, newWidget];
+            setWidgets(updated);
             localStorage.setItem("dashboardLayout", JSON.stringify(updated));
-            return updated;
-        });
+        }
     };
-    const handleResize = (id, newSize) => {
-        setWidgets((prev) =>
-            prev.map((w) => (w.id === id ? { ...w, size: newSize } : w))
-        );
+    const handleDragEnd = async (event) => {
+        const { active, over } = event;
+        setActiveWidget(null);
+        setOverlayStyle({});
+        if (!over) return;
 
-        // Persist immediately
-        localStorage.setItem(
-            "dashboardLayout",
-            JSON.stringify(
-                widgets.map((w) =>
-                    w.id === id ? { ...w, size: newSize } : w
-                )
-            )
-        );
+        // Reorder existing widgets
+        if (
+            widgets.some((w) => w.id === active.id) &&
+            widgets.some((w) => w.id === over.id)
+        ) {
+            const updated = arrayMove(
+                widgets,
+                widgets.findIndex((i) => i.id === active.id),
+                widgets.findIndex((i) => i.id === over.id)
+            );
+
+            setWidgets(updated);
+            localStorage.setItem("dashboardLayout", JSON.stringify(updated));
+
+            // ✅ Sync with backend
+            try {
+                await updateDashboardLayout(updated);
+            } catch (err) {
+                console.error("Failed to update dashboard layout:", err);
+            }
+
+            return;
+        }
+
+        // Add new widget
+        if (over.id === "dashboard-dropzone") {
+            const exists = widgets.find((w) => w.id === active.id);
+            if (!exists) {
+                const newWidget = {
+                    id: active.id,
+                    title: active.data.current?.title,
+                    size: 4,
+                };
+                const updated = [...widgets, newWidget];
+                setWidgets(updated);
+                localStorage.setItem("dashboardLayout", JSON.stringify(updated));
+
+                // ✅ Sync with backend
+                try {
+                    await updateDashboardLayout(updated);
+                } catch (err) {
+                    console.error("Failed to save new widget layout:", err);
+                }
+            }
+        }
     };
-    if (loading) {
+
+    const handleRemoveWidget = async (id) => {
+        const updated = widgets.filter((w) => w.id !== id);
+        setWidgets(updated);
+        localStorage.setItem("dashboardLayout", JSON.stringify(updated));
+
+        try {
+            await updateDashboardLayout(updated);
+        } catch (err) {
+            console.error("Failed to update dashboard layout:", err);
+        }
+    };
+
+    const handleResize = async (id, newSize) => {
+        const updated = widgets.map((w) =>
+            w.id === id ? { ...w, size: newSize } : w
+        );
+        setWidgets(updated);
+        localStorage.setItem("dashboardLayout", JSON.stringify(updated));
+
+        try {
+            await updateDashboardLayout(updated);
+        } catch (err) {
+            console.error("Failed to update dashboard layout:", err);
+        }
+    };
+
+    if (loading)
         return (
             <Container fluid className="py-5 text-center">
-                <Spinner animation="border" variant="primary" />
-                <p className="mt-3 text-muted">Loading your dashboard...</p>
+                <Spinner animation="border" />
             </Container>
         );
-    }
 
-    if (error) {
+    if (error)
         return (
             <Container fluid className="py-5">
-                <Alert variant="danger" className="text-center">
-                    <strong>Error:</strong> {error}
-                    <div className="mt-3">
-                        <button className="btn btn-sm btn-outline-primary" onClick={loadTasks}>
-                            Retry
-                        </button>
-                    </div>
-                </Alert>
+                <Alert variant="danger">{error}</Alert>
             </Container>
         );
-    }
 
     return (
-        <Container fluid className="py-4 dashboard-container">
-            <h4 className="mb-4">My Dashboard</h4>
-            <DndContext onDragEnd={handleDragEnd}>
-                <SortableContext items={widgets.map((widget) => widget.id)}>
-                    <Row>
-                        {widgets.map(({ title, id, size }) => {
-                            const WidgetComponent = WIDGETS[id];
-                            return (
-                                <SortableWidget title={title} key={id} id={id} size={size} onResize={handleResize}>
-                                    <WidgetComponent data={tasks} />
-                                </SortableWidget>
-                            );
-                        })}
+        <Container
+            fluid
+            className={`py-4 dashboard-container ${isOver ? "highlight-drop" : ""}`}
+            ref={(node) => {
+                setNodeRef(node);
+                containerRef.current = node;
+            }}
+        >
+            <DndContext
+                sensors={sensors}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+            >
+                <Row className="mb-4 justify-content-between align-items-center">
+                    <Col>
+                        <h4 className="mb-0">My Dashboard</h4>
+                    </Col>
+                    <Col>
+                        <Button
+                            variant="primary"
+                            className="float-end"
+                            onClick={() => setShow((p) => !p)}
+                        >
+                            Add Widget
+                        </Button>
+                        <AddWidgetSidebar
+                            show={show}
+                            setShow={setShow}
+                            data={tasks}
+                            widgets={widgets}
+                            onAdd={handleAddWidget}
+                        />
+                    </Col>
+                </Row>
 
-                    </Row>
+                <div
+                    ref={setNodeRef}
+                    className={`dashboard-dropzone ${isOver ? "highlight-drop" : ""}`}
+                >
+                    <SortableContext items={widgets.map((w) => w.id)}>
+                        <Row>
+                            {widgets.map(({ id, title, size }) => {
+                                const WidgetComponent = WIDGETS[id];
+                                if (!WidgetComponent) return null;
+                                return (
+                                    <SortableWidget
+                                        key={id}
+                                        id={id}
+                                        size={size}
+                                        title={title}
+                                        onResize={handleResize}
+                                        onRemove={() => handleRemoveWidget(id)}
+                                    >
+                                        <WidgetComponent data={tasks} />
+                                    </SortableWidget>
+                                );
+                            })}
+                        </Row>
+                    </SortableContext>
+                </div>
 
-                </SortableContext>
+                <DragOverlay
+                    style={overlayStyle}
+                    adjustScale={false}
+                    dropAnimation={{
+                        duration: 200,
+                        easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+                    }}
+                >
+                    {activeWidget?.component ? (
+                        <div className="drag-overlay-card">
+                            <h6 className="fw-semibold mb-2">{activeWidget.title}</h6>
+                            <activeWidget.component data={activeWidget.data} />
+                        </div>
+                    ) : null}
+                </DragOverlay>
             </DndContext>
-            {/* <Row>
-                <TaskSummary data={tasks} />
-                <CompletionTrend data={tasks.completed || []} />
-                <StatusBreakdown data={tasks} />
-                <Deadlines data={[...tasks.waiting, ...tasks.in_progress]} />
-                <Activities data={[...tasks.completed, ...tasks.in_progress]} />
-            </Row> */}
         </Container>
     );
-};
-
-export default Dashboard;
+}

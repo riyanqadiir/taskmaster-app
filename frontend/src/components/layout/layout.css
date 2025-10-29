@@ -506,6 +506,7 @@
 /* =================================================================== */
 
 /* Remove Bootstrap's default accordion styles */
+
 .sidebar .accordion,
 .offcanvas .accordion {
     background: transparent;

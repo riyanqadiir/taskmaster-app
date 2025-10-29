@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import {login} from "../../../api/userApi"
+import { login } from "../../../api/userApi"
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 
@@ -15,7 +15,7 @@ const Login = () => {
     const recaptchaRef = useRef();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const {user,setUser} = useAuth();
+    const { user, setUser } = useAuth();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -47,11 +47,21 @@ const Login = () => {
             });
 
             if (response.status === 200) {
-                setUser(response.data.user)
-                console.log(response.data.user)
                 const accessToken = response.headers['authorization'];
-                localStorage.setItem("accessToken", accessToken); 
-                setSuccess(response.data.message);
+                const { user, layout, baseLayout, message } = response.data;
+
+                // ✅ Store tokens and user info
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("user", JSON.stringify(user));
+
+                // ✅ Store dashboard layouts
+                if (layout) localStorage.setItem("dashboardLayout", JSON.stringify(layout));
+                if (baseLayout) localStorage.setItem("baseLayout", JSON.stringify(baseLayout));
+
+                // ✅ Update context (if applicable)
+                setUser(user);
+
+                setSuccess(message);
                 setTimeout(() => navigate('/dashboard'), 1000);
             }
         } catch (err) {
