@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {verifyOtp} from "../../../api/userApi"
+import api from '../../../api/axios';
 import ReCAPTCHA from "react-google-recaptcha";
 import "../auth.css";
 
@@ -81,40 +82,44 @@ const OtpVerification = () => {
     };
 
     return (
-        <div className="auth-container">
-            <h1>OTP Verification</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-control">
-                    <label htmlFor="otp">Enter OTP</label>
-                    <input
-                        type="text"
-                        id="otp"
-                        name="otp"
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter the OTP sent to your email"
-                    />
-                </div>
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success">{success}</p>}
-                {resendMessage && <p className="info">{resendMessage}</p>}
+        <div className="auth">
+            <div className="auth-container">
+                <h1>OTP Verification</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-control">
+                        <label htmlFor="otp">Enter OTP</label>
+                        <input
+                            type="text"
+                            id="otp"
+                            name="otp"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            placeholder="Enter the OTP sent to your email"
+                        />
+                    </div>
+                    {error && <p className="error">{error}</p>}
+                    {success && <p className="success">{success}</p>}
+                    {resendMessage && <p className="info">{resendMessage}</p>}
 
-                <ReCAPTCHA
-                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                    size="invisible"
-                    ref={recaptchaRef}
-                />
+                    <div className="recaptcha-container">
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                            size="invisible"
+                            ref={recaptchaRef}
+                        />
+                    </div>
 
-                <button type="submit">Verify OTP</button>
-                <button
-                    type="button"
-                    className="resend-btn"
-                    onClick={handleResendOtp}
-                    disabled={isResending}
-                >
-                    {isResending ? "Resending..." : "Resend OTP"}
-                </button>
-            </form>
+                    <button type="submit">Verify OTP</button>
+                    <button
+                        type="button"
+                        className="resend-btn"
+                        onClick={handleResendOtp}
+                        disabled={isResending}
+                    >
+                        {isResending ? "Resending..." : "Resend OTP"}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

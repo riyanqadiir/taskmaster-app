@@ -2,19 +2,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 56px);
-  background: #f5f7fa;
+  min-height: calc(100vh - var(--header-h, 56px));
+  background: var(--bg-secondary);
   padding: 1rem;
 }
 
 .auth .auth-container {
   width: 100%;
-  max-width: 440px;
-  padding: 1rem;
+  max-width: 520px; /* target: slightly wider but within 480-520px */
+  padding: 1.5rem 1.25rem 2.5rem; /* reserve space for captcha and breathing room */
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e0e0e0;
+  background: var(--bg-primary) !important;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
   margin: 0 auto;
 }
 
@@ -22,9 +22,15 @@
 .auth h1 {
   text-align: center;
   margin-bottom: 1rem;
-  color: #111;
+  color: var(--text-primary);
   font-size: 1.75rem;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.auth p.lead {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
 }
 
 /* Form controls */
@@ -33,86 +39,171 @@
   flex-direction: column;
   text-align: left;
   border: none;
-  margin-bottom: 0;
+  margin-bottom: 1rem; /* slightly larger vertical rhythm between fields */
 }
 
 .auth .form-control label {
   margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #333;
+  font-weight: 600;
+  /* Use slightly muted text on light theme for hierarchy, but ensure
+     high-contrast text on dark theme via the .dark override below. */
+  color: var(--text-secondary);
+}
+
+/* Dark-mode override: ensure labels are bright and readable */
+:root.dark .auth .form-control label,
+.dark .auth .form-control label {
+  color: var(--text-primary) !important;
 }
 
 .auth .form-control input {
-  padding: 0.65rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  /* Use theme-aware border token so the stroke is visible in both themes */
+  border: 1px solid var(--border-color);
   outline: none;
   font-size: 1rem;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.auth .form-control input::placeholder {
+  color: var(--text-tertiary);
 }
 
 .auth .form-control input:focus {
-  border-color: #86b7fe;
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .15);
+  border-color: var(--brand-primary);
+  box-shadow: var(--focus-ring);
 }
-
 
 .auth .remember_me {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   font-size: 14px;
-  color: #555;
+  color: var(--text-secondary);
+}
+
+.auth-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-top: 0.75rem;
+  gap: 0.5rem;
+  flex-wrap: wrap; /* allow stacking on small screens */
+}
+
+.auth-options label {
+  color: var(--text-secondary);
+}
+
+.auth-options .text-link {
+  color: var(--brand-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+.auth-options .text-link:hover {
+  color: var(--brand-primary-hover);
+  text-decoration: underline;
+}
+
+.recaptcha-container {
+  margin-top: 1rem;
+  position: relative;
+  min-height: 1px; /* reserve space */
+}
+
+/* Responsive adjustments: stack options on narrow screens */
+@media (max-width: 576px) {
+  .auth .auth-container {
+    max-width: 92%;
+    padding: 1.25rem;
+  }
+
+  .auth-options {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .auth-options .remember_me,
+  .auth-options .text-link {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.auth .actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.auth .actions .btn {
+  flex: 1;
 }
 
 .auth button {
   width: 100%;
-  padding: 0.65rem;
+  padding: 0.75rem;
   border: none;
-  border-radius: 8px;
-  background-color: #0d6efd;
-  color: #fff;
-  font-weight: 600;
+  border-radius: 10px;
+  background: var(--brand-primary);
+  color: var(--on-brand);
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color .2s ease, transform .02s ease;
+  transition: transform var(--transition-duration) ease,
+    box-shadow var(--transition-duration) ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .auth button:hover {
-  background-color: #0b5ed7;
+  transform: translateY(-1px);
+  background: var(--brand-primary-hover);
+}
+
+.auth button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.18);
 }
 
 .auth button:active {
   transform: translateY(1px);
 }
 
-/* Resend OTP button */
 .auth .resend-btn {
   margin-top: 10px;
   padding: 0.6rem;
   background-color: transparent;
-  border: 1px solid #0d6efd;
-  color: #0d6efd;
+  border: 1px solid var(--brand-primary);
+  color: var(--brand-primary);
   border-radius: 8px;
-  transition: background-color .2s ease;
+  transition: background-color .2s ease, color .2s ease;
 }
 
 .auth .resend-btn:hover {
-  background-color: #0d6efd;
-  color: #fff;
+  background-color: var(--brand-primary-hover);
+  color: var(--on-brand);
 }
 
 .auth .error {
-  color: #dc3545;
+  color: var(--error);
   margin-top: 0.25rem;
 }
 
 .auth .success {
-  color: #198754;
+  color: var(--success);
   margin-top: 0.25rem;
 }
 
 .auth .info {
-  color: #0d6efd;
+  color: var(--info);
   margin: 10px 0;
 }
 
@@ -120,60 +211,27 @@
 @media (max-width: 576px) {
   .auth .auth-container {
     margin: 1.25rem;
-    padding: 1.25rem;
+    padding: 1rem;
   }
 
   .auth h1 {
     font-size: 1.5rem;
   }
 }
-
-/* Auth.css — Light Blue Theme (structure unchanged) */
-.auth {
-  background: #f6f8fb;
-}
-
-.auth .auth-container {
-  background: #ffffff;
-  border: 1px solid #e6ebf2;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-}
-
-.auth h1 {
-  color: #0f172a;
-}
-
-.auth .form-control label {
-  color: #334155;
-}
-
-.auth .form-control input {
-  border: 1px solid #d7deea;
-}
-
-.auth .form-control input:focus {
-  border-color: #93c5fd;
-  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, .15);
-}
-
-.auth .remember_me {
-  color: #64748b;
-}
-
 .auth button {
-  background-color: #3b82f6;
+  background-color: var(--brand-primary);
 }
 
 .auth button:hover {
-  background-color: #2563eb;
+  background-color: var(--brand-primary-hover);
 }
 
 .auth .resend-btn {
-  border: 1px solid #3b82f6;
-  color: #2563eb;
+  border: 1px solid var(--brand-primary);
+  color: var(--brand-primary);
 }
 
 .auth .resend-btn:hover {
-  background-color: #3b82f6;
-  color: #fff;
+  background-color: var(--brand-primary-hover);
+  color: var(--on-brand);
 }

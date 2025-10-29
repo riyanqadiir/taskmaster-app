@@ -53,30 +53,36 @@ const ForgotPassword = () => {
             setSuccess('');
         }
     };
-    ``
     return (
-        <div className="auth-container">
-            <h1>Forgot Password</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="form-control">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        onChange={handleChange}
-                        value={formData.email}
-                    />
-                </div>
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success">{success}</p>}
-                <ReCAPTCHA
-                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                    size="invisible"
-                    ref={recaptchaRef}
-                />
-                <button type="submit">Submit</button>
-            </form>
+        <div className="auth">
+            <div className="auth-container">
+                <h1>Forgot Password</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="form-control">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="Enter your email"
+                            onChange={handleChange}
+                            value={formData.email}
+                        />
+                    </div>
+                    {error && <p className="error">{error}</p>}
+                    {success && <p className="success">{success}</p>}
+
+                    <div className="recaptcha-container">
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                            size="invisible"
+                            ref={recaptchaRef}
+                        />
+                    </div>
+
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
         </div>
     );
 };

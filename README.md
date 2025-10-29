@@ -77,14 +77,20 @@ taskmaster-app/
 │   ├── server.js         # Main server file
 │   └── package.json      # Backend dependencies
 ├── frontend/             # React frontend application
-│   ├── src/             # Source code
-│   │   ├── components/  # Reusable components
-│   │   ├── pages/       # Page components
-│   │   ├── context/      # React context providers
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── api/          # API integration
-│   │   └── routes/       # Routing configuration
 │   ├── public/          # Static assets
+│   ├── src/             # Source code
+│   │   ├── api/          # API integration
+│   │   ├── components/  # Reusable UI components
+│   │   │   ├── charts/          # Chart components
+│   │   │   ├── widgets/         # Dashboard widgets
+│   │   │   ├── theme/           # Theming components and context
+│   │   │   └── common/          # Common UI elements
+│   │   ├── context/      # React context providers (Auth, Theme, etc.)
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── pages/       # Page components (Login, Dashboard, Profile, etc.)
+│   │   ├── routes/      # Routing configuration
+│   │   ├── styles/      # Global styles and CSS variables
+│   │   └── utils/       # Utility functions
 │   ├── package.json     # Frontend dependencies
 │   └── vite.config.js   # Vite configuration
 ├── .gitignore           # Git ignore rules
@@ -232,3 +238,77 @@ If you have any questions or need help, please:
 ---
 
 **Note**: This project is currently in active development with both frontend and backend components fully functional!
+
+---
+
+## 🆕 Frontend Updates (Dark Mode, Accessibility & Theming)
+
+### Theming
+- Implemented light/dark mode toggle with persistent user preference.
+- Added consistent theming support across components and pages.
+- Integrated CSS variables for easy theme customization.
+
+### Accessibility
+- Enhanced keyboard navigation and focus management.
+- Improved ARIA attributes for better screen reader support.
+- Fixed color contrast issues to meet WCAG guidelines.
+
+### Responsive/Auth Fixes
+- Resolved login and signup UI glitches on mobile devices.
+- Improved layout responsiveness for various screen sizes.
+- Fixed authentication flow bugs affecting user experience.
+
+### Charts & Widgets
+- Updated chart components with better data handling and styling.
+- Added loading states and error handling for widgets.
+- Improved responsiveness and interactivity of dashboard elements.
+
+### Token Migration
+- Migrated authentication tokens from localStorage to secure HTTP-only cookies.
+- Updated API client to handle new token storage mechanism.
+- Enhanced security by reducing XSS attack surface.
+
+### Misc Updates
+- Refactored codebase for better maintainability and readability.
+- Updated dependencies to latest stable versions.
+- Improved error messages and user feedback across the app.
+
+### Why These Changes
+- To provide a modern, user-friendly interface with improved usability.
+- To enhance security and protect user data more effectively.
+- To ensure accessibility compliance and broaden user reach.
+- To improve performance and maintainability for future development.
+
+### Current Status
+
+**Done:**
+- Theming and dark mode implementation.
+- Accessibility improvements and keyboard support.
+- Token migration to HTTP-only cookies.
+- Responsive fixes for authentication pages.
+
+**In Progress:**
+- Finalizing chart and widget enhancements.
+- Additional accessibility audits and fixes.
+- Comprehensive testing and bug fixes.
+
+---
+
+## 👨‍💻 Author & Contributor
+
+This open-source project is developed and maintained entirely by **Riyan Qadir**, a passionate BS Software Engineering student dedicated to mastering full-stack web development and building real-world software solutions.
+
+**About the Author:**
+- **Name:** Riyan Qadir  
+- **Title:** Web Developer | Certified MERN Stack Developer  
+- **Skills:** HTML, CSS, Bootstrap, JavaScript, Advanced JS, React, Node.js, Express.js, MongoDB, RESTful APIs  
+- **Additional Knowledge:** Python, SQL/NoSQL, UI/UX, and Mobile App Development  
+- **Goal:** To continuously learn, innovate, and contribute to impactful projects in the software industry.  
+
+**Connect with Riyan:**
+- 🌐 **LinkedIn:** [http://linkedin.com/in/riyan-qadir/](http://linkedin.com/in/riyan-qadir/)  
+- 📧 **Email:** [rayyanbhatti@gmail.com](mailto:rayyanbhatti@gmail.com)  
+- 💻 **GitHub:** [https://github.com/riyanqadiir](https://github.com/riyanqadiir)
+
+**Acknowledgment:**  
+All credit and appreciation go to **Riyan Qadir**, the sole contributor and driving force behind this project, for his dedication, creativity, and commitment to developing this open-source software.

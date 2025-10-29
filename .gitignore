@@ -15,3 +15,12 @@
 # Mac system files
 .DS_Store 
 node_modules/
+
+# Lockfiles sometimes generated at repo root by npm (ignore if you don't want to commit it)
+package-lock.json
+yarn.lock
+
+# Common caches and build artefacts
+.vite/
+.cache/
+coverage/

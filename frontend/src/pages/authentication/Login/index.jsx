@@ -15,7 +15,7 @@ const Login = () => {
     const recaptchaRef = useRef();
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const { user, setUser } = useAuth();
+    const { setUser } = useAuth();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -71,51 +71,70 @@ const Login = () => {
         }
     };
     return (
-        <div className="auth-container">
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
+        <div className="auth">
+            <div className="auth-container">
+                <h1>Login</h1>
+                <form onSubmit={handleSubmit}>
                 <div className="form-control">
                     <label htmlFor="email">Email</label>
                     <input
+                        id="email"
                         name="email"
                         type="email"
                         placeholder="Enter your email"
                         onChange={handleChange}
                         value={formData.email}
+                        aria-label="Email"
+                        required
                     />
                 </div>
 
                 <div className="form-control">
                     <label htmlFor="password">Password</label>
                     <input
+                        id="password"
                         name="password"
                         type="password"
                         placeholder="Enter your password"
                         onChange={handleChange}
                         value={formData.password}
+                        aria-label="Password"
+                        required
                     />
                 </div>
 
-                <div className="remember_me">
-                    <input
-                        type="checkbox"
-                        name="remember_me"
-                        id="remember_me"
-                        checked={formData.remember_me}
-                        onChange={handleChange}
-                    />
-                    <label htmlFor="remember_me">Remember Me</label>
+                <div className="auth-options">
+                    <div className="remember_me">
+                        <input
+                            type="checkbox"
+                            name="remember_me"
+                            id="remember_me"
+                            checked={formData.remember_me}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="remember_me">Remember Me</label>
+                    </div>
+
+                    <div>
+                        <Link className="text-link" to="/forgot-password">Forgot Password?</Link>
+                    </div>
                 </div>
-                <Link type='button' to="/forgot-password" >Forgot Password</Link>
+
                 {error && <p className="error">{error}</p>}
                 {success && <p className="success">{success}</p>}
-                <ReCAPTCHA
-                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                    size="invisible"
-                    ref={recaptchaRef}
-                />
-                <button type="submit">Login</button>
-            </form>
+
+                {/* ensure recaptcha sits inside a container so it doesn't overlap footer */}
+                <div className="recaptcha-container" style={{ position: 'relative', marginTop: '1rem' }}>
+                    <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                        size="invisible"
+                        ref={recaptchaRef}
+                    />
+                </div>
+
+                <button type="submit" className="btn-primary">Login</button>
+                </form>
+            </div>
         </div>
     );
 };

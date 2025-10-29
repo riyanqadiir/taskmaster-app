@@ -1,19 +1,18 @@
 /* Dashboard.css */
 
 :root {
-    --dash-bg: #f8fafc;
-    --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-    --text-strong: #1e293b;
-    --text-muted: #64748b;
-    --primary: #3b82f6;
-    /* clean blue */
-    --primary-light: #dbeafe;
-    --accent: #059669;
-    /* emerald green */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
-    --ring: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    /* Map Kanban page tokens to global theme variables for consistent dark/light behavior */
+    --dash-bg: var(--bg-secondary);
+    --card-bg: var(--bg-primary);
+    --card-border: var(--border-color);
+    --text-strong: var(--text-primary);
+    --text-muted: var(--text-tertiary);
+    --primary: var(--accent-3, #3b82f6);
+    --primary-light: var(--info-light, #dbeafe);
+    --accent: var(--success, #059669);
+    --shadow-sm: var(--shadow-sm);
+    --shadow-md: var(--shadow-md);
+    --ring: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 /* Page scaffold */
@@ -52,7 +51,7 @@
 }
 
 .status-card .card-header {
-    background: linear-gradient(180deg, #fff, #f8fafc);
+    background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
     border-bottom: 1px solid var(--card-border);
     padding: 12px 16px;
 }
@@ -69,7 +68,7 @@
 /* tiny pill showing count */
 .status-count {
     font-size: 12px;
-    color: #fff;
+    color: var(--on-brand);
     background: var(--primary);
     border-radius: 999px;
     padding: 2px 8px;
@@ -80,7 +79,7 @@
 .task-list {
     min-height: 140px;
     transition: box-shadow .12s ease, outline .12s ease, background-color .12s ease;
-    background-color: #fff;
+    background-color: var(--bg-primary);
 }
 
 .task-list.droppable-over {
@@ -94,13 +93,12 @@
     font-style: italic;
 }
 
-/* Individual task cards */
 .task-card {
     border: none !important;
     border-bottom: 1px dashed var(--card-border) !important;
     padding: 12px 16px !important;
     transition: background-color .12s ease, transform .12s ease, box-shadow .12s ease;
-    background: #fff;
+    background: var(--bg-primary);
 }
 
 .task-card:last-child {
@@ -108,7 +106,7 @@
 }
 
 .task-card:hover {
-    background: #f8fafc;
+    background: var(--bg-secondary);
 }
 
 .task-title {
@@ -207,16 +205,16 @@
 /* Kanban (Dashboard.css) — Light Blue Theme */
 
 :root {
-    --dash-bg: #f6f8fb;
-    --card-bg: #ffffff;
-    --card-border: #e6ebf2;
-    --text-strong: #0f172a;
-    --text-muted: #64748b;
-    --primary: #3b82f6;
-    --primary-light: #eaf2ff;
-    --accent: #16a34a;
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, .06);
-    --shadow-md: 0 4px 12px rgba(15, 23, 42, .10);
+    --dash-bg: var(--bg-secondary);
+    --card-bg: var(--bg-primary);
+    --card-border: var(--border-color);
+    --text-strong: var(--text-primary);
+    --text-muted: var(--text-tertiary);
+    --primary: var(--accent-3, #3b82f6);
+    --primary-light: var(--info-light, #eaf2ff);
+    --accent: var(--success, #16a34a);
+    --shadow-sm: var(--shadow-sm);
+    --shadow-md: var(--shadow-md);
     --ring: 0 0 0 3px rgba(59, 130, 246, .18);
 }
 
@@ -225,12 +223,12 @@
 }
 
 .status-card .card-header {
-    background: linear-gradient(180deg, #fff, #f8fafc);
+    background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
     border-bottom: 1px solid var(--card-border);
 }
 
 .task-list {
-    background-color: #fff;
+    background-color: var(--bg-primary);
 }
 
 .task-list.droppable-over {

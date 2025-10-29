@@ -1,36 +1,41 @@
 /* Layout.css - Enhanced & Organized */
 
 /* =================================================================== */
-/* THEME TOKENS & VARIABLES                                           */
+/* LAYOUT STYLES                                                      */
 /* =================================================================== */
 
-:root {
-    /* Core layout colors */
-    --layout-bg: #0f172a;
-    --surface: #ffffff;
-    --border: #e2e8f0;
-    --border-soft: rgba(226, 232, 240, 0.6);
+.layout-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
 
-    /* Colorful gradient palette */
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    --gradient-warning: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    background-color: var(--bg-secondary);
+}
 
-    /* Interactive colors */
-    --accent-primary: #667eea;
-    --accent-secondary: #764ba2;
-    --accent-blue: #4facfe;
-    --accent-pink: #f093fb;
-    --accent-green: #43e97b;
-    --accent-orange: #fa709a;
+.sidebar {
+    background-color: var(--bg-secondary);
+    border-right: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
 
-    /* Sidebar styling */
-    --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+.nav-link {
+    color: var(--text-secondary) !important;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--accent-primary) !important;
+    background-color: var(--bg-primary) !important;
+}
     --sidebar-border: rgba(102, 126, 234, 0.15);
     --sidebar-text: #cbd5e1;
-    --sidebar-text-active: #ffffff;
+    --sidebar-text-active: var(--on-brand);
 
     /* Effects and shadows */
     --shadow-colorful: 0 10px 25px rgba(102, 126, 234, 0.15);
@@ -622,7 +627,7 @@
     /* Core layout colors (light surfaces) */
     --layout-bg: #f6f8fb;
     /* page background */
-    --surface: #ffffff;
+    --surface: var(--bg-primary);
     /* cards / panels */
     --border: #e6ebf2;
     --border-soft: rgba(230, 235, 242, 0.8);
@@ -632,7 +637,7 @@
     --gradient-secondary: linear-gradient(180deg, #edf6ff, #edf6ff);
     --gradient-accent: linear-gradient(180deg, #e9f1ff, #e9f1ff);
     --gradient-success: linear-gradient(180deg, #ecfdf5, #ecfdf5);
-    --gradient-warning: linear-gradient(180deg, #fff7ed, #fff7ed);
+    --gradient-warning: linear-gradient(180deg, var(--warning-light), var(--warning-light));
 
     /* Interactive colors */
     --accent-primary: #3b82f6;
@@ -646,10 +651,10 @@
     --accent-orange: #f59e0b;
 
     /* Sidebar (now light) */
-    --sidebar-bg: #ffffff;
+    --sidebar-bg: var(--bg-primary);
     --sidebar-border: rgba(60, 99, 246, 0.10);
     --sidebar-text: #475569;
-    --sidebar-text-active: #0f172a;
+    --sidebar-text-active: var(--text-primary);
 
     /* Effects and shadows */
     --shadow-colorful: 0 10px 25px rgba(15, 23, 42, 0.06);
@@ -715,7 +720,7 @@
 
 .sidebar-title {
     background: none;
-    color: #0f172a;
+    color: var(--text-primary);
     border-bottom: 1px solid var(--border);
 }
 
@@ -738,7 +743,7 @@
 .nav-pills .nav-link.active,
 .nav-pills .show>.nav-link {
     background: #eaf2ff !important;
-    color: #0f172a !important;
+    color: var(--text-primary) !important;
     box-shadow: 0 6px 14px rgba(59, 130, 246, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.7);
     border-color: rgba(59, 130, 246, 0.15);
 }
@@ -764,7 +769,7 @@
 .sidebar .accordion-button:not(.collapsed),
 .offcanvas .accordion-button:not(.collapsed) {
     background: #eaf2ff;
-    color: #0f172a;
+    color: var(--text-primary);
     box-shadow: 0 6px 14px rgba(59, 130, 246, .18);
     border-color: rgba(59, 130, 246, .2);
 }
@@ -776,7 +781,7 @@
 
 /* Offcanvas (mobile) */
 .offcanvas {
-    background: #ffffff;
+    background: var(--bg-primary);
     box-shadow: 4px 0 20px rgba(15, 23, 42, 0.08);
 }
 
@@ -786,13 +791,13 @@
 }
 
 .offcanvas .offcanvas-title {
-    color: #0f172a;
+    color: var(--text-primary);
     background: none;
 }
 
 .offcanvas .nav-link.active {
     background: #eaf2ff !important;
-    color: #0f172a !important;
+    color: var(--text-primary) !important;
     box-shadow: 0 4px 12px rgba(59, 130, 246, .18);
 }
 
@@ -830,7 +835,7 @@
 
 .main-inner .btn-secondary {
     background: #eaf2ff !important;
-    color: #0f172a !important;
+    color: var(--text-primary) !important;
     border: 1px solid #cfe0ff !important;
 }
 

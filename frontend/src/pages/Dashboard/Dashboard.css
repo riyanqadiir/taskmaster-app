@@ -10,9 +10,9 @@
     /* height of your main layout footer */
     --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
     --sidebar-border: rgba(102, 126, 234, 0.15);
-    --sidebar-text-active: #ffffff;
+    --sidebar-text-active: var(--on-brand);
     --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --surface: #ffffff;
+    --surface: var(--bg-primary);
     --border-soft: rgba(226, 232, 240, 0.6);
     --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
     --shadow-colorful: 0 10px 25px rgba(102, 126, 234, 0.15);
@@ -144,11 +144,11 @@
 :root {
     --dashboard-header-h: 60px;
     --dashboard-footer-h: 50px;
-    --sidebar-bg: #ffffff;
+    --sidebar-bg: var(--bg-primary);
     --sidebar-border: #e6ebf2;
-    --sidebar-text-active: #0f172a;
+    --sidebar-text-active: var(--text-primary);
     --gradient-primary: linear-gradient(180deg, #eaf2ff, #eaf2ff);
-    --surface: #ffffff;
+    --surface: var(--bg-primary);
     --border-soft: rgba(230, 235, 242, 0.8);
     --shadow-soft: 0 4px 12px rgba(15, 23, 42, 0.06);
     --shadow-colorful: 0 10px 25px rgba(15, 23, 42, 0.08);
@@ -167,7 +167,7 @@
 }
 
 .add-widget-sidebar .offcanvas-title {
-    color: #0f172a;
+    color: var(--text-primary);
     background: none;
 }
 
@@ -193,4 +193,63 @@
 .add-widget-sidebar .btn-close:hover {
     opacity: 1;
     transform: scale(1.05);
+}
+
+[data-theme="dark"] {
+    --dashboard-header-h: 60px;
+    --dashboard-footer-h: 50px;
+    --sidebar-bg: #0F172A;
+    --sidebar-border: rgba(255,255,255,0.1);
+    --sidebar-text-active: #E2E8F0;
+    --gradient-primary: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+    --surface: #1E293B;
+    --border-soft: rgba(255,255,255,0.08);
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-colorful: 0 10px 25px rgba(37, 99, 235, 0.25);
+    --accent-primary: #3B82F6;
+}
+
+[data-theme="dark"] .add-widget-sidebar {
+    background: var(--sidebar-bg);
+    border-left: 1px solid var(--sidebar-border);
+    color: var(--sidebar-text-active);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .offcanvas-header {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--sidebar-text-active);
+}
+
+[data-theme="dark"] .offcanvas-title {
+    color: #E0E7FF;
+}
+
+[data-theme="dark"] .sidebar-draggable {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    color: var(--sidebar-text-active);
+    box-shadow: var(--shadow-soft);
+}
+
+[data-theme="dark"] .sidebar-draggable:active {
+    transform: scale(1.03);
+    box-shadow: var(--shadow-colorful);
+}
+
+[data-theme="dark"] .sidebar-draggable h6 {
+    color: var(--accent-primary);
+}
+
+[data-theme="dark"] .btn-close {
+    filter: invert(1);
+    opacity: 0.9;
+}
+
+[data-theme="dark"] .btn-close:hover {
+    opacity: 1;
+}
+
+* {
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }

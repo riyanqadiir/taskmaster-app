@@ -5,6 +5,7 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
 import LogoutButton from "../common/LogoutButton";
+import ThemeToggle from "../common/ThemeToggle";
 
 function Header({ onMenuClick }) {
     const ref = useRef(null);
@@ -21,8 +22,8 @@ function Header({ onMenuClick }) {
     }, []);
 
     return (
-        <Navbar ref={ref} className="bg-body-tertiary app-header">
-            <Container className="d-flex justify-content-between align-items-center">
+        <Navbar ref={ref} expand="lg" className="app-header">
+            <Container fluid className="d-flex justify-content-between align-items-center header-content">
                 <div className="d-flex align-items-center">
                     <Button
                         variant="outline-secondary"
@@ -42,7 +43,10 @@ function Header({ onMenuClick }) {
                     </Button>
                     <Navbar.Brand as={Link} to="/">Task Master</Navbar.Brand>
                 </div>
-                <LogoutButton />
+                <div className="d-flex align-items-center header-actions">
+                    <ThemeToggle />
+                    <LogoutButton className="ms-3" />
+                </div>
             </Container>
         </Navbar>
     );

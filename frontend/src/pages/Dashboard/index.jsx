@@ -222,12 +222,12 @@ export default function Dashboard() {
             >
                 <Row className="mb-4 justify-content-between align-items-center">
                     <Col>
-                        <h4 className="mb-0">My Dashboard</h4>
+                        <h4 className="mb-0 text-light text-opacity-90">My Dashboard</h4>
                     </Col>
                     <Col>
                         <Button
                             variant="primary"
-                            className="float-end"
+                            className="float-end btn btn-primary text-light fw-semibold"
                             onClick={() => setShow((p) => !p)}
                         >
                             Add Widget
@@ -278,7 +278,7 @@ export default function Dashboard() {
                 >
                     {activeWidget?.component ? (
                         <div className="drag-overlay-card">
-                            <h6 className="fw-semibold mb-2">{activeWidget.title}</h6>
+                            <h6 className="fw-semibold mb-2 text-light text-opacity-90">{activeWidget.title}</h6>
                             <activeWidget.component data={activeWidget.data} />
                         </div>
                     ) : null}

@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Local lockfile and build caches (ignore if you commit lockfiles in repo policy)
+package-lock.json
+.vite/
+.cache/
+coverage/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

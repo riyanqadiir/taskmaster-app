@@ -38,6 +38,26 @@ function CompletionTrend({ data }) {
     const labels = Object.keys(countsByDate).sort();
     const values = labels.map((date) => countsByDate[date]);
 
+    // Read theme-aware colors from CSS variables so chart matches current theme
+    const rootStyles = getComputedStyle(document.documentElement);
+    const cssOnBrand = rootStyles.getPropertyValue('--on-brand')?.trim() || '#ffffff';
+    const cssTextPrimary = rootStyles.getPropertyValue('--text-primary')?.trim() || '#0f172a';
+    const cssBrand = rootStyles.getPropertyValue('--brand-primary')?.trim() || '#0d6efd';
+    const cssTooltipBg = rootStyles.getPropertyValue('--bg-highlight')?.trim() || '#212529';
+    const cssTextTertiary = rootStyles.getPropertyValue('--text-tertiary')?.trim() || '#6c757d';
+    const cssBorder = rootStyles.getPropertyValue('--border-color')?.trim() || 'rgba(0,0,0,0.05)';
+
+    // small helper to convert hex to rgba for chart background fills
+    const hexToRgba = (hex, alpha = 0.15) => {
+        if (!hex) return `rgba(13,110,253,${alpha})`;
+        const h = hex.replace('#', '');
+        const bigint = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
     const chartData = {
         labels,
         datasets: [
@@ -45,14 +65,14 @@ function CompletionTrend({ data }) {
                 label: "Tasks Completed",
                 data: values,
                 fill: true,
-                borderColor: "#0d6efd",
-                backgroundColor: "rgba(13, 110, 253, 0.15)",
+                borderColor: cssBrand,
+                backgroundColor: hexToRgba(cssBrand, 0.15),
                 tension: 0.4,
                 borderWidth: 2,
                 pointRadius: 5,
                 pointHoverRadius: 7,
-                pointBackgroundColor: "#0d6efd",
-                pointBorderColor: "#fff",
+                pointBackgroundColor: cssBrand,
+                pointBorderColor: cssOnBrand,
                 pointHoverBorderWidth: 2,
             },
         ],
@@ -67,10 +87,10 @@ function CompletionTrend({ data }) {
                 display: false,
             },
             tooltip: {
-                backgroundColor: "#212529",
-                titleColor: "#fff",
-                bodyColor: "#adb5bd",
-                borderColor: "#0d6efd",
+                backgroundColor: cssTooltipBg,
+                titleColor: cssOnBrand,
+                bodyColor: cssTextPrimary,
+                borderColor: cssBrand,
                 borderWidth: 1,
                 cornerRadius: 8,
                 padding: 10,
@@ -85,18 +105,18 @@ function CompletionTrend({ data }) {
                     display: false,
                 },
                 ticks: {
-                    color: "#6c757d",
+                    color: cssTextTertiary,
                     font: { size: 12 },
                 },
             },
             y: {
                 beginAtZero: true,
-                grid: {
-                    color: "rgba(0, 0, 0, 0.05)",
+                    grid: {
+                    color: cssBorder,
                 },
                 ticks: {
                     stepSize: 1,
-                    color: "#6c757d",
+                    color: cssTextTertiary,
                     font: { size: 12 },
                 },
             },

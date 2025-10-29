@@ -1,0 +1,82 @@
+/* Theme overrides to ensure consistent use of CSS variables across legacy/specific styles */
+
+/* Use !important sparingly — here to override older files that hardcode whites */
+.card,
+.card-elevated,
+.widget,
+.status-card,
+.task-list,
+.task-card,
+.avatar,
+.avatar-mini,
+.profile-hero,
+.profile-hero__inner,
+.profile-form .form-control,
+.sidebar {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Secondary containers (slightly lighter) */
+.main-content,
+.dashboard-page,
+.container,
+.widget-grid,
+.card-body,
+.card-header,
+.status-card .card-header {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Ensure headers and nav use text variables */
+.app-header,
+.nav-link,
+.brand-logo,
+.user-button {
+  color: var(--text-primary) !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--brand-primary) !important;
+  color: var(--on-brand) !important;
+  border: none !important;
+}
+
+/* Links and interactive elements */
+a,
+button,
+input,
+select,
+textarea {
+  color: var(--text-primary) !important;
+}
+
+/* Dark mode tweaks */
+.dark .card,
+.dark .card-elevated,
+.dark .widget,
+.dark .status-card,
+.dark .task-list,
+.dark .task-card,
+.dark .sidebar {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Make sure overlays and hover states look good */
+button:hover,
+.btn:hover,
+.card:hover,
+.task-card:hover {
+  filter: brightness(1.02);
+}
+
+/* Ensure input placeholders have sufficient contrast */
+::placeholder {
+  color: var(--text-tertiary) !important;
+  opacity: 1;
+}

@@ -67,9 +67,10 @@ const Signup = () => {
 
 
     return (
-        <div className="auth-container">
-            <h1>Sign Up</h1>
-            <form onSubmit={handleSubmit}>
+        <div className="auth">
+            <div className="auth-container">
+                <h1>Sign Up</h1>
+                <form onSubmit={handleSubmit}>
                 {["firstName", "lastName", "username", "email", "password", "confirmPassword"].map((field) => (
                     <div className="form-control" key={field}>
                         <label htmlFor={field}>{field === "confirmPassword" ? "Confirm Password" : field.charAt(0).toUpperCase() + field.slice(1)}</label>
@@ -84,14 +85,21 @@ const Signup = () => {
                 ))}
                 {error && <p className="error">{error}</p>}
                 {success && <p className="success">{success}</p>}
-                <ReCAPTCHA
-                    sitekey= {import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                    size="invisible"
-                    ref={recaptchaRef}
-                />
-                <Link to="/login">Login</Link>
-                <button type="submit">Sign Up</button>
-            </form>
+
+                <div className="recaptcha-container" style={{ position: 'relative', marginTop: '1rem' }}>
+                    <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                        size="invisible"
+                        ref={recaptchaRef}
+                    />
+                </div>
+
+                <div className="auth-options" style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Link className="text-link" to="/login">Already have an account? Login</Link>
+                    <button type="submit" className="btn-primary">Sign Up</button>
+                </div>
+                </form>
+            </div>
         </div>
     );
 };
