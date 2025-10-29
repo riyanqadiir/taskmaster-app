@@ -6,7 +6,7 @@
 A comprehensive task management application built with the MERN stack, featuring secure user authentication, task management, and productivity tracking.
 
 ## 🚀 Features
-![alt text](image.png)
+
 - **User Authentication & Security**
   - Secure user registration and login <br/>
   <img src="screenshots/login.png" width="250"/>
