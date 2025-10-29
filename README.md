@@ -8,16 +8,22 @@ A comprehensive task management application built with the MERN stack, featuring
 ## 🚀 Features
 
 - **User Authentication & Security**
-  - Secure user registration and login <br/>
-  <img src="screenshots/login.png" width="250"/> <br/>
-  <img src="screenshots/signup.png" width="250"/>
+  - Secure user registration and login  
+    <div align="center" style="margin: 10px 0;">
+      <img src="screenshots/login.png" alt="Login Screen" style="border:1px solid #ddd; border-radius:8px; width:45%; max-width:350px; margin:5px;"/>
+      <img src="screenshots/signup.png" alt="Signup Screen" style="border:1px solid #ddd; border-radius:8px; width:45%; max-width:350px; margin:5px;"/>
+    </div>
   - JWT-based authentication
   - Password encryption with bcrypt
-  - Email verification with OTP <br/>
-  <img src="screenshots/otp.png" width="250"/> <br/>
-  <img src="screenshots/otp-email.png" width="75%"/> <br/>
-  - Password reset functionality <br/>
-  <img src="screenshots/forgot-password.png" width="250"/> <br/>
+  - Email verification with OTP  
+    <div align="center" style="margin: 10px 0;">
+      <img src="screenshots/otp.png" alt="OTP Verification" style="border:1px solid #ddd; border-radius:8px; width:45%; max-width:350px; margin:5px;"/>
+      <img src="screenshots/otp-email.png" alt="OTP Email Example" style="border:1px solid #ddd; border-radius:8px; width:75%; max-width:600px; margin:10px auto; display:block;"/>
+    </div>
+  - Password reset functionality  
+    <div align="center" style="margin: 10px 0;">
+      <img src="screenshots/forgot-password.png" alt="Forgot Password Screen" style="border:1px solid #ddd; border-radius:8px; width:45%; max-width:350px; margin:5px;"/>
+    </div>
 
 - **Task Management**
   - Create, read, update, and delete tasks
