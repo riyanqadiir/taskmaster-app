@@ -36,6 +36,9 @@ A comprehensive task management application built with the MERN stack, featuring
   - Profile creation and updates
   - Avatar upload with Cloudinary integration
   - User preferences and settings
+    <div align="center" style="margin: 10px 0;">
+      <img src="screenshots/profile.png" alt="User Profile Page" style="border:1px solid #ddd; border-radius:8px; width:100%; max-width:2160px; margin:5px;"/>
+    </div>  
 
 - **Additional Features**
   - Email notifications with Nodemailer
