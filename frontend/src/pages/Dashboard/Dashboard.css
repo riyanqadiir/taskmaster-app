@@ -138,3 +138,59 @@
         transform: translateY(0);
     }
 }
+
+/* Dashboard Add-Widget Sidebar — Light Blue */
+
+:root {
+    --dashboard-header-h: 60px;
+    --dashboard-footer-h: 50px;
+    --sidebar-bg: #ffffff;
+    --sidebar-border: #e6ebf2;
+    --sidebar-text-active: #0f172a;
+    --gradient-primary: linear-gradient(180deg, #eaf2ff, #eaf2ff);
+    --surface: #ffffff;
+    --border-soft: rgba(230, 235, 242, 0.8);
+    --shadow-soft: 0 4px 12px rgba(15, 23, 42, 0.06);
+    --shadow-colorful: 0 10px 25px rgba(15, 23, 42, 0.08);
+    --accent-primary: #3b82f6;
+}
+
+.add-widget-sidebar {
+    border-left: 1px solid var(--sidebar-border);
+    box-shadow: -4px 0 20px rgba(15, 23, 42, 0.06), inset 1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+.add-widget-sidebar .offcanvas-header {
+    background: #f8fafc;
+    border-bottom: 1px solid var(--sidebar-border);
+    color: var(--sidebar-text-active);
+}
+
+.add-widget-sidebar .offcanvas-title {
+    color: #0f172a;
+    background: none;
+}
+
+.add-widget-sidebar .sidebar-draggable {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+}
+
+.add-widget-sidebar .sidebar-draggable:active {
+    box-shadow: 0 10px 25px rgba(15, 23, 42, .08);
+}
+
+.add-widget-sidebar .sidebar-draggable h6 {
+    color: var(--accent-primary);
+}
+
+/* Fix: make Offcanvas close icon visible in light mode */
+.add-widget-sidebar .btn-close {
+    filter: none !important;
+    opacity: 0.7;
+}
+
+.add-widget-sidebar .btn-close:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
