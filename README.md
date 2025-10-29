@@ -9,16 +9,15 @@ A comprehensive task management application built with the MERN stack, featuring
 
 - **User Authentication & Security**
   - Secure user registration and login <br/>
-  <img src="screenshots/login.png" width="250"/>
-  <br/>
+  <img src="screenshots/login.png" width="250"/> <br/>
   <img src="screenshots/signup.png" width="250"/>
   - JWT-based authentication
   - Password encryption with bcrypt
   - Email verification with OTP <br/>
   <img src="screenshots/otp.png" width="250"/> <br/>
-  <img src="screenshots/otp-email.png" width="75%"/>
+  <img src="screenshots/otp-email.png" width="75%"/> <br/>
   - Password reset functionality <br/>
-  <img src="screenshots/forgot-password.png" width="250"/>
+  <img src="screenshots/forgot-password.png" width="250"/> <br/>
 
 - **Task Management**
   - Create, read, update, and delete tasks
