@@ -1,19 +1,140 @@
-.dashboard-container {
-    background-color: #f8f9fa;
-    min-height: 100vh;
+/* =================================================================== */
+/* ADD WIDGET SIDEBAR — MATCH MAIN LAYOUT (INDEPENDENT VARIABLES)     */
+/* =================================================================== */
+
+/* Define local variables so Dashboard works standalone */
+:root {
+    --dashboard-header-h: 60px;
+    /* height of your main layout header */
+    --dashboard-footer-h: 50px;
+    /* height of your main layout footer */
+    --sidebar-bg: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+    --sidebar-border: rgba(102, 126, 234, 0.15);
+    --sidebar-text-active: #ffffff;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --surface: #ffffff;
+    --border-soft: rgba(226, 232, 240, 0.6);
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-colorful: 0 10px 25px rgba(102, 126, 234, 0.15);
+    --accent-primary: #667eea;
 }
 
-.card-header {
-    background-color: #fff !important;
-    border-bottom: 1px solid #e9ecef;
+/* Add Widget Sidebar properly aligned */
+.add-widget-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 340px;
+    background: var(--sidebar-bg);
+    border-left: 2px solid var(--sidebar-border);
+    box-shadow:
+        -4px 0 20px rgba(0, 0, 0, 0.15),
+        inset 1px 0 0 rgba(255, 255, 255, 0.05);
+    z-index: 1080;
+    /* slightly higher than app-header (1050) */
+    display: flex;
+    flex-direction: column;
+    animation: slideInFromRight 0.3s ease;
+    padding-top: var(--dashboard-header-h);
+    /* ✅ fixes hidden header */
+    padding-bottom: var(--dashboard-footer-h);
+    /* ✅ prevents overlap with footer */
+    overflow: hidden;
 }
 
-.chart-placeholder {
-    border: 2px dashed #dee2e6;
-    border-radius: 6px;
-    background: #fdfdfd;
+/* Header */
+.add-widget-sidebar .offcanvas-header {
+    background: rgba(102, 126, 234, 0.1);
+    border-bottom: 1px solid var(--sidebar-border);
+    backdrop-filter: blur(10px);
+    color: var(--sidebar-text-active);
 }
 
-.list-group-item {
-    font-size: 0.9rem;
+.add-widget-sidebar .offcanvas-title {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+}
+
+/* Body */
+.add-widget-sidebar .offcanvas-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1rem 2rem;
+}
+
+.add-widget-sidebar .offcanvas-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.add-widget-sidebar .offcanvas-body::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 3px;
+}
+
+/* Widget cards inside sidebar */
+.add-widget-sidebar .sidebar-draggable {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    box-shadow: var(--shadow-soft);
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.add-widget-sidebar .sidebar-draggable:active {
+    transform: scale(1.03);
+    cursor: grabbing;
+    box-shadow: var(--shadow-colorful);
+}
+
+.add-widget-sidebar .sidebar-draggable .card-body {
+    padding: 0.75rem 1rem;
+}
+
+.add-widget-sidebar .sidebar-draggable h6 {
+    font-weight: 600;
+    color: var(--accent-primary);
+}
+
+/* Widget preview */
+.add-widget-sidebar .widget-preview {
+    max-height: 180px;
+    overflow: hidden;
+    border-top: 1px solid var(--border-soft);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+/* Entry animation */
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.sidebar-draggable {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
