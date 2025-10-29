@@ -11,25 +11,25 @@
     --text-primary: #1e293b;
     --text-muted: #64748b;
     --border-soft: #e2e8f0;
-    
+
     /* Colorful gradient palette */
     --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
     --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    
+
     /* Hero gradients */
     --hero-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --hero-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    
+
     /* Interactive colors */
     --accent-blue: #3b82f6;
     --accent-purple: #8b5cf6;
     --accent-pink: #ec4899;
     --accent-green: #10b981;
     --accent-orange: #f59e0b;
-    
+
     /* Effects */
     --ring-blue: rgba(59, 130, 246, 0.3);
     --ring-purple: rgba(139, 92, 246, 0.3);
@@ -43,7 +43,7 @@
 /* =================================================================== */
 
 .profile-page {
-    background: 
+    background:
         radial-gradient(1200px 600px at 120% -10%, rgba(236, 72, 153, 0.12), transparent 60%),
         radial-gradient(900px 500px at -10% 10%, rgba(59, 130, 246, 0.15), transparent 60%),
         radial-gradient(800px 400px at 50% 100%, rgba(139, 92, 246, 0.1), transparent 50%),
@@ -59,7 +59,7 @@
     border-radius: 16px;
     box-shadow: var(--shadow-colorful);
     transition: all 0.3s ease;
-    margin: 1rem 1rem 0 1rem ;
+    margin: 1rem 1rem 0 1rem;
 }
 
 .profile-hero::after {
@@ -124,7 +124,7 @@
 
 .card-elevated:hover {
     transform: translateY(-4px);
-    box-shadow: 
+    box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.1),
         0 8px 16px rgba(0, 0, 0, 0.06);
     border-color: var(--accent-blue) !important;
@@ -152,7 +152,7 @@
     padding: 4px;
     border-radius: 999px;
     background: var(--gradient-4);
-    box-shadow: 
+    box-shadow:
         0 0 0 4px var(--ring-blue),
         0 8px 24px rgba(67, 233, 123, 0.25);
     transition: all 0.3s ease;
@@ -160,7 +160,7 @@
 
 .avatar-ring:hover {
     transform: scale(1.02);
-    box-shadow: 
+    box-shadow:
         0 0 0 6px var(--ring-purple),
         0 12px 32px rgba(139, 92, 246, 0.3);
 }
@@ -278,7 +278,7 @@
 .profile-form .form-control:focus,
 .profile-form .form-select:focus {
     border-color: var(--accent-purple);
-    box-shadow: 
+    box-shadow:
         0 0 0 0.25rem var(--ring-purple),
         0 4px 12px rgba(139, 92, 246, 0.15);
     transform: translateY(-1px);
@@ -454,13 +454,25 @@
 /* =================================================================== */
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(25deg); }
-    50% { transform: translateY(-10px) rotate(25deg); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(25deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(25deg);
+    }
 }
 
 @keyframes shimmer {
-    0% { background-position: -200px 0; }
-    100% { background-position: calc(200px + 100%) 0; }
+    0% {
+        background-position: -200px 0;
+    }
+
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
 }
 
 .shimmer {
@@ -522,21 +534,21 @@
         padding: 24px 0 16px;
         border-radius: 12px;
     }
-    
+
     .profile-hero__inner {
         padding: 0 16px;
     }
-    
+
     .avatar {
         width: 100px;
         height: 100px;
         font-size: 28px;
     }
-    
+
     .avatar-ring {
         padding: 3px;
     }
-    
+
     .chip {
         font-size: 0.8rem;
         padding: 0.4rem 0.75rem;
@@ -547,14 +559,173 @@
     .profile-hero {
         margin: 0 8px;
     }
-    
+
     .interests-wrap {
         gap: 0.5rem;
     }
-    
+
     .btn-gradient,
     .btn-outline-soft {
         padding: 0.65rem 1.25rem;
         font-size: 0.9rem;
     }
+}
+
+/* Profile.css — Light Blue Theme */
+
+/* Tokens */
+:root {
+    --profile-bg: #f6f8fb;
+    --card-bg: #ffffff;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --border-soft: #e6ebf2;
+
+    --gradient-1: linear-gradient(180deg, #eaf2ff, #eaf2ff);
+    --gradient-2: linear-gradient(180deg, #edf6ff, #edf6ff);
+    --gradient-3: linear-gradient(180deg, #e9f1ff, #e9f1ff);
+    --gradient-4: linear-gradient(180deg, #ecfdf5, #ecfdf5);
+    --gradient-5: linear-gradient(180deg, #fff7ed, #fff7ed);
+
+    --hero-primary: linear-gradient(180deg, #f8fbff, #f8fbff);
+    --hero-accent: linear-gradient(180deg, #f8fbff, #f8fbff);
+
+    --accent-blue: #3b82f6;
+    --accent-purple: #2563eb;
+    /* normalized to blue family */
+    --accent-pink: #3b82f6;
+    /* normalized */
+    --accent-green: #16a34a;
+    --accent-orange: #f59e0b;
+
+    --ring-blue: rgba(59, 130, 246, .25);
+    --ring-purple: rgba(37, 99, 235, .25);
+    --ring-pink: rgba(59, 130, 246, .2);
+    --shadow-colorful: 0 8px 32px rgba(15, 23, 42, .06);
+    --shadow-soft: 0 4px 16px rgba(15, 23, 42, .06);
+}
+
+/* Page */
+.profile-page {
+    background: var(--profile-bg);
+}
+
+.profile-hero {
+    background: var(--hero-primary);
+    color: #0f172a;
+    box-shadow: var(--shadow-colorful);
+}
+
+.profile-hero__inner {
+    color: #0f172a;
+}
+
+.profile-hero__subtitle {
+    opacity: .9;
+}
+
+/* Cards */
+.card-elevated {
+    border: 1px solid var(--border-soft) !important;
+    background: var(--card-bg);
+    box-shadow: var(--shadow-soft);
+}
+
+.card-elevated::before {
+    background: var(--gradient-3);
+    opacity: .6;
+}
+
+/* Avatars */
+.avatar {
+    background: linear-gradient(180deg, #f8fafc, #f8fafc);
+    color: var(--text-primary);
+}
+
+.avatar-initials {
+    background: none;
+    color: #1e293b;
+}
+
+/* Badges (soft) */
+.badge-primary {
+    background: linear-gradient(180deg, #eaf2ff, #eaf2ff) !important;
+    color: #1e40af !important;
+    border-color: #cfe0ff !important;
+}
+
+.badge-success {
+    background: linear-gradient(180deg, #ecfdf5, #ecfdf5) !important;
+    color: #065f46 !important;
+    border-color: #a7f3d0 !important;
+}
+
+.badge-warning {
+    background: linear-gradient(180deg, #fff7ed, #fff7ed) !important;
+    color: #92400e !important;
+    border-color: #fdba74 !important;
+}
+
+.badge-info {
+    background: linear-gradient(180deg, #e9f1ff, #e9f1ff) !important;
+    color: #0c4a6e !important;
+    border-color: #cfe0ff !important;
+}
+
+/* Forms */
+.profile-form .form-control,
+.profile-form .form-select {
+    border: 2px solid var(--border-soft);
+    background: #fff;
+}
+
+.profile-form .form-control:focus,
+.profile-form .form-select:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 .25rem var(--ring-blue);
+}
+
+/* Chips */
+.chip:nth-child(4n+1) {
+    background: linear-gradient(180deg, #f1f5f9, #f1f5f9);
+    color: #334155;
+    border-color: #e2e8f0;
+}
+
+.chip:nth-child(4n+2) {
+    background: linear-gradient(180deg, #ecfdf5, #ecfdf5);
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.chip:nth-child(4n+3) {
+    background: linear-gradient(180deg, #eaf2ff, #eaf2ff);
+    color: #1e40af;
+    border-color: #cfe0ff;
+}
+
+.chip:nth-child(4n+4) {
+    background: linear-gradient(180deg, #f1f5f9, #f1f5f9);
+    color: #334155;
+    border-color: #e2e8f0;
+}
+
+/* Buttons */
+.btn-gradient {
+    background: #3b82f6 !important;
+    box-shadow: 0 8px 20px rgba(59, 130, 246, .20);
+}
+
+.btn-gradient:hover {
+    background: #2563eb !important;
+}
+
+.btn-outline-soft {
+    border-color: #3b82f6 !important;
+    color: #2563eb !important;
+}
+
+.btn-outline-soft:hover {
+    background: #3b82f6 !important;
+    color: #fff !important;
 }

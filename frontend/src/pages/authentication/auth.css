@@ -127,3 +127,53 @@
     font-size: 1.5rem;
   }
 }
+
+/* Auth.css — Light Blue Theme (structure unchanged) */
+.auth {
+  background: #f6f8fb;
+}
+
+.auth .auth-container {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.auth h1 {
+  color: #0f172a;
+}
+
+.auth .form-control label {
+  color: #334155;
+}
+
+.auth .form-control input {
+  border: 1px solid #d7deea;
+}
+
+.auth .form-control input:focus {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, .15);
+}
+
+.auth .remember_me {
+  color: #64748b;
+}
+
+.auth button {
+  background-color: #3b82f6;
+}
+
+.auth button:hover {
+  background-color: #2563eb;
+}
+
+.auth .resend-btn {
+  border: 1px solid #3b82f6;
+  color: #2563eb;
+}
+
+.auth .resend-btn:hover {
+  background-color: #3b82f6;
+  color: #fff;
+}

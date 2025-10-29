@@ -678,3 +678,174 @@
 .btn {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Tasks.css — Light Blue Theme */
+
+/* Tokens only */
+:root {
+    --task-bg-primary: #ffffff;
+    --task-bg-secondary: #ffffff;
+    --task-text-primary: #0f172a;
+    --task-text-secondary: #475569;
+    --task-text-muted: #64748b;
+    --task-text-white: #ffffff;
+    --task-border: #e6ebf2;
+    --task-border-soft: rgba(230, 235, 242, .8);
+
+    --gradient-primary: linear-gradient(180deg, #eaf2ff, #eaf2ff);
+    --gradient-secondary: linear-gradient(180deg, #edf6ff, #edf6ff);
+    --gradient-accent: linear-gradient(180deg, #e9f1ff, #e9f1ff);
+    --gradient-success: linear-gradient(180deg, #ecfdf5, #ecfdf5);
+    --gradient-warning: linear-gradient(180deg, #fff7ed, #fff7ed);
+
+    --status-completed: linear-gradient(180deg, #ecfdf5, #ecfdf5);
+    --status-progress: linear-gradient(180deg, #e9f1ff, #e9f1ff);
+    --status-waiting: linear-gradient(180deg, #fff7ed, #fff7ed);
+    --status-not-started: linear-gradient(180deg, #f1f5f9, #f1f5f9);
+
+    --priority-high: linear-gradient(180deg, #ffe7e7, #ffe7e7);
+    --priority-medium: linear-gradient(180deg, #fff3cd, #fff3cd);
+    --priority-low: linear-gradient(180deg, #eaf2ff, #eaf2ff);
+
+    --task-shadow-sm: 0 2px 8px rgba(15, 23, 42, .06);
+    --task-shadow-md: 0 8px 25px rgba(15, 23, 42, .08);
+    --task-shadow-lg: 0 20px 40px rgba(15, 23, 42, .10);
+    --task-shadow-colorful: 0 8px 32px rgba(15, 23, 42, .06);
+    --task-ring: rgba(59, 130, 246, .25);
+
+    --task-radius: 16px;
+    --task-radius-sm: 12px;
+    --task-radius-lg: 20px;
+}
+
+/* Header/title text already uses gradient var; now flat blue text illusion */
+.py-4 h2 {
+    background: none;
+    color: #0f172a !important;
+    text-shadow: none;
+}
+
+/* Filter controls */
+.g-3 .form-label {
+    color: #334155 !important;
+    text-shadow: none;
+}
+
+.g-3 .form-select,
+.g-3 .form-control {
+    background: #fff;
+    border: 2px solid rgba(230, 235, 242, .8);
+}
+
+.g-3 .form-select:focus,
+.g-3 .form-control:focus {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 .25rem var(--task-ring);
+}
+
+/* Table */
+.table {
+    background: #fff;
+    border: 1px solid var(--task-border-soft);
+    box-shadow: var(--task-shadow-lg);
+}
+
+.table thead th {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    text-shadow: none;
+}
+
+.table tbody tr:hover {
+    background: #f8fafc !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .06);
+}
+
+/* Status badges */
+.badge.bg-success {
+    background: var(--status-completed) !important;
+    color: #065f46 !important;
+}
+
+.badge.bg-info {
+    background: var(--status-progress) !important;
+    color: #0c4a6e !important;
+}
+
+.badge.bg-warning {
+    background: var(--status-waiting) !important;
+    color: #92400e !important;
+}
+
+.badge.bg-secondary {
+    background: var(--status-not-started) !important;
+    color: #334155 !important;
+}
+
+/* Priority */
+.badge.bg-danger {
+    background: var(--priority-high) !important;
+    color: #b91c1c !important;
+}
+
+.badge.bg-warning {
+    background: var(--priority-medium) !important;
+    color: #92400e !important;
+}
+
+/* Buttons */
+.btn-outline-success {
+    border-color: #16a34a;
+    color: #15803d;
+}
+
+.btn-outline-success:hover {
+    background: #ecfdf5 !important;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, .18);
+}
+
+.btn-outline-primary {
+    border-color: #3b82f6;
+    color: #2563eb;
+}
+
+.btn-outline-primary:hover {
+    background: #eaf2ff !important;
+    box-shadow: 0 6px 16px rgba(59, 130, 246, .18);
+}
+
+.btn-outline-danger {
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.btn-outline-danger:hover {
+    background: #ffe7e7 !important;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, .18);
+}
+
+/* Pagination */
+.pagination {
+    background: #fff;
+    border: 1px solid var(--task-border-soft);
+}
+
+.pagination .page-item .page-link:hover {
+    background: #eaf2ff !important;
+    color: #0f172a !important;
+}
+
+.pagination .page-item.active .page-link {
+    background: #3b82f6 !important;
+    color: #fff !important;
+}
+
+/* Modal */
+.modal-content {
+    background: #fff;
+}
+
+.modal-header {
+    background: #f1f5f9;
+    color: #0f172a;
+}

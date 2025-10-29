@@ -146,3 +146,46 @@
         background-position: 0 0;
     }
 }
+
+/* TaskDetail.css — Light Blue Theme (colors only) */
+
+:root {
+    --td-radius: 16px;
+    --td-shadow: 0 6px 24px rgba(15, 23, 42, .08);
+    --td-shadow-hover: 0 10px 32px rgba(15, 23, 42, .10);
+}
+
+.td-wrapper {
+    background:
+        radial-gradient(1200px 600px at 100% -10%, rgba(59, 130, 246, .06), transparent 60%),
+        radial-gradient(1000px 600px at -10% 120%, rgba(37, 99, 235, .05), transparent 60%);
+    backdrop-filter: saturate(115%);
+}
+
+.td-breadcrumbs {
+    color: #64748b;
+}
+
+.td-card {
+    background: #ffffff;
+}
+
+.td-title {
+    color: #0f172a;
+}
+
+.td-label {
+    color: #64748b;
+}
+
+.td-dates {
+    color: #64748b;
+}
+
+.td-skeleton {
+    background: #fff;
+}
+
+.td-skel-line {
+    background: linear-gradient(90deg, #e9eef5 25%, #f8fafc 37%, #e9eef5 63%);
+}
