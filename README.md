@@ -1,15 +1,24 @@
 # TaskMaster App
-
+<img src="screenshots/dashboard.png" width="100%"/>
+<br />
+<img src="screenshots/dark-dashboard.png" width="100%"/>
+<br />
 A comprehensive task management application built with the MERN stack, featuring secure user authentication, task management, and productivity tracking.
 
 ## 🚀 Features
-
+![alt text](image.png)
 - **User Authentication & Security**
-  - Secure user registration and login
+  - Secure user registration and login <br/>
+  <img src="screenshots/login.png" width="250"/>
+  <br/>
+  <img src="screenshots/signup.png" width="250"/>
   - JWT-based authentication
   - Password encryption with bcrypt
-  - Email verification with OTP
-  - Password reset functionality
+  - Email verification with OTP <br/>
+  <img src="screenshots/otp.png" width="250"/> <br/>
+  <img src="screenshots/otp-email.png" width="75%"/>
+  - Password reset functionality <br/>
+  <img src="screenshots/forgot-password.png" width="250"/>
 
 - **Task Management**
   - Create, read, update, and delete tasks
