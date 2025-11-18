@@ -26,6 +26,10 @@ app.use(cors({
     exposedHeaders: ["authorization"],
 }));
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
 
 app.use("/user", userRoute, userProfile)
 app.use("/tasks", taskRoute)
