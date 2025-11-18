@@ -222,7 +222,7 @@ export default function Dashboard() {
             >
                 <Row className="mb-4 justify-content-between align-items-center">
                     <Col>
-                        <h4 className="mb-0 text-light text-opacity-90">My Dashboard</h4>
+                        <h4 className="dashboard-title mb-0">My Dashboard</h4>
                     </Col>
                     <Col>
                         <Button

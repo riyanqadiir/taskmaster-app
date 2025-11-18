@@ -1,21 +1,130 @@
-/* Dashboard.css */
+/* Dashboard.css - Kanban Board Styling */
+
+/* =================================================================== */
+/* THEME TOKENS & VARIABLES                                           */
+/* =================================================================== */
 
 :root {
-    /* Map Kanban page tokens to global theme variables for consistent dark/light behavior */
+    /* Base Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    
+    /* Base Text Colors */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    
+    /* Base Border Colors */
+    --border-color: #e2e8f0;
+    --border-color-hover: #cbd5e1;
+    
+    /* Base Shadows */
+    --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 8px 25px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.10);
+}
+
+/* DARK MODE - Base Theme */
+html.dark {
+    /* Base Background Colors */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    
+    /* Base Text Colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    
+    /* Base Border Colors */
+    --border-color: #334155;
+    --border-color-hover: #475569;
+    
+    /* Base Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* =================================================================== */
+/* DASHBOARD SPECIFIC TOKENS (Component Layer)                        */
+/* =================================================================== */
+
+:root {
+    /* Dashboard Mapped Colors */
     --dash-bg: var(--bg-secondary);
     --card-bg: var(--bg-primary);
     --card-border: var(--border-color);
     --text-strong: var(--text-primary);
     --text-muted: var(--text-tertiary);
-    --primary: var(--accent-3, #3b82f6);
-    --primary-light: var(--info-light, #dbeafe);
-    --accent: var(--success, #059669);
-    --shadow-sm: var(--shadow-sm);
-    --shadow-md: var(--shadow-md);
-    --ring: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    
+    /* Primary Colors */
+    --primary: #3b82f6;
+    --primary-light: #eaf2ff;
+    --primary-ring: rgba(59, 130, 246, 0.18);
+    
+    /* Accent */
+    --accent: #16a34a;
+    
+    /* Ring Effect */
+    --ring: 0 0 0 3px rgba(59, 130, 246, 0.18);
+    
+    /* Priority Badge Colors - Light Mode */
+    --priority-high-bg: #ffe7e7;
+    --priority-high-text: #334155;
+    --priority-medium-bg: #eaf7ea;
+    --priority-medium-text: #334155;
+    --priority-low-bg: #eaf2ff;
+    --priority-low-text: #334155;
+    
+    /* Status Count */
+    --status-count-bg: var(--primary);
+    --status-count-text: #ffffff;
+    
+    /* Task List Droppable */
+    --droppable-bg: var(--primary-light);
+    --droppable-ring-color: rgba(59, 130, 246, 0.12);
+    --droppable-inset-shadow: rgba(59, 130, 246, 0.08);
 }
 
-/* Page scaffold */
+/* DARK MODE - Dashboard Specific */
+html.dark {
+    /* Dashboard Mapped Colors */
+    --dash-bg: var(--bg-secondary);
+    --card-bg: var(--bg-primary);
+    --card-border: var(--border-color);
+    --text-strong: var(--text-primary);
+    --text-muted: var(--text-tertiary);
+    
+    /* Primary Colors */
+    --primary: #3b82f6;
+    --primary-light: rgba(59, 130, 246, 0.10);
+    --primary-ring: rgba(59, 130, 246, 0.40);
+    
+    /* Accent */
+    --accent: #10b981;
+    
+    /* Ring Effect */
+    --ring: 0 0 0 3px rgba(59, 130, 246, 0.30);
+    
+    /* Priority Badge Colors - Dark Mode */
+    --priority-high-bg: #ff9999;
+    --priority-high-text: var(--text-primary);
+    --priority-medium-bg: #81c784;
+    --priority-medium-text: var(--text-primary);
+    --priority-low-bg: #90caf9;
+    --priority-low-text: var(--text-primary);
+    
+    /* Task List Droppable */
+    --droppable-bg: rgba(59, 130, 246, 0.20);
+    --droppable-ring-color: rgba(59, 130, 246, 0.30);
+    --droppable-inset-shadow: rgba(59, 130, 246, 0.15);
+}
+/* =================================================================== */
+/* PAGE SCAFFOLD                                                      */
+/* =================================================================== */
+
 .dashboard-page {
     background: var(--dash-bg);
     min-height: 100vh;
@@ -30,19 +139,22 @@
     line-height: 1.1;
 }
 
-/* Column layout spacing */
 .dashboard-row {
     row-gap: 18px;
 }
 
-/* Status columns / cards */
+/* =================================================================== */
+/* STATUS COLUMNS / CARDS                                             */
+/* =================================================================== */
+
 .status-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border) !important;
     box-shadow: var(--shadow-sm);
     border-radius: 12px !important;
     overflow: hidden;
-    transition: transform .15s ease, box-shadow .15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    will-change: transform, box-shadow;
 }
 
 .status-card:hover {
@@ -65,40 +177,55 @@
     color: var(--text-strong);
 }
 
-/* tiny pill showing count */
+/* Status Count Badge */
 .status-count {
     font-size: 12px;
-    color: var(--on-brand);
-    background: var(--primary);
+    color: var(--status-count-text);
+    background: var(--status-count-bg);
     border-radius: 999px;
     padding: 2px 8px;
     font-weight: 500;
 }
 
-/* Task list area */
+/* =================================================================== */
+/* TASK LIST AREA                                                     */
+/* =================================================================== */
+
 .task-list {
     min-height: 140px;
-    transition: box-shadow .12s ease, outline .12s ease, background-color .12s ease;
     background-color: var(--bg-primary);
+    transition: box-shadow 0.12s ease, outline 0.12s ease, background-color 0.12s ease;
+    will-change: transform, box-shadow;
 }
 
 .task-list.droppable-over {
     outline: var(--ring);
-    background-color: var(--primary-light);
+    background-color: var(--droppable-bg);
+    box-shadow: inset 0 0 0 2px var(--droppable-inset-shadow);
 }
 
-/* Empty state */
+/* Empty State */
 .task-empty {
     color: var(--text-muted) !important;
     font-style: italic;
 }
+html.dark .task-empty {
+    background-color: #0f172a;
+    font-style: italic;
+}
+
+/* =================================================================== */
+/* TASK CARDS                                                         */
+/* =================================================================== */
 
 .task-card {
     border: none !important;
     border-bottom: 1px dashed var(--card-border) !important;
     padding: 12px 16px !important;
-    transition: background-color .12s ease, transform .12s ease, box-shadow .12s ease;
     background: var(--bg-primary);
+    transition: background-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    will-change: transform, box-shadow;
+    animation: task-enter 0.14s ease;
 }
 
 .task-card:last-child {
@@ -120,133 +247,68 @@
     font-size: 13px;
 }
 
-/* Drag states */
-.task-card.dragging,
-.task-card.overlay {
-    box-shadow: var(--shadow-md);
-    transform: scale(1.02);
-    cursor: grabbing;
-    z-index: 9999;
-}
+/* =================================================================== */
+/* DRAG STATES                                                        */
+/* =================================================================== */
 
-/* Priority badges - soft, pleasing colors with higher specificity */
-.badge.badge-priority-high {
-    background-color: #ff9999 !important;
-    /* soft pink-red */
-    color: #2d3748 !important;
-    border: none !important;
-}
-
-.badge.badge-priority-medium {
-    background-color: #81c784 !important;
-    /* soft green */
-    color: #2d3748 !important;
-    border: none !important;
-}
-
-.badge.badge-priority-low {
-    background-color: #90caf9 !important;
-    /* soft blue */
-    color: #2d3748 !important;
-    border: none !important;
-}
-
-/* Small utility for subtle separators in headers */
-.separator {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--primary);
-}
-
-/* Smooth the board's layout shifts a bit */
-.status-card,
-.task-list,
-.task-card {
-    will-change: transform, box-shadow;
-}
-
-/* While dragging, the original "ghost" gets lighter; overlay pops */
+/* Original card while dragging (ghost) */
 .task-card.dragging {
     opacity: 0;
     pointer-events: none;
 }
 
-/* Overlay clone: subtle tilt & scale, strong shadow */
+/* Overlay clone that follows cursor */
 .task-card.overlay {
-    transform: translate3d(0, 0, 0) scale(1.04) rotate(0.6deg);
     box-shadow: var(--shadow-md);
+    transform: translate3d(0, 0, 0) scale(1.04) rotate(0.6deg);
+    cursor: grabbing;
+    z-index: 9999;
 }
 
-/* Opt-in motion for items entering lists (after move) */
+/* =================================================================== */
+/* PRIORITY BADGES                                                    */
+/* =================================================================== */
+
+.badge.badge-priority-high {
+    background-color: var(--priority-high-bg) !important;
+    color: var(--priority-high-text) !important;
+    border: none !important;
+}
+
+.badge.badge-priority-medium {
+    background-color: var(--priority-medium-bg) !important;
+    color: var(--priority-medium-text) !important;
+    border: none !important;
+}
+
+.badge.badge-priority-low {
+    background-color: var(--priority-low-bg) !important;
+    color: var(--priority-low-text) !important;
+    border: none !important;
+}
+
+/* =================================================================== */
+/* ANIMATIONS                                                         */
+/* =================================================================== */
+
 @keyframes task-enter {
     from {
         transform: translateY(6px);
-        opacity: 0.0;
+        opacity: 0;
     }
-
     to {
         transform: translateY(0);
         opacity: 1;
     }
 }
 
-.task-card {
-    animation: task-enter .14s ease;
-}
+/* =================================================================== */
+/* UTILITY CLASSES                                                    */
+/* =================================================================== */
 
-/* Make drops feel receptive */
-.task-list.droppable-over {
-    outline: var(--ring);
-    background-color: var(--primary-light);
-    box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.08);
-}
-
-/* Kanban (Dashboard.css) — Light Blue Theme */
-
-:root {
-    --dash-bg: var(--bg-secondary);
-    --card-bg: var(--bg-primary);
-    --card-border: var(--border-color);
-    --text-strong: var(--text-primary);
-    --text-muted: var(--text-tertiary);
-    --primary: var(--accent-3, #3b82f6);
-    --primary-light: var(--info-light, #eaf2ff);
-    --accent: var(--success, #16a34a);
-    --shadow-sm: var(--shadow-sm);
-    --shadow-md: var(--shadow-md);
-    --ring: 0 0 0 3px rgba(59, 130, 246, .18);
-}
-
-.dashboard-page {
-    background: var(--dash-bg);
-}
-
-.status-card .card-header {
-    background: linear-gradient(180deg, var(--bg-primary), var(--bg-secondary));
-    border-bottom: 1px solid var(--card-border);
-}
-
-.task-list {
-    background-color: var(--bg-primary);
-}
-
-.task-list.droppable-over {
-    background-color: var(--primary-light);
-}
-
-/* Priority badges — softer */
-.badge.badge-priority-high {
-    background-color: #ffe7e7 !important;
-    color: #334155 !important;
-}
-
-.badge.badge-priority-medium {
-    background-color: #eaf7ea !important;
-    color: #334155 !important;
-}
-
-.badge.badge-priority-low {
-    background-color: #eaf2ff !important;
-    color: #334155 !important;
+.separator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
 }

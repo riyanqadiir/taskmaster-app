@@ -1,22 +1,24 @@
-/* App.css - Layout & Custom Styles */
+/* =========================================================
+   APP.CSS — CLEAN, OPTIMIZED, DARK-MODE READY
+   ========================================================= */
 
-/* App Container */
+/* ----------------------------- */
+/* ROOT APP BACKGROUND + PATTERN */
+/* ----------------------------- */
+
 #root {
-  background: var(--gradient-subtle);
-  color: var(--text-primary);
   min-height: 100vh;
   position: relative;
+  background: var(--gradient-subtle);
+  color: var(--text-primary);
 }
 
-/* Professional subtle background pattern */
+/* Subtle pattern */
 #root::before {
-  content: '';
+  content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
+  inset: 0;
+  background-image:
     radial-gradient(circle at 1px 1px, var(--border-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--bg-primary), transparent);
   background-size: 32px 32px, 100% 100%;
@@ -25,24 +27,34 @@
   transition: opacity var(--transition-duration) ease;
 }
 
+/* Dark mode background dim */
+:root.dark #root {
+  background: var(--gradient-subtle);
+}
+
 :root.dark #root::before {
   opacity: 0.2;
 }
 
-/* Glass effect for cards and containers */
+/* ----------------------------- */
+/* GLASS EFFECT CONTAINERS       */
+/* ----------------------------- */
+
 .glass-effect {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 :root.dark .glass-effect {
   background: rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Enhanced button styles */
+/* ----------------------------- */
+/* BUTTONS                       */
+/* ----------------------------- */
+
 .btn-primary {
   background: var(--gradient-accent);
   border: none;
@@ -53,12 +65,9 @@
 }
 
 .btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
   opacity: 0;
   transition: opacity var(--transition-duration) ease;
@@ -68,14 +77,27 @@
   opacity: 1;
 }
 
-/* Professional Card Styles */
+/* Outline secondary */
+.btn-outline-secondary {
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ----------------------------- */
+/* CARDS                         */
+/* ----------------------------- */
+
 .card {
   background: var(--bg-primary);
   border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-duration) ease;
-  border: 1px solid var(--border-color);
-  overflow: hidden;
 }
 
 .card:hover {
@@ -84,7 +106,10 @@
   border-color: var(--brand-primary);
 }
 
-/* Status Indicators */
+/* ----------------------------- */
+/* STATUS BADGES                 */
+/* ----------------------------- */
+
 .status-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
@@ -96,7 +121,7 @@
 }
 
 .status-badge::before {
-  content: '';
+  content: "";
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
@@ -104,21 +129,24 @@
 }
 
 .status-active {
-  background-color: var(--success-light);
+  background: var(--success-light);
   color: var(--success);
 }
 
 .status-pending {
-  background-color: var(--warning-light);
+  background: var(--warning-light);
   color: var(--warning);
 }
 
 .status-blocked {
-  background-color: var(--error-light);
+  background: var(--error-light);
   color: var(--error);
 }
 
-/* Header */
+/* ----------------------------- */
+/* HEADER                        */
+/* ----------------------------- */
+
 .app-header {
   background-color: var(--bg-secondary) !important;
   border-bottom: 1px solid var(--border-color);
@@ -129,16 +157,6 @@
   color: var(--text-primary) !important;
 }
 
-/* Bootstrap overrides for theme */
-.btn-outline-secondary {
-  color: var(--text-secondary) !important;
-  border-color: var(--border-color) !important;
-}
-
-.btn-outline-secondary:hover {
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-}
 .header nav ul li {
   cursor: pointer;
   transition: color 0.3s ease;
@@ -148,20 +166,28 @@
   color: #bbdefb;
 }
 
+/* ----------------------------- */
+/* SCROLLABLE MAIN AREA          */
+/* ----------------------------- */
+
 .main-scroll {
   height: calc(100vh - var(--header-h) - var(--footer-h));
   overflow-y: auto;
 }
 
-/* Sidebar */
+/* ----------------------------- */
+/* SIDEBAR                       */
+/* ----------------------------- */
+
 .sidebar {
   width: 240px;
-  background-color: var(--bg-primary);
-  padding: 1rem;
-  border-right: 1px solid var(--border-color);
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
+  padding: 1rem;
+  height: 100vh;
 }
 
 .sidebar ul {
@@ -171,23 +197,29 @@
 }
 
 .sidebar ul li {
-  cursor: pointer;
   padding: 0.5rem;
   border-radius: 6px;
-  transition: background 0.3s ease;
+  cursor: pointer;
+  transition: background var(--transition-duration) ease;
 }
 
 .sidebar ul li:hover {
   background-color: var(--bg-accent);
 }
 
-/* Main Content */
+/* ----------------------------- */
+/* MAIN CONTENT                  */
+/* ----------------------------- */
+
 .main-content {
-  margin-left: 240px; /* Sidebar width */
+  margin-left: 240px;
   padding: 2rem;
 }
 
-/* Footer */
+/* ----------------------------- */
+/* FOOTER                        */
+/* ----------------------------- */
+
 .footer {
   text-align: center;
   padding: 1rem;

@@ -1,4 +1,26 @@
 /* TaskDetail.css */
+/* DARK MODE OVERRIDES */
+:root.dark {
+    --td-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    --td-shadow-hover: 0 12px 32px rgba(0,0,0,0.55);
+}
+
+:root.dark .td-wrapper {
+    background:
+        radial-gradient(1200px 600px at 100% -10%, rgba(59, 130, 246, .10), transparent 60%),
+        radial-gradient(1000px 600px at -10% 120%, rgba(37, 99, 235, .10), transparent 60%);
+}
+
+:root.dark .td-card {
+    background: var(--bg-primary);
+}
+
+:root.dark .td-title,
+:root.dark .td-label,
+:root.dark .td-dates,
+:root.dark .td-breadcrumbs {
+    color: var(--text-primary) !important;
+}
 
 :root {
     --td-radius: 16px;

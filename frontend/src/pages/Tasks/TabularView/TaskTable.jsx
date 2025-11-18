@@ -121,7 +121,7 @@ function TaskTable({ onEdit, onComplete, onSoftDeleteToggle, onDetails, tasks, o
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="text-center text-muted">
+                            <td colSpan="6" className="notfound text-center text-muted">
                                 No tasks found
                             </td>
                         </tr>

@@ -1,4 +1,8 @@
 /* Enhanced Navigation Styles */
+:root.dark .sidebar ul li:hover {
+  background-color: var(--hover-overlay);
+}
+
 .main-nav {
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);

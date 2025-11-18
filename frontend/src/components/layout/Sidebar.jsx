@@ -36,7 +36,7 @@ export default function Sidebar({ show, onHide }) {
         <>
             {/* Desktop sidebar — width is given by the grid column */}
             <aside className="sidebar d-none d-lg-block">
-                <div className="sidebar-inner">
+                <div className="sidebar-inner p-3">
                     <div className="sidebar-title">Navigation</div>
                     <Nav className="flex-column" activeKey={pathname} variant="pills">
                         {navItems.map(n => {
@@ -48,7 +48,7 @@ export default function Sidebar({ show, onHide }) {
                             else {
                                 return <Accordion defaultActiveKey={n.to}  key={n.to}  alwaysOpen>
                                     <Accordion.Item eventKey={n.to}>
-                                        <Accordion.Header>Tasks</Accordion.Header>
+                                        <Accordion.Header >Tasks</Accordion.Header>
                                         <Accordion.Body className="p-0"> {/* Use `p-0` to remove padding from the body */}
                                             <Nav.Link key={n.to} as={Link} to={n.to} eventKey={n.to} className="nav-item-link">{n.label}</Nav.Link>
                                             {n.sublinks.map((sub) => {

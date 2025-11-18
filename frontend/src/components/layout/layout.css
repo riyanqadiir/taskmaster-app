@@ -32,7 +32,7 @@
 .nav-link.active {
     color: var(--accent-primary) !important;
     background-color: var(--bg-primary) !important;
-}
+
     --sidebar-border: rgba(102, 126, 234, 0.15);
     --sidebar-text: #cbd5e1;
     --sidebar-text-active: var(--on-brand);
@@ -605,7 +605,24 @@
     transform: translateX(6px);
     font-weight: 600;
 }
+.sidebar .accordion-body .nav-item-link,
+.offcanvas .accordion-body .nav-item-link {
+    color: var(--sidebar-text) !important;
+    background: transparent !important;
+}
 
+.sidebar .accordion-body .nav-item-link:hover,
+.offcanvas .accordion-body .nav-item-link:hover {
+    background: #f1f5f9 !important;
+    color: var(--sidebar-text-active) !important;
+}
+
+.sidebar .accordion-body .nav-item-link.active,
+.offcanvas .accordion-body .nav-item-link.active {
+    background: #eaf2ff !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border);
+}
 /* MOBILE — extra touch padding and spacing */
 @media (max-width: 991.98px) {
     .offcanvas .accordion-button {
@@ -842,4 +859,174 @@
 .main-inner .btn-secondary:hover {
     background: #dfeaff !important;
     box-shadow: 0 8px 16px rgba(59, 130, 246, .16) !important;
+}
+
+/* =================================================================== */
+/* DARK MODE OVERRIDES FOR THE LAYOUT                                 */
+/* =================================================================== */
+
+html.dark {
+    /* Core layout backgrounds */
+    --layout-bg: #0f172a; /* slate-900 */
+    --surface: #1e293b; /* slate-800 */
+    --border: rgba(255, 255, 255, 0.08);
+    --border-soft: rgba(255, 255, 255, 0.12);
+
+    /* Main gradients become subtle dark tones */
+    --gradient-primary: linear-gradient(180deg, #1e293b, #1e293b);
+    --gradient-secondary: linear-gradient(180deg, #1e293b, #1e293b);
+    --gradient-accent: linear-gradient(180deg, #334155, #334155);
+    --gradient-success: linear-gradient(180deg, #14532d, #14532d);
+
+    /* Interactive colors */
+    --accent-primary: #60a5fa; /* lighter blue */
+    --accent-secondary: #3b82f6;
+    --accent-blue: #60a5fa;
+    --accent-pink: #7dd3fc;
+    --accent-green: #4ade80;
+    --accent-orange: #fb923c;
+
+    /* Sidebar dark mode */
+    --sidebar-bg: #1e293b;
+    --sidebar-border: rgba(255, 255, 255, 0.06);
+    --sidebar-text: #cbd5e1; /* slate-300 */
+    --sidebar-text-active: #ffffff;
+
+    /* Scrollbar */
+    --scroll-track: rgba(255, 255, 255, 0.08);
+    --scroll-thumb: rgba(148, 163, 184, 0.4);
+}
+
+/* =================================================================== */
+/* ELEMENT-WIDE DARK MODE STYLING                                     */
+/* =================================================================== */
+
+/* App Shell */
+html.dark .app-shell {
+    background:
+        radial-gradient(1200px 600px at -10% 10%, rgba(59, 130, 246, 0.08), transparent 65%),
+        var(--layout-bg);
+}
+
+html.dark .app-shell::before {
+    background:
+        radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1), transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.1), transparent 50%);
+}
+
+/* Main content */
+html.dark .main-col,
+html.dark .main-inner {
+    background: var(--surface) !important;
+    border-color: var(--border-soft);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+html.dark .main-inner::before {
+    background: var(--accent-primary);
+}
+
+/* Sidebar */
+html.dark .sidebar {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+}
+
+html.dark .sidebar-inner::-webkit-scrollbar-track {
+    background: var(--scroll-track);
+}
+html.dark .sidebar-inner::-webkit-scrollbar-thumb {
+    background: var(--scroll-thumb);
+}
+
+/* Sidebar text */
+html.dark .sidebar-title {
+    color: #fff;
+    border-bottom-color: var(--sidebar-border);
+}
+
+html.dark .nav-item-link {
+    color: var(--sidebar-text) !important;
+}
+html.dark .nav-item-link:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--sidebar-text-active) !important;
+}
+
+/* Active nav link */
+html.dark .nav-pills .nav-link.active {
+    background: var(--gradient-primary) !important;
+    color: var(--sidebar-text-active) !important;
+}
+
+/* Header & Footer */
+html.dark .app-header,
+html.dark .app-footer {
+    background: rgba(15, 23, 42, 0.9);
+    border-color: var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+/* Offcanvas (mobile sidebar) */
+html.dark .offcanvas {
+    background: var(--sidebar-bg);
+}
+html.dark .offcanvas-header {
+    background: rgba(255, 255, 255, 0.04);
+}
+html.dark .offcanvas-title {
+    color: #fff;
+}
+html.dark .offcanvas .nav-link.active {
+    background: var(--gradient-primary) !important;
+    color: var(--sidebar-text-active) !important;
+}
+
+/* Forms inside main-inner */
+html.dark .main-inner input,
+html.dark .main-inner select,
+html.dark .main-inner textarea,
+html.dark .main-inner .form-control {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: var(--border);
+}
+
+html.dark .main-inner input::placeholder {
+    color: rgba(226, 232, 240, 0.5);
+}
+
+html.dark .main-inner input:focus {
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(96,165,250,.35) !important;
+}
+
+/* Buttons */
+html.dark .btn-primary {
+    background: var(--accent-primary) !important;
+    color: #fff !important;
+}
+html.dark .btn-primary:hover {
+    background: var(--accent-secondary) !important;
+}
+
+html.dark .btn-secondary {
+    background: #334155 !important;
+    border-color: #475569 !important;
+    color: #fff !important;
+}
+html.dark .btn-secondary:hover {
+    background: #1e293b !important;
+}
+
+/* Accordion */
+html.dark .accordion-button {
+    color: var(--sidebar-text);
+}
+html.dark .accordion-button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+html.dark .accordion-button:not(.collapsed) {
+    background: var(--gradient-primary);
+    color: #fff;
 }

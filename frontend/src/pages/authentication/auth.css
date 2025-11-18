@@ -1,24 +1,27 @@
+/* =============================================================== */
+/* AUTH LAYOUT (LIGHT + DARK MODE with theme variables)            */
+/* =============================================================== */
+
 .auth {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - var(--header-h, 56px));
+  min-height: calc(100vh - 89px);
   background: var(--bg-secondary);
   padding: 1rem;
 }
 
 .auth .auth-container {
   width: 100%;
-  max-width: 520px; /* target: slightly wider but within 480-520px */
-  padding: 1.5rem 1.25rem 2.5rem; /* reserve space for captcha and breathing room */
+  max-width: 520px;
+  padding: 1.5rem 1.25rem 2.5rem;
   border-radius: 12px;
-  background: var(--bg-primary) !important;
+  background: var(--bg-primary);
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--border-color);
-  margin: 0 auto;
 }
 
-/* Heading */
+/* ------------------ TEXT HEADINGS ------------------ */
 .auth h1 {
   text-align: center;
   margin-bottom: 1rem;
@@ -33,41 +36,27 @@
   margin-bottom: 1.25rem;
 }
 
-/* Form controls */
+/* ------------------ FORM LABELS ------------------ */
 .auth .form-control {
   display: flex;
   flex-direction: column;
-  text-align: left;
-  border: none;
-  margin-bottom: 1rem; /* slightly larger vertical rhythm between fields */
+  margin-bottom: 1rem;
 }
 
 .auth .form-control label {
   margin-bottom: 0.5rem;
   font-weight: 600;
-  /* Use slightly muted text on light theme for hierarchy, but ensure
-     high-contrast text on dark theme via the .dark override below. */
   color: var(--text-secondary);
 }
 
-/* Dark-mode override: ensure labels are bright and readable */
-:root.dark .auth .form-control label,
-.dark .auth .form-control label {
-  color: var(--text-primary) !important;
-}
-
+/* ------------------ FORM INPUTS ------------------ */
 .auth .form-control input {
   padding: 0.75rem 0.9rem;
   border-radius: 10px;
-  /* Use theme-aware border token so the stroke is visible in both themes */
   border: 1px solid var(--border-color);
-  outline: none;
-  font-size: 1rem;
   background: var(--bg-primary);
   color: var(--text-primary);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  font-size: 1rem;
 }
 
 .auth .form-control input::placeholder {
@@ -79,23 +68,23 @@
   box-shadow: var(--focus-ring);
 }
 
+/* ------------------ REMEMBER ME ------------------ */
 .auth .remember_me {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 0;
   font-size: 14px;
   color: var(--text-secondary);
 }
 
+/* ------------------ FORGOT / LINKS ------------------ */
 .auth-options {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  font-size: 0.95rem;
   margin-top: 0.75rem;
-  gap: 0.5rem;
-  flex-wrap: wrap; /* allow stacking on small screens */
+  font-size: 0.95rem;
+  gap: .5rem;
+  flex-wrap: wrap;
 }
 
 .auth-options label {
@@ -107,70 +96,34 @@
   text-decoration: none;
   font-weight: 600;
 }
+
 .auth-options .text-link:hover {
   color: var(--brand-primary-hover);
   text-decoration: underline;
 }
 
+/* ------------------ CAPTCHA ------------------ */
 .recaptcha-container {
   margin-top: 1rem;
-  position: relative;
-  min-height: 1px; /* reserve space */
+  min-height: 1px;
 }
 
-/* Responsive adjustments: stack options on narrow screens */
-@media (max-width: 576px) {
-  .auth .auth-container {
-    max-width: 92%;
-    padding: 1.25rem;
-  }
-
-  .auth-options {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-  }
-
-  .auth-options .remember_me,
-  .auth-options .text-link {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-}
-
-.auth .actions {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.auth .actions .btn {
-  flex: 1;
-}
-
+/* ------------------ ACTION BUTTONS ------------------ */
 .auth button {
   width: 100%;
   padding: 0.75rem;
-  border: none;
   border-radius: 10px;
+  border: none;
   background: var(--brand-primary);
   color: var(--on-brand);
   font-weight: 700;
   cursor: pointer;
-  transition: transform var(--transition-duration) ease,
-    box-shadow var(--transition-duration) ease;
-  box-shadow: var(--shadow-sm);
+  transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .auth button:hover {
-  transform: translateY(-1px);
   background: var(--brand-primary-hover);
-}
-
-.auth button:focus {
-  outline: none;
-  box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
 }
 
 .auth button:active {
@@ -179,59 +132,97 @@
 
 .auth .resend-btn {
   margin-top: 10px;
-  padding: 0.6rem;
-  background-color: transparent;
+  padding: .6rem;
+  background: transparent;
   border: 1px solid var(--brand-primary);
   color: var(--brand-primary);
   border-radius: 8px;
-  transition: background-color .2s ease, color .2s ease;
 }
 
 .auth .resend-btn:hover {
-  background-color: var(--brand-primary-hover);
+  background: var(--brand-primary-hover);
   color: var(--on-brand);
 }
 
-.auth .error {
-  color: var(--error);
-  margin-top: 0.25rem;
+/* ------------------ MESSAGES ------------------ */
+.auth .error { color: var(--error); }
+.auth .success { color: var(--success); }
+.auth .info { color: var(--info); }
+
+/* =============================================================== */
+/* DARK MODE (TRUE THEME — using SAME variables)                   */
+/* =============================================================== */
+
+html.dark .auth {
+  background: var(--bg-secondary); /* already overridden in dark mode */
 }
 
-.auth .success {
-  color: var(--success);
-  margin-top: 0.25rem;
+html.dark .auth .auth-container {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-lg);
 }
 
-.auth .info {
-  color: var(--info);
-  margin: 10px 0;
+/* Text */
+html.dark .auth h1,
+html.dark .auth .form-control label {
+  color: var(--text-primary);
 }
 
-/* Responsive */
-@media (max-width: 576px) {
-  .auth .auth-container {
-    margin: 1.25rem;
-    padding: 1rem;
-  }
-
-  .auth h1 {
-    font-size: 1.5rem;
-  }
-}
-.auth button {
-  background-color: var(--brand-primary);
+html.dark .auth p.lead,
+html.dark .auth-options label {
+  color: var(--text-secondary);
 }
 
-.auth button:hover {
-  background-color: var(--brand-primary-hover);
+/* Inputs */
+html.dark .auth .form-control input {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
-.auth .resend-btn {
-  border: 1px solid var(--brand-primary);
+html.dark .auth .form-control input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Links */
+html.dark .auth-options .text-link {
   color: var(--brand-primary);
 }
 
-.auth .resend-btn:hover {
-  background-color: var(--brand-primary-hover);
+/* Buttons */
+html.dark .auth button,
+html.dark .auth .resend-btn {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
   color: var(--on-brand);
+}
+
+html.dark .auth .resend-btn {
+  background: transparent;
+  color: var(--brand-primary);
+}
+
+html.dark .auth .resend-btn:hover {
+  background: var(--brand-primary-hover);
+}
+
+/* Status messages */
+html.dark .auth .error { color: var(--error); }
+html.dark .auth .success { color: var(--success); }
+html.dark .auth .info { color: var(--info); }
+
+/* Smooth transitions */
+.auth,
+.auth * {
+  transition: background-color .25s ease,
+             color .25s ease,
+             border-color .25s ease;
+}
+
+/* Last Bootstrap override */
+html.dark .form-control {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
 }

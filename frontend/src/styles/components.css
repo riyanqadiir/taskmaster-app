@@ -1,4 +1,7 @@
 /* Enhanced Professional Component Styles with WCAG 2.1 AA & AAA Compliance */
+:root.dark .table tr:hover {
+  background-color: var(--bg-highlight);
+}
 
 /* Base Typography */
 h1, h2, h3, h4, h5, h6 {

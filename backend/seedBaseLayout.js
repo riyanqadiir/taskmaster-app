@@ -3,7 +3,7 @@ const DashboardLayout = require("./model/UserDashboardLayout");
 require("dotenv").config();
 
 (async () => {
-    await mongoose.connect("mongodb://localhost:27017/TaskMaster");
+    await mongoose.connect(process.env.MONGODB_URI);
 
     const baseLayout = [
         { id: "summary", title: "My Tasks Summary", size: 4, position: 0 },

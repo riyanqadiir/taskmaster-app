@@ -18,7 +18,7 @@ const LogoutButton = () => {
     };
 
     return (
-        <Button variant="outline-secondary" className="btn-logout" onClick={handleLogout} aria-label="Logout">Logout</Button>
+        <Button variant="outline-secondary" className="btn-logout ms-3" onClick={handleLogout} aria-label="Logout">Logout</Button>
     );
 }
 

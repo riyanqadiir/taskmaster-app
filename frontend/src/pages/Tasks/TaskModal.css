@@ -1,0 +1,81 @@
+/* ========================================================= */
+/* TASK MODAL — SOLID BACKGROUND (LIGHT & DARK MODE)         */
+/* ========================================================= */
+
+.task-modal .modal-content {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-lg) !important;
+    backdrop-filter: none !important;
+}
+
+.task-modal .modal-header,
+.task-modal .modal-footer {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.task-modal .modal-title,
+.task-modal .modal-header .modal-title.h4,
+.task-modal .modal-header .h4 {
+    color: var(--text-primary) !important;
+}
+
+.task-modal .form-label {
+    color: var(--text-secondary) !important;
+}
+
+.task-modal .form-control,
+.task-modal .form-select {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.task-modal .form-control:focus,
+.task-modal .form-select:focus {
+    border-color: var(--brand-primary) !important;
+    box-shadow: var(--focus-ring) !important;
+}
+
+.task-modal .btn-primary {
+    background-color: var(--brand-primary) !important;
+    border-color: var(--brand-primary) !important;
+}
+
+.task-modal .btn-primary:hover {
+    background-color: var(--brand-primary-hover) !important;
+}
+
+/* ========================================================= */
+/* DARK MODE — USE SAME VARIABLES (already changed in :root) */
+/* ========================================================= */
+
+html.dark .task-modal .modal-content,
+html.dark .task-modal .form-control,
+html.dark .task-modal .form-select {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+html.dark .task-modal .modal-header,
+html.dark .task-modal .modal-footer {
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+html.dark .task-modal .modal-header .modal-title,
+html.dark .task-modal .modal-header .modal-title.h4,
+html.dark .task-modal .modal-header .h4 {
+    color: var(--text-primary) !important;
+}
+
+/* FIX LIGHT MODE MODAL TITLE */
+html:not(.dark) .task-modal .modal-header,
+html:not(.dark) .task-modal .modal-title,
+html:not(.dark) .task-modal .modal-header .modal-title,
+html:not(.dark) .task-modal .modal-header .h4 {
+    color: var(--text-primary) !important; /* BLACK in light mode */
+}
+

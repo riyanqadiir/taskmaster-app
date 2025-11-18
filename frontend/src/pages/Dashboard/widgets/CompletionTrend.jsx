@@ -19,12 +19,10 @@ function CompletionTrend({ data }) {
     const completed = data.completed;
     if (!Array.isArray(completed) || completed.length === 0) {
         return (
-            <Col md={6} lg={4}>
-                    <div className="text-center text-muted py-5">
+                    <div className="text-center text-muted py-5  w-100">
                         <i className="bi bi-graph-up"></i>
-                        <p className="mb-0 mt-2">No completed tasks yet</p>
-                    </div>
-            </Col>
+                        <p className="mb-0 mt-2 ">No completed tasks yet</p>
+                    </div> 
         );
     }
 

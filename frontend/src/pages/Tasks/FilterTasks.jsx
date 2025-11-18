@@ -24,7 +24,7 @@ function FilterTasks({ filter, setFilter }) {
     }
     return (
         <>
-            <Col xs={12} md={3}>
+            <Col xs={12} md={3} className='filters'>
                 <Form.Group controlId="filterStatus">
                     <Form.Label>Status</Form.Label>
                     <Form.Select
@@ -41,7 +41,7 @@ function FilterTasks({ filter, setFilter }) {
                 </Form.Group>
             </Col>
 
-            <Col xs={12} md={3}>
+            <Col xs={12} md={3} className='filters'>
                 <Form.Group controlId="filterSortBy">
                     <Form.Label>Sort By</Form.Label>
                     <Form.Select
@@ -59,7 +59,7 @@ function FilterTasks({ filter, setFilter }) {
                 </Form.Group>
             </Col>
 
-            <Col xs={12} md={3}>
+            <Col xs={12} md={3} className='filters'>
                 <Form.Group controlId="filterOrder">
                     <Form.Label>Order</Form.Label>
                     <Form.Select
@@ -73,7 +73,7 @@ function FilterTasks({ filter, setFilter }) {
                 </Form.Group>
             </Col>
 
-            <Col xs={12} md={3}>
+            <Col xs={12} md={3} className='filters'>
                 <Form.Group controlId="filterSearch">
                     <Form.Label>Search</Form.Label>
                     <Form.Control

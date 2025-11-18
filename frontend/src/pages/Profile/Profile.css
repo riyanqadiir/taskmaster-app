@@ -3,6 +3,182 @@
 /* =================================================================== */
 /* THEME TOKENS & VARIABLES                                           */
 /* =================================================================== */
+/* ================================================================ */
+/* DARK MODE OVERRIDES — Applied when <html class="dark"> exists   */
+/* ================================================================ */
+
+:root.dark {
+    /* Base surfaces */
+    --profile-bg: var(--bg-secondary-dark);
+    --card-bg: var(--bg-primary-dark);
+    --profile-text-primary: var(--text-primary);
+    --text-muted: var(--text-tertiary);
+    --border-soft: var(--border-color);
+
+    /* Gradients adapted to dark backgrounds */
+    --gradient-1: linear-gradient(135deg, #312e81, #1e1b4b);
+    --gradient-2: linear-gradient(135deg, #4c1d95, #3b0764);
+    --gradient-3: linear-gradient(135deg, #0f172a, #1e293b);
+    --gradient-4: linear-gradient(135deg, #064e3b, #065f46);
+    --gradient-5: linear-gradient(135deg, #b45309, #92400e);
+
+    /* Hero gradient softened for dark mode */
+    --hero-primary: linear-gradient(135deg, #1e1b4b, #312e81);
+    --hero-accent: linear-gradient(135deg, #4c1d95, #3b0764);
+
+    /* Accent colors */
+    --accent-blue: #60a5fa;
+    --accent-purple: #a78bfa;
+    --accent-pink: #f472b6;
+    --accent-green: #4ade80;
+    --accent-orange: #fbbf24;
+
+    /* Rings & shadows */
+    --ring-blue: rgba(96, 165, 250, .35);
+    --ring-purple: rgba(167, 139, 250, .35);
+    --shadow-colorful: 0 8px 32px rgba(0, 0, 0, .40);
+    --shadow-soft: 0 4px 16px rgba(0, 0, 0, .30);
+}
+
+/* --------------------------- */
+/* PAGE BACKGROUND             */
+/* --------------------------- */
+
+:root.dark .profile-page {
+    background:
+        radial-gradient(1200px 600px at 120% -10%, rgba(236, 72, 153, .10), transparent 60%),
+        radial-gradient(900px 500px at -10% 10%, rgba(59, 130, 246, .12), transparent 60%),
+        radial-gradient(800px 400px at 50% 100%, rgba(139, 92, 246, .08), transparent 50%),
+        var(--profile-bg);
+}
+
+/* --------------------------- */
+/* HERO SECTION                */
+/* --------------------------- */
+
+:root.dark .profile-hero {
+    background: var(--hero-primary);
+    color: var(--text-primary);
+    box-shadow: var(--shadow-colorful);
+}
+
+:root.dark .profile-hero__inner {
+    color: var(--text-primary);
+}
+
+/* --------------------------- */
+/* CARDS                       */
+/* --------------------------- */
+
+:root.dark .card-elevated {
+    background: var(--card-bg);
+    border-color: var(--border-soft) !important;
+    box-shadow: var(--shadow-soft);
+}
+
+:root.dark .card-elevated::before {
+    background: var(--gradient-3);
+    opacity: .75;
+}
+
+/* --------------------------- */
+/* AVATARS                     */
+/* --------------------------- */
+
+:root.dark .avatar {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: var(--text-primary);
+}
+
+:root.dark .avatar-initials {
+    background: var(--gradient-1);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* --------------------------- */
+/* FORMS                       */
+/* --------------------------- */
+
+:root.dark .profile-form .form-control,
+:root.dark .profile-form .form-select {
+    background: var(--bg-primary-dark);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+:root.dark .profile-form .form-control:focus,
+:root.dark .profile-form .form-select:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 .25rem var(--ring-purple);
+}
+
+/* --------------------------- */
+/* BADGES                      */
+/* --------------------------- */
+
+:root.dark .badge-primary {
+    background: linear-gradient(135deg, #1e3a8a, #1e40af) !important;
+    color: #dbeafe !important;
+    border-color: #3b82f6 !important;
+}
+
+:root.dark .badge-success {
+    background: linear-gradient(135deg, #064e3b, #065f46) !important;
+    color: #d1fae5 !important;
+    border-color: #10b981 !important;
+}
+
+:root.dark .badge-warning {
+    background: linear-gradient(135deg, #78350f, #92400e) !important;
+    color: #fde68a !important;
+    border-color: #ea580c !important;
+}
+
+:root.dark .badge-info {
+    background: linear-gradient(135deg, #0c4a6e, #1e3a8a) !important;
+    color: #e0f2fe !important;
+    border-color: #3b82f6 !important;
+}
+
+/* --------------------------- */
+/* CHIPS (Interest Tags)       */
+/* --------------------------- */
+
+:root.dark .chip:nth-child(4n+1),
+:root.dark .chip:nth-child(4n+2),
+:root.dark .chip:nth-child(4n+3),
+:root.dark .chip:nth-child(4n+4) {
+    background: var(--bg-secondary-dark);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.30);
+}
+
+/* --------------------------- */
+/* BUTTONS                     */
+/* --------------------------- */
+
+:root.dark .btn-gradient {
+    background: var(--gradient-2) !important;
+    color: var(--on-brand) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+:root.dark .btn-gradient:hover {
+    background: var(--gradient-1) !important;
+}
+
+:root.dark .btn-outline-soft {
+    background: transparent !important;
+    border-color: var(--accent-blue) !important;
+    color: var(--accent-blue) !important;
+}
+
+:root.dark .btn-outline-soft:hover {
+    background: var(--accent-blue) !important;
+    color: var(--on-brand) !important;
+}
 
 :root {
     /* Use global theme tokens where possible to remain consistent with light/dark modes */
@@ -79,6 +255,7 @@
     /* Use the global text token so the hero text follows light/dark themes
        (dark => light text, light => dark text) and stays WCAG-compliant */
     color: var(--text-primary);
+    background-color: transparent !important; 
     max-width: 1100px;
     width: 100%;
     box-sizing: border-box;

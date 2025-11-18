@@ -1,6 +1,11 @@
 /* Professional Layout Styles */
 
 /* Container */
+:root.dark .sidebar ul li:hover {
+  background-color: var(--hover-overlay);
+}
+
+
 .container {
   width: 100%;
   max-width: 1280px;

@@ -45,7 +45,7 @@ function Header({ onMenuClick }) {
                 </div>
                 <div className="d-flex align-items-center header-actions">
                     <ThemeToggle />
-                    <LogoutButton className="ms-3" />
+                    <LogoutButton />
                 </div>
             </Container>
         </Navbar>

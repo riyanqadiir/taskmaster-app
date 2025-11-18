@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const connectToDb = () =>{
-    mongoose.connect("mongodb://localhost:27017/TaskMaster").then(()=>{
+    mongoose.connect(process.env.MONGODB_URI).then(()=>{
         console.log('Database Connected Successfully!');
     })
     .catch((err)=>{

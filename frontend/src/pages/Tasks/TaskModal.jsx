@@ -1,7 +1,7 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { createTask, updateTask } from "../../api/tasksApi";
-
+import "./TaskModal.css"
 function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, initialValues }) {
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({
@@ -45,7 +45,7 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
     };
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className="task-modal">
             <Modal.Header closeButton>
                 <Modal.Title>{mode === "edit" ? "Edit Task" : "Add Task"}</Modal.Title>
             </Modal.Header>
