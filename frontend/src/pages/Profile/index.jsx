@@ -5,7 +5,7 @@ import ResetPassword from "./ResetPassword";
 import ProfileInfo from "./ProfileInfo";
 import ProfileForm from "./ProfileForm";
 import { fetchProfile } from "../../api/profileApi";
-import "./profile.css"; // ← add this
+import "./Profile.css"; // ← add this
 
 export default function Profile() {
     const [loading, setLoading] = useState(true);
