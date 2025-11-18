@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cors({
     origin: [
     "http://localhost:5173",
-    process.env.FRONTEND_URL
+    "https://taskmaster-app-7k7k.vercel.app"
 ],
     credentials: true,
     exposedHeaders: ["authorization"],
