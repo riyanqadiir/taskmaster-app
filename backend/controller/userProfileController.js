@@ -1,5 +1,5 @@
 const User = require("../model/User.js");
-const UserProfile = require("../model/userProfile.js");
+const UserProfile = require("../model/UserProfile.js");
 const uploadOnCloudinary = require("../utility/cloudinary.js")
 const formatUser = (u) => ({
     _id: u._id, firstName: u.firstName, lastName: u.lastName, username: u.username, email: u.email,

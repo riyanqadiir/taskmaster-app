@@ -1,50 +1,52 @@
-require("dotenv").config()
-const express = require("express")
+require("dotenv").config();
+const express = require("express");
 const app = express();
-const mongoose = require('./config/db.js');
-const cors = require("cors")
+const mongoose = require("./config/db.js");
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const userRoute = require("./routes/userRoute.js")
-const taskRoute = require("./routes/taskRoute.js")
-const userProfile = require("./routes/userProfileRoute")
-const path = require("path")
-const fs = require("fs")
+const userRoute = require("./routes/userRoute.js");
+const taskRoute = require("./routes/taskRoute.js");
+const userProfile = require("./routes/userProfileRoute");
+const path = require("path");
+const fs = require("fs");
 
-mongoose()
+// Connect DB
+mongoose();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+// Middlewares
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({
-    origin: [
-    "http://localhost:5173",
-    "https://taskmaster-app-7k7k.vercel.app"
-],
-    credentials: true,
-    exposedHeaders: ["authorization"],
-}));
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
-});
 
-app.use("/user", userRoute, userProfile)
-app.use("/tasks", taskRoute)
-
-if (!fs.existsSync(path.join(__dirname, "/public/temp"))) {
-    fs.mkdir(path.join(__dirname, "/public/temp"), { recursive: true }, (err) => {
-        if (err) {
-            return console.log(err)
-        }
+// Correct CORS
+app.use(
+    cors({
+        origin: [
+            "http://localhost:5173",
+            "https://taskmaster-app-7k7k.vercel.app"
+        ],
+        credentials: true,
     })
+);
+
+// Routes
+app.use("/user", userRoute, userProfile);
+app.use("/tasks", taskRoute);
+
+// Temp folder
+const tempPath = path.join(__dirname, "/public/temp");
+if (!fs.existsSync(tempPath)) {
+    fs.mkdirSync(tempPath, { recursive: true });
 }
 
+// For local development only
 if (!process.env.VERCEL) {
-    app.listen(process.env.PORT || 3000, () => {
-        console.log(`server running on port ${process.env.PORT}`);
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`server running on port ${PORT}`);
     });
 }
 
