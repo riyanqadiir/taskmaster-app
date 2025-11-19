@@ -22,18 +22,34 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Correct CORS
-app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        process.env.FRONTEND_URL
-    ],
-    credentials: true,
-}));
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL,
+];
 
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            // Allow requests with no origin (mobile apps, curl, Postman)
+            if (!origin) return callback(null, true);
+
+            if (allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                console.log("❌ BLOCKED BY CORS:", origin);
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
+        credentials: true,
+    })
+);
+
+// Needed for cookie-based refreshToken
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
+
 
 // Routes
 app.use("/user", userRoute, userProfile);
