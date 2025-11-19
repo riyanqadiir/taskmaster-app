@@ -45,11 +45,9 @@ const Login = () => {
                 remember_me,
                 token
             });
-
             if (response.status === 200) {
                 const accessToken = response.headers['authorization'];
                 const { user, layout, baseLayout, message } = response.data;
-
                 // ✅ Store tokens and user info
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("user", JSON.stringify(user));

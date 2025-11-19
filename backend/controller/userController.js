@@ -212,7 +212,6 @@ const login = async (req, res) => {
         const accessToken = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
             expiresIn: "1h",
         });
-
         if (remember_me) {
             const refreshToken = jwt.sign(
                 { _id: user._id },
@@ -222,12 +221,11 @@ const login = async (req, res) => {
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: true,
-                sameSite: "none",
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "Strict",
                 maxAge: 24 * 60 * 60 * 1000,
             });
         }
-
         // ✅ Respond with layout included
         return res
             .header("authorization", accessToken)

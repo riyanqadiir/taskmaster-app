@@ -41,6 +41,7 @@ app.use(
             }
         },
         credentials: true,
+        exposedHeaders: ["authorization"],
     })
 );
 
