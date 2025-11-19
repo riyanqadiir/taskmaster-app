@@ -22,15 +22,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Correct CORS
-app.use(
-    cors({
-        origin: [
-            "http://localhost:5173",
-            "https://taskmaster-app-7k7k.vercel.app"
-        ],
-        credentials: true,
-    })
-);
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        process.env.FRONTEND_URL
+    ],
+    credentials: true,
+}));
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
 
 // Routes
 app.use("/user", userRoute, userProfile);

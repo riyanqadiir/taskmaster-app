@@ -1,6 +1,6 @@
 // models
 const userModel = require("../model/User")
-const profileModel = require("../model/userProfile.js")
+const profileModel = require("../model/UserProfile.js");
 const accControlModel = require("../model/AccountControl")
 const verificationModel = require("../model/Verification.js")
 const metaModel = require("../model/UserMetadata.js")
@@ -222,8 +222,8 @@ const login = async (req, res) => {
 
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "Strict",
+                secure: true,
+                sameSite: "none",
                 maxAge: 24 * 60 * 60 * 1000,
             });
         }
