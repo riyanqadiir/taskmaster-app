@@ -72,64 +72,73 @@ const Login = () => {
             <div className="auth-container">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
-                <div className="form-control">
-                    <label htmlFor="email">Email</label>
-                    <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        onChange={handleChange}
-                        value={formData.email}
-                        aria-label="Email"
-                        required
-                    />
-                </div>
-
-                <div className="form-control">
-                    <label htmlFor="password">Password</label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        onChange={handleChange}
-                        value={formData.password}
-                        aria-label="Password"
-                        required
-                    />
-                </div>
-
-                <div className="auth-options">
-                    <div className="remember_me">
+                    <div className="form-control">
+                        <label htmlFor="email">Email</label>
                         <input
-                            type="checkbox"
-                            name="remember_me"
-                            id="remember_me"
-                            checked={formData.remember_me}
+                            id="email"
+                            name="email"
+                            type="email"
+                            placeholder="Enter your email"
                             onChange={handleChange}
+                            value={formData.email}
+                            aria-label="Email"
+                            required
                         />
-                        <label htmlFor="remember_me">Remember Me</label>
                     </div>
 
-                    <div>
-                        <Link className="text-link" to="/forgot-password">Forgot Password?</Link>
+                    <div className="form-control">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="Enter your password"
+                            onChange={handleChange}
+                            value={formData.password}
+                            aria-label="Password"
+                            required
+                        />
                     </div>
-                </div>
 
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success">{success}</p>}
+                    <div className="auth-options">
+                        <div className="remember_me">
+                            <input
+                                type="checkbox"
+                                name="remember_me"
+                                id="remember_me"
+                                checked={formData.remember_me}
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="remember_me">Remember Me</label>
+                        </div>
 
-                {/* ensure recaptcha sits inside a container so it doesn't overlap footer */}
-                <div className="recaptcha-container" style={{ position: 'relative', marginTop: '1rem' }}>
-                    <ReCAPTCHA
-                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                        size="invisible"
-                        ref={recaptchaRef}
-                    />
-                </div>
+                        <div>
+                            <Link className="text-link" to="/forgot-password">Forgot Password?</Link>
+                        </div>
+                    </div>
 
-                <button type="submit" className="btn-primary">Login</button>
+                    {error && <p className="error">{error}</p>}
+                    {success && <p className="success">{success}</p>}
+
+                    {/* ensure recaptcha sits inside a container so it doesn't overlap footer */}
+                    <div className="recaptcha-container" style={{ position: 'relative', marginTop: '1rem' }}>
+                        <ReCAPTCHA
+                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                            size="invisible"
+                            ref={recaptchaRef}
+                        />
+                    </div>
+
+                    <button type="submit" className="btn-primary">Login</button>
+                    <div className="auth-redirect" style={{ marginTop: "1rem", textAlign: "center" }}>
+                        <p style={{ margin: 0 }}>
+                            Don't have an account?{" "}
+                            <Link className="text-link" to="/signup">
+                                Create one
+                            </Link>
+                        </p>
+                    </div>
+
                 </form>
             </div>
         </div>
