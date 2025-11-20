@@ -3,16 +3,19 @@ const nodemailer = require('nodemailer');
 const verifyEmail = async (email, options) => {
   console.log(options.otp)
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.TASK_MASTER_GMAIL,
-      pass: process.env.TASK_MASTER_APP_PASS
-    }
-  });
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.BREVO_USER,  // your email
+    pass: process.env.BREVO_SMTP_KEY, // your SMTP key
+  },
+});
+
   let message;
   if (options.otp) {
     message = {
-      from: process.env.TASK_MASTER_GMAIL,
+      from: process.env.BREVO_USER,
       to: email,
       subject: "OTP Verification",
       text: `Your One-Time Password (OTP) is ${options.otp}. Please do not share it with anyone.`,
@@ -27,7 +30,7 @@ const verifyEmail = async (email, options) => {
     };
   } else {
     message = {
-      from: process.env.TASK_MASTER_GMAIL,
+      from: process.env.BREVO_USER,
       to: email,
       subject: "Password Reset Request",
       text: `Click the following link to reset your password: ${options.reset_url}`,
