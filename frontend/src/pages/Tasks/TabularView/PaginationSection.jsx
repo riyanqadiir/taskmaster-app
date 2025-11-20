@@ -12,7 +12,7 @@ function PaginationSection({ pagination, setFilter, filter }) {
     return (
         <>
             <Form.Group controlId="filterLimit" className="d-flex align-items-center gap-2 mb-0">
-                <Form.Label className="mb-0 text-white">Limit</Form.Label>
+                <Form.Label className="mb-0 text-black pag">Limit</Form.Label>
                 <Form.Select
                     name="limit"
                     value={filter.limit}

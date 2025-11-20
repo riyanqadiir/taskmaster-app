@@ -774,3 +774,35 @@ html.dark .badge.bg-primary {
 .btn {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Prevent badge & row shadow overflow on desktop only */
+@media (min-width: 768px) {
+    .table {
+        overflow: hidden !important;
+        border-radius: var(--radius);
+        border-collapse: separate !important;
+        border-spacing: 0;
+    }
+}
+
+/* Allow scrolling on mobile */
+@media (max-width: 768px) {
+    .table {
+        overflow: scroll !important;
+    }
+}
+
+/* Keep inner elements from leaking outside on desktop */
+@media (min-width: 768px) {
+    .table tbody tr,
+    .table tbody td,
+    .table thead th {
+        position: relative;
+        overflow: hidden;
+    }
+}
+
+
+html.dark .pag{
+    color: #fff !important;
+}

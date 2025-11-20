@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://taskmaster-backend-production-65bd.up.railway.app",
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true, 
 });
 api.interceptors.request.use((config) => {

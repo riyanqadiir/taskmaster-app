@@ -38,7 +38,6 @@ const Login = () => {
         try {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
-            console.log("API URL:", import.meta.env.VITE_API_URL);
             const response = await login({
                 email,
                 password,

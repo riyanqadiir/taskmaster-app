@@ -48,7 +48,7 @@ export default function AddWidgetSidebar({ show, setShow, data, widgets, onAdd }
 
             <Offcanvas.Body>
                 {availableWidgets.length === 0 && (
-                    <p className="text-muted small text-center">
+                    <p className="text-muted small text-center empty-widget">
                         All widgets are currently on your dashboard.
                     </p>
                 )}

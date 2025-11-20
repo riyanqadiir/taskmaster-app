@@ -1030,3 +1030,23 @@ html.dark .accordion-button:not(.collapsed) {
     background: var(--gradient-primary);
     color: #fff;
 }
+.app-shell {
+    min-height: 100dvh; /* TRUE viewport height on mobile */
+}
+
+.app-content {
+    min-height: calc(100dvh - var(--header-h) - var(--footer-h));
+}
+
+.main-col {
+    height: calc(100dvh - var(--header-h) - var(--footer-h));
+}
+
+.main-inner {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.app-footer {
+    margin-top: auto;
+}

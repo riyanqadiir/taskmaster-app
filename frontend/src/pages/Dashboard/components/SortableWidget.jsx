@@ -17,7 +17,7 @@ export default function SortableWidget({ id, size, title, onResize,onRemove, chi
     return (
         <Col lg={size} md={6} sm={12} ref={setNodeRef} style={style} {...attributes} {...listeners}>
             <div className="card shadow-sm mb-3">
-                <div className="card-body">
+                <div className="card-body widget-card-body">
                     <WidgetHeader
                         title={title}
                         size={size}

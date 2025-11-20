@@ -1,7 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { ArrowsAngleExpand, ArrowsFullscreen, ArrowsCollapse, X } from "react-bootstrap-icons";
-
 /**
  * WidgetHeader
  * ------------------------------
@@ -27,22 +26,25 @@ const WidgetHeader = ({ title, size, onResize, onRemove }) => {
 
             <div className="d-flex align-items-center gap-2">
                 {/* Expand / Collapse button */}
-                <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    className="d-flex align-items-center"
-                    onClick={handleResize}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onPointerDown={(e) => e.stopPropagation()}
-                >
-                    {size === 4 ? (
-                        <ArrowsAngleExpand size={16} />
-                    ) : size === 8 ? (
-                        <ArrowsFullscreen size={16} />
-                    ) : (
-                        <ArrowsCollapse size={16} />
-                    )}
-                </Button>
+                {/* Hide resize button on mobile */}
+                <div className="resize-wrapper">
+                    <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        className="resize-btn d-flex align-items-center"
+                        onClick={handleResize}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
+                    >
+                        {size === 4 ? (
+                            <ArrowsAngleExpand size={16} />
+                        ) : size === 8 ? (
+                            <ArrowsFullscreen size={16} />
+                        ) : (
+                            <ArrowsCollapse size={16} />
+                        )}
+                    </Button>
+                </div>
 
                 {/* Optional remove button (for future use) */}
                 {onRemove && (
