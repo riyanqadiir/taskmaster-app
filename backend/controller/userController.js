@@ -315,7 +315,9 @@ const forgotPassword = async (req, res) => {
         }
         await user.save();
 
-        const resetPasswordUrl = `${req.protocol}://${req.get("host").split(':')[0]}:3000/user/forgot-password/${resetPasswordToken}`;
+        const host = req.get("host"); // full domain with correct port if exists
+        const resetPasswordUrl = `${req.protocol}://${host}/user/forgot-password/${resetPasswordToken}`;
+        console.log(resetPasswordUrl)
 
         const emailSent = await verifyEmail(email, { reset_url: resetPasswordUrl });
 

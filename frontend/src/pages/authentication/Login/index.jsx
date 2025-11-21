@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 
 const Login = () => {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -28,6 +29,8 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { email, password, remember_me } = formData;
+        if (loading) return;
+        setLoading(true);
 
         if (!email || !password) {
             setError('All fields are required.');
@@ -65,6 +68,8 @@ const Login = () => {
             console.error(err);
             setError(err.response?.data?.message || 'Login failed');
             setSuccess('');
+        } finally {
+            setLoading(false);
         }
     };
     return (
@@ -129,7 +134,10 @@ const Login = () => {
                         />
                     </div>
 
-                    <button type="submit" className="btn-primary">Login</button>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
+
                     <div className="auth-redirect" style={{ marginTop: "1rem", textAlign: "center" }}>
                         <p style={{ margin: 0 }}>
                             Don't have an account?{" "}

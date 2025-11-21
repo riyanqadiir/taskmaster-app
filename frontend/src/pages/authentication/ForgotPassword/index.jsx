@@ -1,10 +1,11 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import {forgotPassword} from "../../../api/userApi"
+import { forgotPassword } from "../../../api/userApi"
 import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -14,7 +15,7 @@ const ForgotPassword = () => {
     const [success, setSuccess] = useState('');
 
     const handleChange = (e) => {
-        const { name, value} = e.target;
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
@@ -24,7 +25,10 @@ const ForgotPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { email} = formData;
+        const { email } = formData;
+
+        if (loading) return;
+        setLoading(true);
 
         if (!email) {
             setError('Email is required!');
@@ -44,13 +48,16 @@ const ForgotPassword = () => {
             if (response.status === 200 || response.status === 201) {
                 setSuccess('Reset password link is send successfully');
                 setError('');
-                setTimeout(() => navigate('/login'), 1500); 
+                setTimeout(() => navigate('/login'), 1500);
             }
         } catch (err) {
             console.error(err);
             setError(err.response?.data?.message || 'Failed to send reset link');
             console.log(err.response?.data)
             setSuccess('');
+        } finally {
+            setLoading(false);
+
         }
     };
     return (
@@ -80,7 +87,9 @@ const ForgotPassword = () => {
                         />
                     </div>
 
-                    <button type="submit">Submit</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Sending..." : "Submit"}
+                    </button>
                 </form>
             </div>
         </div>

@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
     process.env.DEVELOPMENT_ENV,
     process.env.FRONTEND_URL,
+    process.env.BACKEND_URL,
 ];
 
 app.use(

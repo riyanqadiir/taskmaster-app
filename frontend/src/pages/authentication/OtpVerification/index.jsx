@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {verifyOtp} from "../../../api/userApi"
+import { verifyOtp } from "../../../api/userApi"
 import api from '../../../api/axios';
 import ReCAPTCHA from "react-google-recaptcha";
 import "../auth.css";
@@ -15,7 +15,7 @@ const OtpVerification = () => {
     const [success, setSuccess] = useState("");
     const [resendMessage, setResendMessage] = useState("");
     const [isResending, setIsResending] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (location.state?.email) {
             setEmail(location.state.email);
@@ -26,6 +26,9 @@ const OtpVerification = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (loading) return;
+        setLoading(true);
+
         if (!otp || !email) {
             setError("Please enter the OTP.");
             return;
@@ -51,6 +54,8 @@ const OtpVerification = () => {
         } catch (err) {
             console.log(err);
             setError(err?.response?.data?.message || "Invalid OTP or verification failed");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -109,7 +114,10 @@ const OtpVerification = () => {
                         />
                     </div>
 
-                    <button type="submit">Verify OTP</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Verifying..." : "Verify OTP"}
+                    </button>
+
                     <button
                         type="button"
                         className="resend-btn"
