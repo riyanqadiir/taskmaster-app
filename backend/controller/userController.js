@@ -8,7 +8,7 @@ const DashboardLayout = require("../model/UserDashboardLayout");
 // dependencies
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken');
-const verifyEmail = require("../service/NodeMailer.js")
+const verifyEmail = require("../service/emailService.js.js")
 const otpGenerator = require('otp-generator')
 const crypto = require("crypto")
 
