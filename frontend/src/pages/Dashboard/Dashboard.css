@@ -182,7 +182,10 @@ html.dark:root,
 
 html.dark .widget-card-body div,
 html.dark .widget-card-body li,
-html.dark .widget-card-body li small {
+html.dark .widget-card-body li small, 
+html.dark .widget-preview div,
+html.dark .widget-preview li,
+html.dark .widget-preview li small {
     color: #f1f5f9 !important;
     background-color: #1e293b !important;
 }
