@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 89px);
+  min-height: calc(100vh - 57px);
   background: var(--bg-secondary);
   padding: 1rem;
 }

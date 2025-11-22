@@ -23,6 +23,10 @@ import TaskSummary from "./widgets/TaskSummary";
 import SortableWidget from "./components/SortableWidget";
 import AddWidgetSidebar from "./components/AddWidgetSidebar";
 
+
+import { useTaskContext } from "../../context/TaskContext";
+import TaskModal from "../Tasks//TaskModal";
+
 const STATUS_KEYS = ["not_started", "waiting", "in_progress", "completed"];
 const WIDGETS = {
     summary: TaskSummary,
@@ -33,6 +37,7 @@ const WIDGETS = {
 };
 
 export default function Dashboard() {
+    const { showModal, setShowModal, mode, setMode, initialValues } = useTaskContext();
     const [tasks, setTasks] = useState({
         not_started: [],
         waiting: [],
@@ -66,21 +71,9 @@ export default function Dashboard() {
                 const { data } = await fetchTasks({ limit: "all" });
                 if (!data?.tasks) throw new Error("Invalid response format");
 
-                const grouped = data.tasks.reduce(
-                    (acc, t) => {
-                        if (t.completedAt) {
-                            const [datePart] = t.completedAt.split("T");
-                            t.completedAt = datePart || "";
-                        }
-                        const key = STATUS_KEYS.includes(t.status)
-                            ? t.status
-                            : "not_started";
-                        acc[key].push(t);
-                        return acc;
-                    },
-                    { not_started: [], waiting: [], in_progress: [], completed: [] }
-                );
+                const grouped = groupTasks(data.tasks);
                 setTasks(grouped);
+
             } catch (err) {
                 setError(err.message || "Failed to load tasks");
             } finally {
@@ -89,7 +82,19 @@ export default function Dashboard() {
         };
         fetchData();
     }, []);
+    function groupTasks(tasksArray) {
+        return tasksArray.reduce(
+            (acc, t) => {
+                const key = STATUS_KEYS.includes(t.status)
+                    ? t.status
+                    : "not_started";
 
+                acc[key].push(t);
+                return acc;
+            },
+            { not_started: [], waiting: [], in_progress: [], completed: [] }
+        );
+    }
     useEffect(() => loadTasks(), [loadTasks]);
 
     const handleDragStart = (event) => {
@@ -205,6 +210,23 @@ export default function Dashboard() {
                 <Alert variant="danger">{error}</Alert>
             </Container>
         );
+    const handleAddTask = () => {
+        setMode("add");
+        setShowModal(true);
+    };
+    const handleNewTask = (newTask) => {
+        setTasks(prev => {
+            const updatedFlatList = [
+                ...prev.not_started,
+                ...prev.waiting,
+                ...prev.in_progress,
+                ...prev.completed,
+                newTask
+            ];
+
+            return groupTasks(updatedFlatList);
+        });
+    };
 
     return (
         <Container
@@ -224,14 +246,22 @@ export default function Dashboard() {
                     <Col>
                         <h4 className="dashboard-title mb-0">My Dashboard</h4>
                     </Col>
-                    <Col>
-                        <Button
-                            variant="primary"
-                            className="float-end btn btn-primary text-light fw-semibold"
-                            onClick={() => setShow((p) => !p)}
-                        >
-                            Add Widget
-                        </Button>
+
+                    <Col xs={12} sm={6} md={4} className="d-flex justify-content-end">
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button  variant="primary" onClick={handleAddTask}>
+                                Add Task
+                            </Button>
+
+                            <Button
+                                variant="primary"
+                                // className="text-light fw-semibold"
+                                onClick={() => setShow((p) => !p)}
+                            >
+                                Add Widget
+                            </Button>
+                        </div>
+
                         <AddWidgetSidebar
                             show={show}
                             setShow={setShow}
@@ -241,7 +271,6 @@ export default function Dashboard() {
                         />
                     </Col>
                 </Row>
-
                 <div
                     ref={setNodeRef}
                     className={`dashboard-dropzone ${isOver ? "highlight-drop" : ""}`}
@@ -284,6 +313,14 @@ export default function Dashboard() {
                     ) : null}
                 </DragOverlay>
             </DndContext>
+            <TaskModal
+                show={showModal}
+                handleClose={() => setShowModal(false)}
+                // onTaskCreated={(newTask) => setTasks((prev) => [...prev, newTask])}
+                onTaskCreated={handleNewTask}
+                mode={mode}
+                initialValues={initialValues}
+            />
         </Container>
     );
 }

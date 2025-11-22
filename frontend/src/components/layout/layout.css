@@ -206,7 +206,7 @@
 }
 
 .nav-item-link:hover {
-    background: rgba(102, 126, 234, 0.15);
+    background: rgba(102, 126, 234, 0.15) !important;
     color: var(--sidebar-text-active) !important;
     transform: translateX(4px);
     border-color: rgba(102, 126, 234, 0.3);
@@ -613,7 +613,7 @@
 
 .sidebar .accordion-body .nav-item-link:hover,
 .offcanvas .accordion-body .nav-item-link:hover {
-    background: #f1f5f9 !important;
+    background: rgba(102, 126, 234, 0.15) !important;
     color: var(--sidebar-text-active) !important;
 }
 

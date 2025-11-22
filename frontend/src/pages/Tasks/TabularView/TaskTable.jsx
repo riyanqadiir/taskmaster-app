@@ -4,6 +4,12 @@ import { PencilSquare, Trash, CheckCircle, InfoCircle, FileX, Archive, FileCheck
 import { useLocation } from 'react-router-dom';
 function TaskTable({ onEdit, onComplete, onSoftDeleteToggle, onDetails, tasks, onArchiveToggle, onHardDelete }) {
     const location = useLocation();
+    const modifyStatus = (status) => {
+        if (status.includes("_")) {
+            return status.replace("_", " ");
+        }
+        return status;
+    }
     return (
         <>
             <Table striped bordered hover responsive className="shadow-sm " >
@@ -39,7 +45,7 @@ function TaskTable({ onEdit, onComplete, onSoftDeleteToggle, onDetails, tasks, o
                                                         : "secondary"
                                         }
                                     >
-                                        {task.status}
+                                        {modifyStatus(task.status)}
                                     </Badge>
                                 </td>
                                 <td className="text-center">

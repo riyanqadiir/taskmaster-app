@@ -1,23 +1,27 @@
-// Signup.jsx
 import React, { useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
-import { signup } from "../../../api/userApi"
+import { signup } from "../../../api/userApi";
 import { useNavigate, Link } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
 import "../auth.css";
 
 const Signup = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const [validated, setValidated] = useState(false);
+
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: ""
     });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+
     const recaptchaRef = useRef();
 
     const handleChange = (e) => {
@@ -27,24 +31,23 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { firstName, lastName, username, email, password, confirmPassword } = formData;
-        if (loading) return;
-        setLoading(true);
-
-        if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
-            setError('Please fill in all fields');
+        const form = e.currentTarget;
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            setValidated(true);
             return;
         }
 
-        if (password.length < 8) {
-            setError("Password must be at least 8 characters");
-            return;
-        }
+        const { password, confirmPassword } = formData;
 
         if (password !== confirmPassword) {
             setError("Passwords do not match");
             return;
         }
+
+        if (loading) return;
+        setLoading(true);
+        setValidated(true);
 
         try {
             const token = await recaptchaRef.current.executeAsync();
@@ -54,59 +57,69 @@ const Signup = () => {
 
             if (response.status === 200 || response.status === 201) {
                 const email = response.data?.body?.email;
-                if (email) {
-                    setSuccess('Signup successful. Redirecting to OTP verification...');
-                    setError('');
-                    setTimeout(() => {
-                        navigate("/verify-otp", { state: { email } });
-                    }, 1000);
-                }
+                setSuccess("Signup successful. Redirecting...");
+                setError("");
+
+                setTimeout(() => {
+                    navigate("/verify-otp", { state: { email } });
+                }, 1000);
             }
         } catch (err) {
-            console.log(err);
             setError(err?.response?.data?.message || "Failed to signup");
         } finally {
             setLoading(false);
         }
     };
 
-
     return (
-        <div className="auth">
-            <div className="auth-container">
-                <h1>Sign Up</h1>
-                <form onSubmit={handleSubmit}>
-                    {["firstName", "lastName", "username", "email", "password", "confirmPassword"].map((field) => (
-                        <div className="form-control" key={field}>
-                            <label htmlFor={field}>{field === "confirmPassword" ? "Confirm Password" : field.charAt(0).toUpperCase() + field.slice(1)}</label>
-                            <input
-                                type={(field.includes("password") || field.includes("confirmPassword")) ? "password" : "text"}
-                                id={field}
-                                name={field}
-                                onChange={handleChange}
-                                placeholder={`Enter your ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
-                            />
-                        </div>
-                    ))}
-                    {error && <p className="error">{error}</p>}
-                    {success && <p className="success">{success}</p>}
+        <div className="auth-container">
+            <h1>Sign Up</h1>
 
-                    <div className="recaptcha-container" style={{ position: 'relative', marginTop: '1rem' }}>
-                        <ReCAPTCHA
-                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                            size="invisible"
-                            ref={recaptchaRef}
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                {[
+                    { name: "firstName", label: "First Name" },
+                    { name: "lastName", label: "Last Name" },
+                    { name: "username", label: "Username" },
+                    { name: "email", label: "Email", type: "email" },
+                    { name: "password", label: "Password", type: "password" },
+                    { name: "confirmPassword", label: "Confirm Password", type: "password" },
+                ].map(({ name, label, type }) => (
+                    <Form.Group className="form-control" key={name}>
+                        <Form.Label>{label}</Form.Label>
+                        <Form.Control
+                            required
+                            type={type || "text"}
+                            name={name}
+                            onChange={handleChange}
+                            placeholder={`Enter your ${label}`}
+                            className="form-control"
                         />
-                    </div>
+                        <Form.Control.Feedback type="invalid">
+                            {label} is required
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                ))}
 
-                    <div className="auth-options" style={{ marginTop: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Link className="text-link" to="/login">Already have an account? Login</Link>
-                        <button type="submit" className="btn-primary" disabled={loading}>
-                            {loading ? "Signing up..." : "Sign Up"}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                {error && <p className="error">{error}</p>}
+                {success && <p className="success">{success}</p>}
+
+                <div className="recaptcha-container">
+                    <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                        size="invisible"
+                        ref={recaptchaRef}
+                    />
+                </div>
+
+                <div className="auth-options">
+                    <Link className="text-link" to="/login">
+                        Already have an account? Login
+                    </Link>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? "Signing up..." : "Sign Up"}
+                    </button>
+                </div>
+            </Form>
         </div>
     );
 };

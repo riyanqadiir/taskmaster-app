@@ -58,7 +58,7 @@ html.dark,
   --brand-secondary: #2563eb;
   --brand-secondary-hover: #1e40af;
 
-  --on-brand: #ffffff;
+  --on-brand:#0f172a;
 
   --success-light: #dcfce7;
   --success: #15803d;
@@ -102,6 +102,7 @@ html.dark,
   --info-light: rgba(59,130,246,0.2);
 
   --focus-ring: 0 0 0 3px rgba(59,130,246,0.5);
+  --on-brand:#f9fafb;
 }
 
 /* -------------------------------------- */

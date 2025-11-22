@@ -1,9 +1,15 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { createTask, updateTask } from "../../api/tasksApi";
-import "./TaskModal.css"
+import "./TaskModal.css";
+
 function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, initialValues }) {
+    const [validated, setValidated] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [dateError, setDateError] = useState("");
+
+    const today = new Date().toISOString().split("T")[0];
+
     const [form, setForm] = useState({
         title: "",
         description: "",
@@ -11,27 +17,60 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
         priority: "Low",
         dueDate: "",
     });
+
     useEffect(() => {
         if (mode === "edit" && initialValues) {
             setForm(initialValues);
         }
         if (mode === "add") {
-            setForm({ title: "", description: "", status: "not_started", priority: "Low", dueDate: "" });
+            setForm({
+                title: "",
+                description: "",
+                status: "not_started",
+                priority: "Low",
+                dueDate: "",
+            });
         }
+        setDateError("");
+        setValidated(false);
     }, [show, mode, initialValues]);
+
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Clear date error on change
+        if (name === "dueDate") {
+            setDateError("");
+        }
+
+        setForm({ ...form, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        e.stopPropagation();
+
+        const formEl = e.currentTarget;
+        setValidated(true);
+
+        // Check bootstrap HTML validity
+        if (formEl.checkValidity() === false) {
+            return;
+        }
+
+        // Prevent past dates
+        if (form.dueDate && new Date(form.dueDate) < new Date(today)) {
+            setDateError("Due date must be today or later.");
+            return;
+        }
+
         setSaving(true);
         try {
             let response;
+
             if (mode === "edit") {
                 response = await updateTask(form._id, form);
-                onTaskUpdated(response.data.task)
-                console.log(response.data.task)
+                onTaskUpdated(response.data.task);
             } else {
                 response = await createTask(form);
                 onTaskCreated(response.data.task);
@@ -49,8 +88,9 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
             <Modal.Header closeButton>
                 <Modal.Title>{mode === "edit" ? "Edit Task" : "Add Task"}</Modal.Title>
             </Modal.Header>
+
             <Modal.Body>
-                <Form onSubmit={handleSubmit}>
+                <Form noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">
                         <Form.Label>Title</Form.Label>
                         <Form.Control
@@ -60,6 +100,10 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
                             onChange={handleChange}
                             required
                         />
+                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback type="invalid">
+                            Title is required!
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
@@ -97,9 +141,15 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
                         <Form.Control
                             type="date"
                             name="dueDate"
+                            min={today}
                             value={form.dueDate}
                             onChange={handleChange}
+                            required
+                            isInvalid={dateError !== ""}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            {dateError || "Due date is required"}
+                        </Form.Control.Feedback>
                     </Form.Group>
 
                     <Button type="submit" variant="primary" disabled={saving}>

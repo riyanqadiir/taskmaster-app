@@ -1,154 +1,157 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 import "../auth.css";
 import ReCAPTCHA from "react-google-recaptcha";
-import { login } from "../../../api/userApi"
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
+import { login } from "../../../api/userApi";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import { Form } from "react-bootstrap";
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
+    const [validated, setValidated] = useState(false);
+
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-        remember_me: false,
-    });
     const recaptchaRef = useRef();
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const { setUser } = useAuth();
 
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        remember_me: false,
+    });
+
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, type, value, checked } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: type === "checkbox" ? checked : value,
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const { email, password, remember_me } = formData;
-        if (loading) return;
-        setLoading(true);
+        const form = e.currentTarget;
 
-        if (!email || !password) {
-            setError('All fields are required.');
-            setSuccess('');
+        if (!form.checkValidity()) {
+            e.stopPropagation();
+            setValidated(true);
             return;
         }
+
+        if (loading) return;
+        setLoading(true);
 
         try {
             const token = await recaptchaRef.current.executeAsync();
             recaptchaRef.current.reset();
-            const response = await login({
-                email,
-                password,
-                remember_me,
-                token
-            });
-            if (response.status === 200) {
-                const accessToken = response.headers['authorization'];
-                const { user, layout, baseLayout, message } = response.data;
-                // ✅ Store tokens and user info
+
+            const res = await login({ ...formData, token });
+
+            if (res.status === 200) {
+                const accessToken = res.headers["authorization"];
+                const { user, layout, baseLayout, message } = res.data;
+
                 localStorage.setItem("accessToken", accessToken);
                 localStorage.setItem("user", JSON.stringify(user));
 
-                // ✅ Store dashboard layouts
-                if (layout) localStorage.setItem("dashboardLayout", JSON.stringify(layout));
-                if (baseLayout) localStorage.setItem("baseLayout", JSON.stringify(baseLayout));
+                if (layout)
+                    localStorage.setItem("dashboardLayout", JSON.stringify(layout));
+                if (baseLayout)
+                    localStorage.setItem("baseLayout", JSON.stringify(baseLayout));
 
-                // ✅ Update context (if applicable)
                 setUser(user);
-
                 setSuccess(message);
-                setTimeout(() => navigate('/dashboard'), 1000);
+
+                setTimeout(() => navigate("/dashboard"), 1000);
             }
         } catch (err) {
-            console.error(err);
-            setError(err.response?.data?.message || 'Login failed');
-            setSuccess('');
+            setError(err.response?.data?.message || "Login failed");
         } finally {
             setLoading(false);
         }
     };
+
     return (
-        <div className="auth">
-            <div className="auth-container">
-                <h1>Login</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-control">
-                        <label htmlFor="email">Email</label>
+        <div className="auth-container">
+            <h1>Login</h1>
+
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form.Group className="form-control">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                        required
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        Email is required
+                    </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group className="form-control">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                        required
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="form-control"
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        Password is required
+                    </Form.Control.Feedback>
+                </Form.Group>
+
+                <div className="auth-options">
+                    <div className="remember_me">
                         <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="Enter your email"
+                            type="checkbox"
+                            name="remember_me"
+                            id="remember_me"
+                            checked={formData.remember_me}
                             onChange={handleChange}
-                            value={formData.email}
-                            aria-label="Email"
-                            required
                         />
+                        <label htmlFor="remember_me">Remember Me</label>
                     </div>
 
-                    <div className="form-control">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="Enter your password"
-                            onChange={handleChange}
-                            value={formData.password}
-                            aria-label="Password"
-                            required
-                        />
-                    </div>
+                    <Link className="text-link" to="/forgot-password">
+                        Forgot Password?
+                    </Link>
+                </div>
 
-                    <div className="auth-options">
-                        <div className="remember_me">
-                            <input
-                                type="checkbox"
-                                name="remember_me"
-                                id="remember_me"
-                                checked={formData.remember_me}
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="remember_me">Remember Me</label>
-                        </div>
+                {error && <p className="error">{error}</p>}
+                {success && <p className="success">{success}</p>}
 
-                        <div>
-                            <Link className="text-link" to="/forgot-password">Forgot Password?</Link>
-                        </div>
-                    </div>
+                <div className="recaptcha-container">
+                    <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                        size="invisible"
+                        ref={recaptchaRef}
+                    />
+                </div>
 
-                    {error && <p className="error">{error}</p>}
-                    {success && <p className="success">{success}</p>}
+                <button type="submit" className="btn-primary" disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
+                </button>
 
-                    {/* ensure recaptcha sits inside a container so it doesn't overlap footer */}
-                    <div className="recaptcha-container" style={{ position: 'relative', marginTop: '1rem' }}>
-                        <ReCAPTCHA
-                            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                            size="invisible"
-                            ref={recaptchaRef}
-                        />
-                    </div>
-
-                    <button type="submit" className="btn-primary" disabled={loading}>
-                        {loading ? "Logging in..." : "Login"}
-                    </button>
-
-                    <div className="auth-redirect" style={{ marginTop: "1rem", textAlign: "center" }}>
-                        <p style={{ margin: 0 }}>
-                            Don't have an account?{" "}
-                            <Link className="text-link" to="/signup">
-                                Create one
-                            </Link>
-                        </p>
-                    </div>
-
-                </form>
-            </div>
+                <div className="auth-redirect">
+                    <p>
+                        Don't have an account?{" "}
+                        <Link className="text-link" to="/signup">
+                            Create one
+                        </Link>
+                    </p>
+                </div>
+            </Form>
         </div>
     );
 };
