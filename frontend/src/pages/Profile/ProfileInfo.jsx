@@ -46,8 +46,9 @@ function ProfileInfo({ profile, user }) {
                     <div className="mt-3">
                         <strong>Contact</strong>
                         <div className="text-muted">
-                            {profile.phone ? profile.phone : "—"}
-                            {profile.address ? ` • ${profile.address}` : ""}
+                            {profile.phone ? `Phone: ${profile.phone}` : "—"}
+                            <br />
+                            {profile.address ? ` Location: ${profile.address}` : ""}
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,7 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
     const [saving, setSaving] = useState(false);
     const [dateError, setDateError] = useState("");
 
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toLocaleDateString("en-CA");
 
     const [form, setForm] = useState({
         title: "",
@@ -28,7 +28,7 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
                 description: "",
                 status: "not_started",
                 priority: "Low",
-                dueDate: "",
+                dueDate: today,
             });
         }
         setDateError("");
