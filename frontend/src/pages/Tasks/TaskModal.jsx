@@ -47,41 +47,60 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
 
-        const formEl = e.currentTarget;
-        setValidated(true);
+    setValidated(true);
+    setDateError("");
 
-        // Check bootstrap HTML validity
-        if (formEl.checkValidity() === false) {
-            return;
+    const formEl = e.currentTarget;
+
+    // Validate TITLE using HTML validation
+    if (!form.title.trim()) {
+        return; // HTML validation will highlight it
+    }
+
+    // ⭐ iPhone-safe Due Date Validation
+    if (!form.dueDate) {
+        setDateError("Due date is required.");
+        return;
+    }
+
+    // ⭐ Prevent past dates (Safari ignores min attribute)
+    const selected = new Date(form.dueDate);
+    const todayDate = new Date(today); // "today" is correctly in local timezone
+
+    // Remove time component for accurate comparison
+    selected.setHours(0, 0, 0, 0);
+    todayDate.setHours(0, 0, 0, 0);
+
+    if (selected < todayDate) {
+        setDateError("Due date cannot be in the past. Please select today or a future date.");
+        return;
+    }
+
+    // If everything is valid — proceed
+    setSaving(true);
+
+    try {
+        let response;
+
+        if (mode === "edit") {
+            response = await updateTask(form._id, form);
+            onTaskUpdated(response.data.task);
+        } else {
+            response = await createTask(form);
+            onTaskCreated(response.data.task);
         }
 
-        // Prevent past dates
-        if (form.dueDate && new Date(form.dueDate) < new Date(today)) {
-            setDateError("Due date must be today or later.");
-            return;
-        }
+        handleClose();
+    } catch (err) {
+        console.error("Error creating task:", err.response?.data || err.message);
+    } finally {
+        setSaving(false);
+    }
+};
 
-        setSaving(true);
-        try {
-            let response;
-
-            if (mode === "edit") {
-                response = await updateTask(form._id, form);
-                onTaskUpdated(response.data.task);
-            } else {
-                response = await createTask(form);
-                onTaskCreated(response.data.task);
-            }
-            handleClose();
-        } catch (err) {
-            console.error("Error creating task:", err.response?.data || err.message);
-        } finally {
-            setSaving(false);
-        }
-    };
 
     return (
         <Modal show={show} onHide={handleClose} className="task-modal">
@@ -142,15 +161,17 @@ function TaskModal({ show, handleClose, onTaskCreated, onTaskUpdated, mode, init
                             type="date"
                             name="dueDate"
                             min={today}
+                            pattern="\d{4}-\d{2}-\d{2}"   // ⭐ Force iOS to treat as date
                             value={form.dueDate}
                             onChange={handleChange}
                             required
-                            isInvalid={dateError !== ""}
+                            isInvalid={!!dateError}
                         />
                         <Form.Control.Feedback type="invalid">
                             {dateError || "Due date is required"}
                         </Form.Control.Feedback>
                     </Form.Group>
+
 
                     <Button type="submit" variant="primary" disabled={saving}>
                         {saving ? "Saving..." : "Save Task"}
