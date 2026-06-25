@@ -53,6 +53,11 @@ app.use((req, res, next) => {
 });
 
 
+// Health check for Railway / uptime monitors
+app.get("/", (req, res) => {
+    res.status(200).json({ status: "ok", service: "taskmaster-backend" });
+});
+
 // Routes
 app.use("/user", userRoute, userProfile);
 app.use("/tasks", taskRoute);
@@ -63,11 +68,12 @@ if (!fs.existsSync(tempPath)) {
     fs.mkdirSync(tempPath, { recursive: true });
 }
 
-// For local development only
+// Railway injects PORT — do not override it in Railway env vars
 if (!process.env.VERCEL) {
     const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`server running on port ${PORT}`);
+    const HOST = "0.0.0.0";
+    app.listen(PORT, HOST, () => {
+        console.log(`server running on ${HOST}:${PORT}`);
     });
 }
 
